@@ -1,0 +1,65 @@
+id,name,seed,region,overall_rank
+,Gonzaga,1,West,1
+,Arizona,1,South,2
+,Kansas,1,Midwest,3
+,Baylor,1,East,4
+,Auburn,2,Midwest,5
+,Kentucky,2,East,6
+,Villanova,2,South,7
+,Duke,2,West,8
+,Wisconsin,3,Midwest,9
+,Tennessee,3,South,10
+,Purdue,3,East,11
+,Texas Tech,3,West,12
+,UCLA,4,East,13
+,Illinois,4,South,14
+,Providence,4,Midwest,15
+,Arkansas,4,West,16
+,UConn,5,West,17
+,Houston,5,South,18
+,Saint Mary's,5,East,19
+,Iowa,5,Midwest,20
+,Alabama,6,West,21
+,LSU,6,Midwest,22
+,Texas,6,East,23
+,Colorado St.,6,South,24
+,USC,7,Midwest,25
+,Murray St.,7,East,26
+,Michigan St.,7,West,27
+,Ohio St.,7,South,28
+,Boise St.,8,West,29
+,North Carolina,8,East,30
+,San Diego St.,8,Midwest,31
+,Seton Hall,8,South,32
+,Creighton,9,Midwest,33
+,TCU,9,South,34
+,Marquette,9,East,35
+,Memphis,9,West,36
+,San Francisco,10,East,37
+,Miami (FL),10,Midwest,38
+,Loyola Chicago,10,South,39
+,Davidson,10,West,40
+,Iowa St.,11,Midwest,41
+,Michigan,11,South,42
+,Virginia Tech,11,East,43
+,Notre Dame,11,West,45
+,Indiana,12,East,46
+,Akron,13,East,47
+,UAB,12,South,48
+,Richmond,12,Midwest,49
+,New Mexico St.,12,West,50
+,Chattanooga,13,South,51
+,South Dakota St.,13,Midwest,52
+,Vermont,13,West,53
+,Yale,14,East,54
+,Longwood,14,South,55
+,Colgate,14,Midwest,57
+,Montana St.,14,West,58
+,Delaware,15,South,59
+,Saint Peter's,15,East,60
+,Jacksonville St.,15,Midwest,61
+,Cal St. Fullerton,15,West,62
+,Georgia St.,16,West,63
+,Norfolk St.,16,East,64
+,Wright St.,16,South,65
+,Texas Southern,16,Midwest,67

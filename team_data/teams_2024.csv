@@ -1,0 +1,65 @@
+id,name,seed,region,overall_rank
+,UConn,1,East,1
+,Houston,1,South,2
+,Purdue,1,Midwest,3
+,North Carolina,1,West,4
+,Tennessee,2,Midwest,5
+,Arizona,2,West,6
+,Marquette,2,South,7
+,Iowa St.,2,East,8
+,Baylor,3,West,9
+,Creighton,3,Midwest,10
+,Kentucky,3,South,11
+,Illinois,3,East,12
+,Duke,4,South,13
+,Kansas,4,Midwest,14
+,Auburn,4,East,15
+,Alabama,4,West,16
+,BYU,5,East,17
+,San Diego St.,6,East,18
+,Wisconsin,5,South,19
+,Saint Mary's,5,West,20
+,Gonzaga,5,Midwest,21
+,Clemson,6,West,22
+,Texas Tech,6,South,23
+,South Carolina,6,Midwest,24
+,Florida,7,South,25
+,Washington St.,7,East,26
+,Texas,7,Midwest,27
+,Dayton,7,West,28
+,Nebraska,8,South,29
+,Utah St.,8,Midwest,30
+,FAU,8,East,31
+,Mississippi St.,8,West,32
+,Michigan St.,9,West,33
+,Texas A&M,9,South,34
+,TCU,9,Midwest,35
+,Northwestern,9,East,36
+,Nevada,10,West,37
+,Colorado,10,South,38
+,Drake,10,East,39
+,Colorado St.,10,Midwest,40
+,New Mexico,11,West,41
+,Oregon,11,Midwest,42
+,NC State,11,South,43
+,Duquesne,11,East,44
+,Grand Canyon,12,West,45
+,James Madison,12,South,46
+,McNeese,12,Midwest,47
+,UAB,12,East,48
+,Vermont,13,South,49
+,Yale,13,East,50
+,Samford,13,Midwest,51
+,Charleston,13,West,52
+,Oakland,14,South,53
+,Akron,14,Midwest,54
+,Morehead St.,14,East,55
+,Colgate,14,West,56
+,Long Beach St.,15,West,57
+,Western Ky.,15,South,58
+,South Dakota St.,15,East,59
+,Saint Peter's,15,Midwest,60
+,Longwood,16,South,61
+,Stetson,16,East,62
+,Grambling St.,16,Midwest,63
+,Wagner,16,West,64

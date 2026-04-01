@@ -1,0 +1,65 @@
+name,region,seed,overall_rank
+Michigan,East,1,4
+Alabama,East,2,5
+Texas,East,3,11
+Florida St.,East,4,13
+Colorado,East,5,20
+BYU,East,6,23
+UConn,East,7,26
+LSU,East,8,29
+St. Bonaventure,East,9,39
+Maryland,East,10,36
+UCLA,East,11,44
+Georgetown,East,12,47
+UNC Greensboro,East,13,54
+Abilene Christian,East,14,55
+Iona,East,15,62
+Texas Southern,East,16,66
+Illinois,Midwest,1,3
+Houston,Midwest,2,8
+West Virginia,Midwest,3,10
+Oklahoma St.,Midwest,4,15
+Tennessee,Midwest,5,19
+San Diego St.,Midwest,6,24
+Clemson,Midwest,7,27
+Loyola Chicago,Midwest,8,30
+Georgia Tech,Midwest,9,34
+Rutgers,Midwest,10,40
+Syracuse,Midwest,11,41
+Oregon St.,Midwest,12,46
+Liberty,Midwest,13,53
+Morehead St.,Midwest,14,56
+Cleveland St.,Midwest,15,60
+Drexel,Midwest,16,63
+Baylor,South,1,2
+Ohio St.,South,2,6
+Arkansas,South,3,9
+Purdue,South,4,14
+Villanova,South,5,18
+Texas Tech,South,6,22
+Florida,South,7,28
+North Carolina,South,8,31
+Wisconsin,South,9,35
+Virginia Tech,South,10,37
+Utah St.,South,11,42
+Winthrop,South,12,49
+North Texas,South,13,52
+Colgate,South,14,57
+Oral Roberts,South,15,61
+Hartford,South,16,64
+Gonzaga,West,1,1
+Iowa,West,2,7
+Kansas,West,3,12
+Virginia,West,4,16
+Creighton,West,5,17
+USC,West,6,21
+Oregon,West,7,25
+Oklahoma,West,8,32
+Missouri,West,9,33
+VCU,West,10,38
+Drake,West,11,48
+UCSB,West,12,50
+Ohio,West,13,51
+Eastern Wash.,West,14,58
+Grand Canyon,West,15,59
+Norfolk St.,West,16,67

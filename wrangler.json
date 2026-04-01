@@ -1,0 +1,47 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "ncaa-tournament",
+	"main": "./src/worker/index.ts",
+	"compatibility_date": "2025-10-08",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"triggers": {
+		"crons": [
+			"*/1 16-23 19-22 3 *",
+			"*/1 0-5 20-23,27-30 3 *",
+			"*/2 23 26-29 3 *",
+			"*/1 22-23 4 4 *",
+			"*/1 0-4 5,7 4 *",
+		]
+	},
+	"observability": {
+		"enabled": true
+	},
+	"workers_dev": false,
+	"upload_source_maps": true,
+	"assets": {
+		"directory": "./dist/client",
+		"not_found_handling": "single-page-application"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "march-madness-db",
+			"database_id": "57980769-fd8c-4d70-a70d-bb00d4525afe"
+		}
+	],
+	"vars": {
+		"CF_TEAM_DOMAIN": "ncaa.rattplex.com",
+		"CF_ACCESS_AUD": "6d5ea4229a6263faf2177d31063c69bbdf44a0fa6fe935d9aac3401debff7924",
+		"CORS_ORIGIN": "https://ncaa.rattplex.com",
+		"NODE_ENV": "production"
+	},
+	"secrets_store_secrets": [
+		{
+			"store_id": "95c5ac600ef2405692a2eb7790ce09a7",
+			"binding": "SECRET",
+			"secret_name": "ncaa-tournament-secret"
+	}
+	]
+}
