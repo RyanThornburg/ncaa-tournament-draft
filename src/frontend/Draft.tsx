@@ -3,6 +3,7 @@ import { DraftOrderEntry, Team, User, Pick, LeaderboardEntry } from '../types';
 import { api } from './api';
 import DraftOrderEditor from './DraftOrderEditor';
 import RosterLine from './RosterLine';
+import LoadError from './LoadError';
 
 export default function Draft({ teams, users, isAdmin = false, regionOrder }: { teams: Team[], users: User[], isAdmin?: boolean, regionOrder?: (regions: string[]) => string[] }){
     const [draftOrder, setDraftOrder] = useState<DraftOrderEntry[]>([]);
@@ -11,16 +12,20 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
     const [picks, setPicks] = useState<Pick[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [showOrderEditor, setShowOrderEditor] = useState(false);
     const [pendingId, setPendingId] = useState<string | null>(null);
     const [query, setQuery] = useState("");
+    const [confirmUndo, setConfirmUndo] = useState(false);
     const searchRef = useRef<HTMLInputElement>(null);
+    const confirmRef = useRef<HTMLButtonElement>(null);
     const maxRounds = Math.floor(teams.length / users.length);
 
     const load = useCallback(async (showLoading = true)=> {
         if (showLoading) setLoading(true);
         setError(null);
+        setLoadError(null);
         try {
             const [d, p, l] = await Promise.all([
                 api.getDraftOrder(),
@@ -31,13 +36,12 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
             if (order.length === 0) {
                 const randomized = await api.setDraftOrderRandom();
                 order = randomized.order;
-                console.log('Random Draft:', order)
             }
             setDraftOrder(order);
             setPicks(p);
             setLeaderboard(l);
         } catch (e) {
-            setError(`Couldn't load the draft (${e instanceof Error ? e.message : String(e)}). Refresh to try again.`);
+            setLoadError(e instanceof Error ? e.message : String(e));
         } finally {
             if (showLoading) setLoading(false);
         }
@@ -107,11 +111,18 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
         }
     }
 
+    // a pending pick puts focus on Confirm, so Enter confirms and Tab reaches Cancel; Enter on any
+    // other focused control does that control's job and never commits the pick
+    useEffect(() => {
+        if (pendingId) confirmRef.current?.focus();
+    }, [pendingId]);
+
     useEffect(() => {
         if (!pendingId) return;
         const onKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") { e.preventDefault(); setPendingId(null); }
-            if (e.key === "Enter" && document.activeElement !== searchRef.current) { e.preventDefault(); confirmPick(); }
+            if (e.key === "Escape") { e.preventDefault(); setPendingId(null); searchRef.current?.focus(); }
+            const idle = !document.activeElement || document.activeElement === document.body;
+            if (e.key === "Enter" && idle) { e.preventDefault(); confirmPick(); }
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
@@ -119,6 +130,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
 
     async function handleResetLastPick() {
         if (picks.length === 0 || saving) return;
+        setConfirmUndo(false);
         setSaving(true);
         try {
             const lastPick = picks[picks.length - 1];
@@ -138,6 +150,23 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
     }
 
     const lastLine = lastPicked ? `Pick ${lastPicked.pick_order}: ${lastPicked.user_name} takes ${lastPicked.team_name}` : "";
+    const noMatch = !!q && !firstMatch;
+
+    // snake turns: the same drafter picks twice in a row at the end of each round
+    const pickedLast = draftIndex > 0 && DRAFT_ORDER[draftIndex - 1] === currentDrafterId;
+    const picksNext = DRAFT_ORDER[draftIndex + 1] === currentDrafterId;
+    const turnNote = pickedLast ? "picks again at the turn" : picksNext ? "has the next two picks" : "";
+
+    // undo is destructive and public, so it confirms in place like Reset does
+    const undoControl = lastPicked && (confirmUndo ? (
+        <div className="draft-undo-confirm" role="group" aria-label="Confirm undo">
+            <span>Undo pick {lastPicked.pick_order} ({lastPicked.user_name}, {lastPicked.team_name})?</span>
+            <button className="btn-cancel" onClick={() => setConfirmUndo(false)} disabled={saving} autoFocus>Keep</button>
+            <button className="btn-danger" onClick={handleResetLastPick} disabled={saving}>Undo it</button>
+        </div>
+    ) : (
+        <button className="btn-cancel" onClick={() => setConfirmUndo(true)} disabled={saving}>Undo last pick</button>
+    ));
 
     return (
         <>
@@ -148,21 +177,22 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
                 onCancel={() => setShowOrderEditor(false)}
             />
         )}
-        {error && <div className="error-banner">{error}</div>}
+        {error && <div className="error-banner" role="alert">{error}</div>}
+        {loadError && <LoadError what="the draft board" detail={loadError} stale={picks.length > 0} onRetry={() => load()} />}
         <div className="sr-only" aria-live="polite">{lastLine}</div>
         {loading ? (
             <div className="spinner">Loading…</div>
-        ) : (
+        ) : loadError && draftOrder.length === 0 ? null : (
         <div>
             {isDraftDone ? (
                 <div className="draft-complete">
                     <div>
-                        <h3>Draft complete</h3>
+                        <h2>Draft complete</h2>
                         {lastPicked && <p className="draft-last">Last pick: {lastPicked.user_name} took {lastPicked.team_name}</p>}
                     </div>
                     {isAdmin && lastPicked && (
                         <div className="draft-actions">
-                            <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>
+                            {undoControl}
                         </div>
                     )}
                 </div>
@@ -173,15 +203,18 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
                             <>
                                 <div className="draft-turn">{currentDraftUser?.display_name} takes <em>{pendingTeam.name}?</em></div>
                                 <div className="draft-confirm">
-                                    <button className="btn-confirm" onClick={confirmPick} disabled={saving}>{saving ? "Saving…" : "Confirm pick"}</button>
-                                    <button className="btn-cancel" onClick={() => setPendingId(null)} disabled={saving}>Cancel</button>
+                                    <button ref={confirmRef} className="btn-confirm" onClick={confirmPick} disabled={saving}>{saving ? "Saving…" : "Confirm pick"}</button>
+                                    <button className="btn-cancel" onClick={() => { setPendingId(null); searchRef.current?.focus(); }} disabled={saving}>Cancel</button>
                                     <span className="draft-count">Enter to confirm · Esc to cancel</span>
                                 </div>
                             </>
                         ) : (
                             <>
                                 <div className="draft-turn">On the clock: <em>{currentDraftUser?.display_name}</em></div>
-                                <span className="draft-count">Pick {draftIndex + 1} of {teams.length} · {teams.length - draftIndex} remaining</span>
+                                <span className="draft-count">
+                                    Pick {draftIndex + 1} of {teams.length} · {teams.length - draftIndex} remaining
+                                    {turnNote && <> · <strong className="draft-turn-note">{currentDraftUser?.display_name} {turnNote}</strong></>}
+                                </span>
                             </>
                         )}
                     </div>
@@ -202,7 +235,11 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
                                     if (e.key === "Enter" && firstMatch) { e.preventDefault(); choose(firstMatch.id); }
                                     if (e.key === "Escape") setQuery("");
                                 }}
+                                aria-describedby={noMatch ? "draft-nomatch" : undefined}
                             />
+                        )}
+                        {isAdmin && noMatch && (
+                            <p className="draft-nomatch" id="draft-nomatch" role="status">No undrafted team matches “{query.trim()}”.</p>
                         )}
                         <div className="draft-meta">
                             <span className="label">Best available, by overall rank</span>
@@ -226,9 +263,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
                         </div>
                         {isAdmin && (
                             <div className="draft-actions">
-                                {picks.length > 0 ? (
-                                    <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>
-                                ) : (
+                                {picks.length > 0 ? undoControl : (
                                     <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
                                 )}
                             </div>

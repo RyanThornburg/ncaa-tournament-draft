@@ -1,5 +1,4 @@
-// eliminated_round: 2=R64, 3=R32, 4=S16, 5=E8, 6=F4, 7=Championship
-const OUT_LABELS: Record<number, string> = { 2: "R64", 3: "R32", 4: "S16", 5: "E8", 6: "F4", 7: "Final" };
+import { outLabel as outLabelFor } from "./tournament";
 
 export interface LiveScore {
     mine: number;
@@ -18,7 +17,7 @@ interface RosterLineProps {
 }
 
 export default function RosterLine({ seed, teamName, points, eliminated, eliminatedRound, live }: RosterLineProps) {
-    const outLabel = eliminatedRound ? OUT_LABELS[eliminatedRound] ?? "" : "";
+    const outLabel = eliminatedRound ? outLabelFor(eliminatedRound) : "";
     return (
         <div className={`roster-line${eliminated ? " out" : ""}${live ? " playing" : ""}`}>
             <span className="roster-seed">{seed}</span>

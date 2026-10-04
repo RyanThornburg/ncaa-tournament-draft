@@ -29,6 +29,7 @@ export default function Admin() {
     const [archiveConfirm, setArchiveConfirm] = useState(false);
     const [resetConfirm, setResetConfirm] = useState(false);
     const [resetting, setResetting] = useState(false);
+    const [deactivateId, setDeactivateId] = useState<string | null>(null);
 
     async function resetDraft() {
         setResetting(true);
@@ -138,7 +139,7 @@ export default function Admin() {
             {error && <div className="error-banner">{error}</div>}
 
             <div className="admin-bar">
-                <h3>Users</h3>
+                <h2>Users</h2>
                 <div style={{ display: "flex", gap: 8 }}>
                     <button className="btn-confirm" onClick={() => setShowCreate(true)}>Add user</button>
                     <button className="btn-cancel" onClick={() => { window.location.href = "/cdn-cgi/access/logout"; }}>Logout</button>
@@ -248,7 +249,7 @@ export default function Admin() {
                                 <div style={{ flex: 1 }}>
                                     <div className="admin-card-name">{user.display_name}</div>
                                     <div className="admin-card-meta">
-                                        {user.user_name}{user.email ? ` · ${user.email}` : ""}
+                                        {[user.user_name !== user.display_name ? user.user_name : "", user.email ?? ""].filter(Boolean).join(" · ")}
                                     </div>
                                 </div>
                                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -256,13 +257,21 @@ export default function Admin() {
                                         <span className="label">Inactive</span>
                                     )}
                                     <button className="btn-cancel" onClick={() => startEdit(user)}>Edit</button>
-                                    <button
-                                        className={user.active ? "btn-danger" : "btn-confirm"}
-                                        onClick={() => toggleActive(user)}
-                                        disabled={saving === user.id}
-                                    >
-                                        {saving === user.id ? "…" : user.active ? "Deactivate" : "Activate"}
-                                    </button>
+                                    {deactivateId === user.id ? (
+                                        <>
+                                            <span className="admin-card-meta">Deactivate {user.display_name}?</span>
+                                            <button className="btn-cancel" onClick={() => setDeactivateId(null)} autoFocus>Keep</button>
+                                            <button className="btn-danger" onClick={() => { setDeactivateId(null); toggleActive(user); }} disabled={saving === user.id}>Deactivate</button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            className={user.active ? "btn-cancel" : "btn-confirm"}
+                                            onClick={() => user.active ? setDeactivateId(user.id) : toggleActive(user)}
+                                            disabled={saving === user.id}
+                                        >
+                                            {saving === user.id ? "Saving…" : user.active ? "Deactivate" : "Activate"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}

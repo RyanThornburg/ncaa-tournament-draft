@@ -88,7 +88,7 @@
   .lb-expand { padding: 8px 0 12px 40px; border-bottom: 2px solid var(--ink); }
 
   /* roster rows: leaderboard expand, draft rosters, history */
-  .roster-line { display: grid; grid-template-columns: 22px 1fr 44px 52px; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted var(--rule); font-size: var(--fs-body); }
+  .roster-line { display: grid; grid-template-columns: 22px minmax(0, 1fr) minmax(44px, max-content) 52px; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted var(--rule); font-size: var(--fs-body); }
   .roster-line:last-child { border-bottom: none; }
   .roster-seed { color: var(--muted); font-size: var(--fs-small); }
   .roster-line.out .roster-team, .roster-line.out .roster-seed, .roster-line.out .roster-pts { color: var(--faded); }
@@ -120,7 +120,7 @@
   .draft-pill.current { background: var(--ink); color: var(--paper); font-weight: 700; padding: 2px 6px; }
   .draft-pill.done { color: var(--faded); text-decoration: line-through; }
   .draft-complete { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px 0 10px; border-bottom: 3px solid var(--ink); margin-bottom: 18px; }
-  .draft-complete h3 { font: 800 var(--fs-section)/1 var(--head); text-transform: uppercase; }
+  .draft-complete h2 { font: 800 var(--fs-section)/1 var(--head); text-transform: uppercase; }
 
   .region-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
   @media (min-width: 640px) { .region-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -175,7 +175,7 @@
   /* ── ADMIN ───────────────────────────────────────────────────────────── */
   .admin { max-width: 680px; }
   .admin-bar { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 3px solid var(--ink); padding: 18px 0 6px; margin-bottom: 4px; }
-  .admin-bar h3 { font: 800 var(--fs-section)/1 var(--head); text-transform: uppercase; }
+  .admin-bar h2 { font: 800 var(--fs-section)/1 var(--head); text-transform: uppercase; }
   .admin-card { border-bottom: 1px solid var(--rule); padding: 12px 0; }
   .admin-card-inactive { color: var(--faded); }
   .admin-card-name { font: 700 var(--fs-name) var(--head); text-transform: uppercase; }
@@ -338,7 +338,7 @@
   .pool-champion-line { margin-top: 8px; font-size: var(--fs-body); color: var(--masthead-gray); }
 
   /* ── DRAFT NIGHT ─────────────────────────────────────────────────────── */
-  .draft-header { flex-direction: column; align-items: stretch; gap: 12px; }
+  .draft-header { display: grid; align-items: stretch; gap: 12px; }
   .draft-last { font: 800 var(--fs-deck)/1.05 var(--head); text-transform: uppercase; }
   .draft-last-num { display: inline-block; min-width: 2ch; padding: 0 6px; margin-right: 6px; background: var(--ink); color: var(--paper); text-align: center; }
   .draft-complete .draft-last { font-size: var(--fs-name); margin-top: 6px; color: var(--ink-soft); }
@@ -376,8 +376,8 @@
     .bk-user-select { min-height: 44px; }
     .bk-toolbar { margin-top: 6px; }
   }
-  .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 30px minmax(0, 1fr) 56px 84px; }
-  @media (max-width: 760px) { .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 26px minmax(0, 1fr) 40px 60px; } }
+  .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 30px minmax(0, 1fr) 84px; }
+  @media (max-width: 760px) { .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 26px minmax(0, 1fr) 60px; } }
   .draft-search::-webkit-search-cancel-button { appearance: none; }
   .bk-mobile-view { max-width: 760px; }
 
@@ -487,4 +487,70 @@
     .road-strip .road-opp { grid-column: 1; font-size: var(--fs-nav); }
     .road-strip .road-sub { display: none; }
     .road-strip .road-val { grid-column: 2; grid-row: 2; }
+  }
+
+  /* ── HARDEN / LAYOUT PASS ─────────────────────────────────────────── */
+  /* shared load error: the retry sits in the banner, in its color */
+  .error-banner .error-retry { color: inherit; font-size: inherit; padding: 0 2px; min-height: 0; }
+  @media (max-width: 760px) { .error-banner .error-retry { display: inline-block; padding: 10px 2px; margin: -10px 0; } }
+
+  /* final night: the low score, said quietly under the champion */
+  .pool-low { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--ink-soft); font: 700 var(--fs-caps) var(--agate); text-transform: uppercase; letter-spacing: 0.04em; color: var(--masthead-gray); max-width: 72ch; }
+
+  /* full bracket game cards are real links now */
+  a.bk-game { display: block; color: inherit; text-decoration: none; }
+  a.bk-game:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  /* Games: your games span the top on wide screens; on phones the order is Live, yours, Up next, Final */
+  .gm-cols.no-final { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gm-col-mine { grid-column: 1 / -1; margin-top: 0; }
+  .gm-col-mine > .gm-col-head { grid-column: 1 / -1; }
+  .gm-col-mine .gm-col-head small { text-transform: none; }
+  .gm-round-step { display: none; }
+  @media (max-width: 1023px) {
+    .gm-cols, .gm-cols.no-final { display: flex; flex-direction: column; }
+    .gm-col-live { order: 1; }
+    .gm-col-mine { order: 2; }
+    .gm-col-next { order: 3; }
+    .gm-col-final { order: 4; }
+  }
+  @media (max-width: 760px) {
+    .gm-rounds { display: none; }
+    .gm-round-step { display: flex; margin: 12px 0 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+    .who-name, .chip { min-height: 44px; }
+  }
+
+  /* draft night */
+  .draft-turn-note { color: var(--ink); font-weight: 700; }
+  .draft-nomatch { flex-basis: 100%; margin-top: -6px; font-size: var(--fs-small); color: var(--ink); font-weight: 700; }
+  .draft-undo-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font: 400 var(--fs-small) var(--agate); color: var(--muted); }
+  @media (min-width: 1100px) { .drafter-strip { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px 14px; } }
+  .roster-out { white-space: nowrap; }
+
+  /* ── YOUR GAMES (top of Standings) ──────────────────────────────────── */
+  .yg { margin-top: 18px; }
+  .yg-head-row { border-bottom: 3px solid var(--ink); }
+  .yg-head { font: 800 var(--fs-title)/1 var(--head); text-transform: uppercase; padding-bottom: 4px; }
+  .yg-count { font-size: var(--fs-small); color: var(--muted); padding-bottom: 4px; }
+  .yg-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); border-bottom: 1px solid var(--ink); }
+  .yg-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) auto; gap: 0 10px; align-items: start; padding: 9px 12px 9px 0; border-right: 1px solid var(--rule); }
+  .yg-row:last-child { border-right: none; }
+  .yg-row + .yg-row { padding-left: 12px; }
+  .yg-when { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 4.5rem; white-space: nowrap; font: 700 var(--fs-label) var(--agate); text-transform: uppercase; letter-spacing: 0.04em; }
+  .yg-when strong { font-size: var(--fs-caps); color: var(--ink); }
+  .yg-region { color: var(--ink-soft); font-weight: 400; }
+  .yg-game { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .yg-team { font: 800 var(--fs-name)/1 var(--head); text-transform: uppercase; overflow-wrap: anywhere; }
+  .yg-score { margin-left: 8px; }
+  .yg-opp { font-size: var(--fs-small); color: var(--ink-soft); }
+  .yg-val { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right; }
+  .yg-val strong { font: 800 var(--fs-name)/1 var(--head); }
+  .yg-val span { font-size: var(--fs-small); color: var(--ink-soft); white-space: nowrap; }
+  .yg-more { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; float: right; }
+  .yg::after { content: ""; display: block; clear: both; }
+  @media (max-width: 760px) {
+    .yg-list { grid-template-columns: minmax(0, 1fr); }
+    .yg-row, .yg-row + .yg-row { padding: 9px 0; border-right: none; border-bottom: 1px solid var(--rule); }
+    .yg-row:last-child { border-bottom: none; }
+    .yg-more { min-height: 44px; }
   }

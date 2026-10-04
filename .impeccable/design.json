@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T23:59:00Z",
+  "generatedAt": "2026-10-04T23:59:59Z",
   "title": "Design System: TheeeeOPlex",
   "extensions": {
     "colorMeta": {
@@ -197,11 +197,11 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Region heads, roster names and totals, standings player names (700), the Who are you? question; draft team rows at 1100px and up. Box-score scores; My path team heads."
+        "purpose": "The Your games head on Standings, region heads, roster names and totals, standings player names (700), the Who are you? question; draft team rows at 1100px and up. Box-score scores; My path team heads."
       },
       "name": {
         "displayName": "Name",
-        "purpose": "Draft team rows, admin user names, History year, winner, low finisher (500 muted) and scores, phone bracket scores. Games column heads (800)."
+        "purpose": "Draft team rows, admin user names, History year, winner, low finisher (500 muted) and scores, phone bracket scores. Games column heads (800). Your games team names and +N values (800)."
       },
       "name-s": {
         "displayName": "Name, small",
@@ -229,7 +229,7 @@
       },
       "caps": {
         "displayName": "Caps",
-        "purpose": "Buttons, the live line, loading line; draft owners and pick count at 1100px and up. Tracked 0.04em."
+        "purpose": "Buttons, the live line, loading line, Your games tip times, the pool low-score line; draft owners and pick count at 1100px and up. Tracked 0.04em."
       },
       "small": {
         "displayName": "Small",
@@ -309,7 +309,7 @@
       "name": "Danger Button",
       "kind": "button",
       "refersTo": "button-danger",
-      "description": "Destructive action: red outline, red fill on hover.",
+      "description": "Destructive action: red outline, red fill on hover. Destructive actions confirm in place: the trigger swaps to a question naming what goes, Keep (focused) and the danger button; no modal.",
       "html": "<button class=\"ds-btn-danger\">Reset draft</button>",
       "css": ".ds-btn-danger { background: transparent; color: #c8202f; border: 2px solid #c8202f; border-radius: 0; padding: 8px 16px; font: 700 0.85rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: background 0.12s, color 0.12s; } .ds-btn-danger:hover { background: #c8202f; color: #ffffff; } .ds-btn-danger:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
     },
@@ -354,18 +354,34 @@
       "css": ".ds-srow { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 3px solid #111111; color: #111111; } .ds-shead { margin: 0; padding-bottom: 4px; font: 800 1.75rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-updated { padding-bottom: 6px; white-space: nowrap; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; display: inline-flex; gap: 10px; align-items: baseline; } .ds-refresh { background: none; border: none; padding: 6px 0; cursor: pointer; font: 700 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #111111; text-decoration: underline; text-underline-offset: 3px; } .ds-refresh:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-refresh:disabled { opacity: 0.5; cursor: not-allowed; }"
     },
     {
+      "name": "Load Error Banner",
+      "kind": "custom",
+      "refersTo": "load-error",
+      "description": "One wording for failed loads: \"Couldn't load X.\" or \"Couldn't refresh X. Showing what loaded last.\"; a Try again link inside the banner in its red; technical detail only in the title tooltip.",
+      "html": "<div class=\"ds-error\" role=\"alert\" title=\"HTTP 502\">Couldn't refresh standings. Showing what loaded last; it will try again in 2 minutes. <button class=\"ds-error-retry\">Try again</button></div>",
+      "css": ".ds-error { max-width: 72ch; padding: 10px 0; border-top: 3px solid #c8202f; border-bottom: 1px solid #c8202f; color: #c8202f; font: 700 0.9375rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; } .ds-error-retry { background: none; border: none; padding: 0 2px; color: inherit; font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }"
+    },
+    {
       "name": "Live Line",
       "kind": "chip",
       "refersTo": "live-tag",
-      "description": "Red LIVE tag followed by in-progress scores in agate caps, each team followed by its owner.",
+      "description": "Red LIVE tag followed by in-progress scores in agate caps, each team followed by its owner. On Standings it gives way to Your games when the reader has a game set.",
       "html": "<div class=\"ds-live\"><span class=\"ds-live-tag\">Live</span><span class=\"ds-live-game\">Mississippi St.<span class=\"ds-live-owner\"> (Elliott)</span> 61 · Arizona<span class=\"ds-live-owner ds-mine\"> (Grapes)</span> 58</span></div>",
       "css": ".ds-live { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font: 700 0.85rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; color: #111111; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-live-owner { font-weight: 400; text-transform: none; color: #3a3936; } .ds-live-owner.ds-mine { font-weight: 700; color: #111111; }"
+    },
+    {
+      "name": "Your Games (Standings)",
+      "kind": "custom",
+      "refersTo": "your-games-row",
+      "description": "Opens Standings once the reader has a surviving team with a set game: live first, then by tip time; opponent and owner; \"+N if they win\"; unbanded; links to Bracket, Games.",
+      "html": "<section class=\"ds-yg\"><div class=\"ds-yg-headrow\"><h2 class=\"ds-yg-head\">Your games</h2><span class=\"ds-yg-count\">R32 · 2 of yours on now</span></div><ol class=\"ds-yg-list\"><li class=\"ds-yg-row\"><span class=\"ds-yg-when\"><span class=\"ds-yg-live\">Live</span><span class=\"ds-yg-region\">West</span></span><span class=\"ds-yg-game\"><span class=\"ds-yg-team\">Arizona 61–58</span><span class=\"ds-yg-opp\">vs 5 Oregon · Ryan</span></span><span class=\"ds-yg-val\"><strong>+5</strong><span>if they win</span></span></li><li class=\"ds-yg-row\"><span class=\"ds-yg-when\"><strong>9:40 PM</strong><span class=\"ds-yg-region\">South</span></span><span class=\"ds-yg-game\"><span class=\"ds-yg-team\">Auburn</span><span class=\"ds-yg-opp\">vs 9 Creighton · Dana</span></span><span class=\"ds-yg-val\"><strong>+4</strong><span>if they win</span></span></li></ol></section>",
+      "css": ".ds-yg { color: #111111; } .ds-yg-headrow { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 3px solid #111111; } .ds-yg-head { margin: 0; padding-bottom: 4px; font: 800 1.375rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-yg-count { padding-bottom: 4px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; } .ds-yg-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); border-bottom: 1px solid #111111; } .ds-yg-row { display: grid; grid-template-columns: max-content minmax(0, 1fr) auto; gap: 0 10px; align-items: start; padding: 9px 12px 9px 0; border-right: 1px solid #b9b7b0; } .ds-yg-row + .ds-yg-row { padding-left: 12px; } .ds-yg-row:last-child { border-right: none; } .ds-yg-when { display: flex; flex-direction: column; gap: 3px; min-width: 4.5rem; white-space: nowrap; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; } .ds-yg-when strong { font-size: 0.85rem; letter-spacing: 0.04em; } .ds-yg-live { align-self: flex-start; background: #c8202f; color: #ffffff; padding: 2px 6px; } .ds-yg-region { font-weight: 400; color: #3a3936; } .ds-yg-game { display: flex; flex-direction: column; gap: 3px; min-width: 0; } .ds-yg-team { font: 800 1.25rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-yg-opp, .ds-yg-val span { font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; } .ds-yg-val { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; } .ds-yg-val strong { font: 800 1.25rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; }"
     },
     {
       "name": "Standings Table",
       "kind": "custom",
       "refersTo": "leader-row",
-      "description": "Ruled grid of rank (T2 when tied), name with You/LIVE tags, alive, muted Max and points; every leader banded yellow and closed by a 2px ink rule; scoring key below.",
+      "description": "Ruled grid of rank (T2 when tied), name with You/LIVE tags, alive, muted Max and points; Alive and Max drop out once the pool is final; every leader banded yellow and closed by a 2px ink rule; scoring key below.",
       "html": "<div class=\"ds-lb\"><div class=\"ds-lb-head\"><span></span><span>Player</span><span class=\"r\">Alive</span><span class=\"r\">Max</span><span class=\"r\">Pts</span></div><button class=\"ds-lb-row ds-lb-lead\"><span class=\"ds-lb-rank\">1</span><span class=\"ds-lb-name\">Mike</span><span class=\"ds-lb-alive\">3/8</span><span class=\"ds-lb-max\">41</span><span class=\"ds-lb-score\">23</span></button><button class=\"ds-lb-row\"><span class=\"ds-lb-rank\">T2</span><span class=\"ds-lb-name\">Elliott <span class=\"ds-live-tag\">Live</span></span><span class=\"ds-lb-alive\">4/8</span><span class=\"ds-lb-max\">44</span><span class=\"ds-lb-score\">20</span></button><button class=\"ds-lb-row\"><span class=\"ds-lb-rank\">T2</span><span class=\"ds-lb-name\">Grapes <span class=\"ds-you-tag\">You</span></span><span class=\"ds-lb-alive\">2/8</span><span class=\"ds-lb-max\">30</span><span class=\"ds-lb-score\">20</span></button><p class=\"ds-lb-key\">Each win scores 1 / 3 / 5 / 7 / 9 / 11 by round, plus half the seed difference when a lower seed wins.</p></div>",
       "css": ".ds-lb { color: #111111; font-variant-numeric: tabular-nums; } .ds-lb-head, .ds-lb-row { display: grid; grid-template-columns: 30px 1fr 56px 56px 84px; align-items: center; gap: 0 10px; } .ds-lb-head { padding: 6px 0 4px; border-bottom: 1px solid #111111; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #55534e; } .ds-lb-head .r { text-align: right; } .ds-lb-row { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #b9b7b0; background: none; text-align: left; cursor: pointer; color: inherit; } .ds-lb-row:hover .ds-lb-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; } .ds-lb-row:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-lb-lead { background: #f5d65a; border-bottom: 2px solid #111111; } .ds-lb-rank { font: 700 1rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; } .ds-lb-name { font: 700 1.375rem/1.05 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; display: flex; align-items: center; gap: 6px; } .ds-lb-alive { font: 400 1rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-align: right; } .ds-lb-score { font: 800 1.75rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-align: right; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-you-tag { background: #111111; color: #e9e8e3; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; letter-spacing: 0.06em; padding: 2px 5px; } .ds-lb-key { max-width: 72ch; margin-top: 10px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; } .ds-lb-max { font: 400 1rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-align: right; color: #55534e; }"
     },
@@ -381,7 +397,7 @@
       "name": "Bracket Game",
       "kind": "card",
       "refersTo": "bracket-slot-highlighted",
-      "description": "Two team slots between ink rules; winner set heavier, loser faded and struck; the slots of the player in Full bracket's Showing select band yellow.",
+      "description": "Two team slots between ink rules; winner set heavier, loser faded and struck; a real link to NCAA.com when one exists; under Full bracket's Showing select only that player's teams still alive band yellow.",
       "html": "<div class=\"ds-game\"><div class=\"ds-slot ds-win\"><span class=\"ds-seed\">1</span><span class=\"ds-name\">Auburn</span><span class=\"ds-pick\">Dana</span><span class=\"ds-score\">83</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">16</span><span class=\"ds-name\">Alabama St.</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">79</span></div></div><div class=\"ds-game\"><div class=\"ds-slot ds-win ds-hl\"><span class=\"ds-seed\">4</span><span class=\"ds-name\">Arizona</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">75</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">5</span><span class=\"ds-name\">Oregon</span><span class=\"ds-pick\">Ryan</span><span class=\"ds-score\">65</span></div></div>",
       "css": ".ds-game { width: 164px; margin-bottom: 8px; border-top: 1px solid #111111; border-bottom: 1px solid #111111; color: #111111; cursor: pointer; transition: opacity 0.15s; } .ds-game:hover { background: #dedcd5; } .ds-slot { display: flex; align-items: center; gap: 5px; padding: 0 4px; height: 34px; line-height: 1; } .ds-seed { font: 400 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; width: 15px; text-align: center; } .ds-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 700 0.92rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-win .ds-name { font-weight: 800; } .ds-pick { font: 400 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; max-width: 44px; overflow: hidden; text-overflow: ellipsis; } .ds-score { font: 800 1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; min-width: 20px; text-align: right; } .ds-lose .ds-name, .ds-lose .ds-score { color: #66645e; text-decoration: line-through; } .ds-lose .ds-pick { color: #66645e; } .ds-hl { background: #f5d65a; } .ds-hl .ds-pick { color: #111111; font-weight: 700; } .ds-div { height: 1px; background: #b9b7b0; }"
     },
@@ -389,15 +405,15 @@
       "name": "Pool Champion Banner",
       "kind": "custom",
       "refersTo": "pool-champion",
-      "description": "Shown once the championship is decided: ink block closed by a 6px red rule, headline-face name line, masthead-gray points line.",
-      "html": "<div class=\"ds-pool-champ\"><h2 class=\"ds-pool-champ-name\">Dana wins the 2026 pool</h2><p class=\"ds-pool-champ-line\">42 points, 7 ahead of Mike. The Ledgesheet could never.</p></div>",
-      "css": ".ds-pool-champ { background: #111111; color: #e9e8e3; padding: 16px 18px 14px; border-bottom: 6px solid #c8202f; } .ds-pool-champ-name { margin: 0; font: 800 clamp(2rem, 6vw, 3.25rem)/0.95 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-pool-champ-line { max-width: 72ch; margin: 8px 0 0; font: 400 0.9375rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #bdbbb4; }"
+      "description": "Shown once the championship is decided: ink block closed by a 6px red rule, headline-face name line, masthead-gray points line, then the low score in agate caps above a 1px soft-ink rule.",
+      "html": "<div class=\"ds-pool-champ\"><h2 class=\"ds-pool-champ-name\">Dana wins the 2026 pool</h2><p class=\"ds-pool-champ-line\">42 points, 7 ahead of Mike. The Ledgesheet could never.</p><p class=\"ds-pool-low\">Low score: Pete, 9. There's always next March.</p></div>",
+      "css": ".ds-pool-champ { background: #111111; color: #e9e8e3; padding: 16px 18px 14px; border-bottom: 6px solid #c8202f; } .ds-pool-champ-name { margin: 0; font: 800 clamp(2rem, 6vw, 3.25rem)/0.95 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-pool-champ-line { max-width: 72ch; margin: 8px 0 0; font: 400 0.9375rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #bdbbb4; } .ds-pool-low { max-width: 72ch; margin: 10px 0 0; padding-top: 8px; border-top: 1px solid #3a3936; font: 700 0.85rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; color: #bdbbb4; }"
     },
     {
       "name": "Draft Pick (two-step)",
       "kind": "custom",
       "refersTo": "team-row-pending",
-      "description": "Pending pick: headline asks \"X takes Y?\" with Confirm/Cancel; the pending team row carries the highlighter; the first search match takes a 3px ink underline.",
+      "description": "Pending pick: headline asks \"X takes Y?\" with Confirm/Cancel and focus on Confirm; Enter confirms only when nothing else is focused; the pending team row carries the highlighter; the first search match takes a 3px ink underline; no match says so in a red Small line.",
       "html": "<div class=\"ds-draft\"><div class=\"ds-turn\">Pete takes <em>Kansas</em>?</div><div class=\"ds-confirm\"><button class=\"ds-btn-confirm\">Confirm pick</button><button class=\"ds-btn-cancel\">Cancel</button><span class=\"ds-hint\">Enter to confirm · Esc to cancel</span></div><p class=\"ds-last\"><span class=\"ds-last-num\">23</span> Jules takes Illinois</p><div class=\"ds-teams\"><button class=\"ds-team ds-team-pending\"><span class=\"ds-seed\">7</span><span>Kansas</span></button><button class=\"ds-team ds-team-match\"><span class=\"ds-seed\">8</span><span>UConn</span></button><button class=\"ds-team ds-team-drafted\" disabled><span class=\"ds-seed\">1</span><span class=\"ds-struck\">Florida</span><span class=\"ds-owner\">Elliott</span></button></div></div>",
       "css": ".ds-draft { color: #111111; } .ds-turn { font: 800 clamp(2rem, 6vw, 3.25rem)/0.95 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-turn em { font-style: normal; background: #f5d65a; padding: 0 6px; } .ds-confirm { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; } .ds-btn-confirm, .ds-btn-cancel { padding: 8px 16px; border: 2px solid #111111; border-radius: 0; cursor: pointer; font: 700 0.85rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; transition: background 0.12s; } .ds-btn-confirm { background: #111111; color: #e9e8e3; } .ds-btn-confirm:hover { background: #3a3936; } .ds-btn-cancel { background: transparent; color: #111111; } .ds-btn-cancel:hover { background: #dedcd5; } .ds-hint { font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #55534e; } .ds-last { margin: 12px 0; font: 800 clamp(1.375rem, 3.5vw, 2rem)/1.05 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-last-num { display: inline-block; min-width: 2ch; padding: 0 6px; margin-right: 6px; background: #111111; color: #e9e8e3; text-align: center; } .ds-teams { display: flex; flex-direction: column; max-width: 320px; } .ds-team { display: flex; align-items: center; gap: 10px; padding: 5px 4px; border: none; border-bottom: 1px solid #b9b7b0; background: transparent; color: #111111; cursor: pointer; font: 700 1.25rem/1.1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; text-align: left; transition: background 0.12s; } .ds-team:hover:not(:disabled) { background: #dedcd5; } .ds-team:focus-visible, .ds-btn-confirm:focus-visible, .ds-btn-cancel:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-team-pending, .ds-team-pending:hover:not(:disabled) { background: #f5d65a; } .ds-team-match { box-shadow: inset 0 -3px 0 #111111; } .ds-team-drafted { color: #66645e; cursor: default; } .ds-struck { text-decoration: line-through; } .ds-seed { min-width: 22px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; text-align: right; } .ds-owner { letter-spacing: 0.06em; margin-left: auto; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; color: #3a3936; }"
     },
@@ -405,7 +421,7 @@
       "name": "Phone Round Stepper",
       "kind": "nav",
       "refersTo": "round-step-button",
-      "description": "Phone bracket: one round-pair label between two 44px square arrow buttons with 2px stroke chevrons.",
+      "description": "Phone bracket: one round-pair label between two 44px square arrow buttons with 2px stroke chevrons. Games uses it at 760px and below in place of its chips, one round in the long label.",
       "html": "<div class=\"ds-step\"><button class=\"ds-step-btn\" aria-label=\"Earlier rounds\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" aria-hidden=\"true\"><path d=\"M8 2L4 6l4 4\"/></svg></button><span class=\"ds-step-label\">R32 → Sweet 16</span><button class=\"ds-step-btn\" aria-label=\"Later rounds\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" aria-hidden=\"true\"><path d=\"M4 2l4 4-4 4\"/></svg></button></div>",
       "css": ".ds-step { display: flex; align-items: center; gap: 8px; max-width: 390px; color: #111111; } .ds-step-btn { flex: 0 0 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #111111; border-radius: 0; background: none; color: #111111; cursor: pointer; transition: background 0.12s; } .ds-step-btn:hover:not(:disabled) { background: #dedcd5; } .ds-step-btn:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-step-btn:disabled { opacity: 0.25; cursor: not-allowed; } .ds-step-label { flex: 1; text-align: center; font: 800 1.1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; }"
     },
@@ -421,7 +437,7 @@
       "name": "Round Chips",
       "kind": "chip",
       "refersTo": "chip",
-      "description": "Square 1px ink-bordered round filters in Games; ink-filled when active.",
+      "description": "Square 1px ink-bordered round filters in Games; ink-filled when active; replaced by the round stepper at 760px and below.",
       "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">R64</button><button class=\"ds-chip\">R32</button><button class=\"ds-chip ds-chip-on\" aria-pressed=\"true\">Sweet 16</button><button class=\"ds-chip\">Elite 8</button></div>",
       "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 6px; } .ds-chip { min-height: 36px; padding: 4px 10px; border: 1px solid #111111; border-radius: 0; background: none; cursor: pointer; font: 700 1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; color: #111111; } .ds-chip:hover { background: #dedcd5; } .ds-chip.ds-chip-on { background: #111111; color: #e9e8e3; } .ds-chip:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
     },
@@ -429,7 +445,7 @@
       "name": "Box Score",
       "kind": "card",
       "refersTo": "box-score",
-      "description": "A Games box score: ink rules (red 3px top when live), owner under each team, the reader's team banded yellow, stake line beneath.",
+      "description": "A Games box score: ink rules (red 3px top when live), owner under each team, the reader's team banded yellow, stake line beneath; \"Final\" in the head once decided. An empty Final column is left out.",
       "html": "<div class=\"ds-box ds-box-live\"><div class=\"ds-box-head\"><span>East</span><span class=\"ds-live-tag\">Live</span></div><div class=\"ds-bt ds-bt-mine\"><span class=\"ds-bt-seed\">8</span><span class=\"ds-bt-name\">Mississippi St.<small>Elliott · you</small></span><span class=\"ds-bt-score\">61</span></div><div class=\"ds-bt\"><span class=\"ds-bt-seed\">4</span><span class=\"ds-bt-name\">Arizona<small>Grapes</small></span><span class=\"ds-bt-score\">58</span></div><div class=\"ds-box-stake\">Win is worth +7 to Elliott or +5 to Grapes</div></div>",
       "css": ".ds-box { max-width: 440px; border-top: 2px solid #111111; border-bottom: 1px solid #111111; color: #111111; font-variant-numeric: tabular-nums; } .ds-box-live { border-top: 3px solid #c8202f; } .ds-box-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 3px; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #3a3936; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-bt { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 6px; padding: 5px 4px 5px 0; border-top: 1px solid #b9b7b0; } .ds-bt-seed { font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; text-align: right; } .ds-bt-name { font: 700 1.1rem/1.05 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-bt-name small { display: block; margin-top: 2px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: none; color: #3a3936; } .ds-bt-score { font: 800 1.375rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; } .ds-bt-mine { background: #f5d65a; } .ds-box-stake { padding: 3px 0 6px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; }"
     },
@@ -451,7 +467,7 @@
       "One highlighter (yellow, \"look here\") and one press red (live, frame, danger); nothing else carries hue.",
       "Square corners everywhere; depth is only rule weight and the highlighter band.",
       "The reader is known: a one-time \"Who are you?\" strip, then a You tag and their roster opened by default.",
-      "The page says what is at stake: max-possible points, live scores with \"+N if they win\", and a pool champion banner when it is over.",
+      "The page says what is at stake: the reader's own games first on Standings, max-possible points, live scores with \"+N if they win\", and a pool champion banner when it is over.",
       "Losers struck through, never removed."
     ],
     "rules": [
@@ -499,14 +515,17 @@
     "dos": [
       "Do separate rows with 1px hairline rules and close heads with a 3px ink rule.",
       "Do set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.",
-      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, the reader's own team in a box score, the current stop of a road, and text selection.",
+      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's surviving bracket slots, the reader's own team in a box score, the current stop of a road, and text selection.",
       "Do say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.",
       "Do show eliminated or used items faded and struck through, in place.",
       "Do keep red for live state, the masthead rule, and errors or destructive actions.",
       "Do keep functional text at Label (0.72rem) or larger, take every size from an `--fs-*` role token, and keep prose to 72ch.",
       "Do keep every corner square.",
       "Do give phone controls a 44px minimum target.",
-      "Do confirm destructive or committing actions in place (two-step pick, Reset draft, Archive season) rather than in a modal."
+      "Do confirm destructive or committing actions in place (two-step pick, Undo last pick, Reset draft, Archive season, Deactivate) rather than in a modal, naming what goes and focusing the safe choice.",
+      "Do say a failed load one way: \"Couldn't load X.\" or \"Couldn't refresh X. Showing what loaded last.\", Try again in the banner, technical detail only in the tooltip.",
+      "Do take round names from the one vocabulary (long, short, tiny) and tip times from the one format.",
+      "Do make tab content headings h2 under the masthead's h1."
     ],
     "donts": [
       "Don't wrap content in cards, pills or rounded containers; bound it with rules.",

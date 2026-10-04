@@ -6,6 +6,9 @@ import LiveLine from "./LiveLine";
 import RosterLine, { LiveScore } from "./RosterLine";
 import { championshipDecided, lastSync, maxRemaining, winValue } from "./tournament";
 import Updated from "./Updated";
+import LoadError from "./LoadError";
+import YourGames, { yourGameRows } from "./YourGames";
+import { isPlayer } from "./useMe";
 import { Chevron } from "./Icons";
 
 // competition ranking: tied totals share a rank (1, T2, T2, 4)
@@ -13,7 +16,7 @@ function rankOf(entries: LeaderboardEntry[], total: number) {
     return 1 + entries.filter(e => e.total_points > total).length;
 }
 
-export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe: () => void }) {
+export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: string; onChangeMe: () => void; onOpenGames: () => void }) {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
@@ -23,16 +26,13 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
 
     const load = useCallback(async ()=> {
         setError(null);
-        try {
-            const [l, g] = await Promise.all([api.getLeaderboard(), api.getGames()]);
-            setLeaderboard(l);
-            setGames(g);
-        } catch (e) {
-            setError(e instanceof Error ? e.message : String(e));
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
+        // standings and games load independently, so a failed feed never takes the other down with it
+        const [l, g] = await Promise.allSettled([api.getLeaderboard(), api.getGames()]);
+        if (l.status === "fulfilled") setLeaderboard(l.value);
+        if (g.status === "fulfilled") setGames(g.value);
+        if (l.status === "rejected") setError(String(l.reason instanceof Error ? l.reason.message : l.reason));
+        setLoading(false);
+        setRefreshing(false);
     }, []);
 
     useEffect(() => {
@@ -73,17 +73,17 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
     const decided = championshipDecided(games);
     const champs = leaderboard.filter(e => rankOf(leaderboard, e.total_points) === 1 && e.total_points > 0);
     const runnerUp = leaderboard.find(e => !champs.includes(e));
+    // the History tab keeps a Low column, so the final night names it too
+    const lowScore = Math.min(...leaderboard.map(e => e.total_points));
+    const lows = leaderboard.filter(e => e.total_points === lowScore && !champs.includes(e));
 
     return (
         <div className="standings">
-            {error && (
-                <div className="error-banner" role="alert" title={error}>
-                    {leaderboard.length > 0
-                        ? "Couldn't refresh standings. Showing the last scores loaded; it will try again in 2 minutes."
-                        : "Couldn't load standings. It will try again in 2 minutes, or tap Refresh."}
-                </div>
-            )}
-            <LiveLine games={games} owners={owners} me={me} />
+            {error && <LoadError what="standings" detail={error} stale={leaderboard.length > 0} polls onRetry={() => { setRefreshing(true); load(); }} />}
+            {/* your games replace the live line once you're picked; rivals' live games still show as LIVE tags below */}
+            {isPlayer(me) && yourGameRows(games, owners, me).length > 0
+                ? <YourGames games={games} owners={owners} me={me} onOpenGames={onOpenGames} />
+                : <LiveLine games={games} owners={owners} me={me} />}
             {decided && champs.length > 0 && (
                 <div className="pool-champion">
                     <h2 className="pool-champion-name">
@@ -92,6 +92,11 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                     <p className="pool-champion-line">
                         {champs[0].total_points} points{runnerUp ? `, ${champs[0].total_points - runnerUp.total_points} ahead of ${runnerUp.user_name}` : ""}. The Ledgesheet could never.
                     </p>
+                    {lows.length > 0 && (
+                        <p className="pool-low">
+                            Low score: {lows.map(e => e.user_name).join(" & ")}, {lowScore}. There's always next March.
+                        </p>
+                    )}
                 </div>
             )}
             <div className="section-row">
@@ -103,7 +108,7 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                     <div className="lb-head label">
                         <span />
                         <span>Player</span>
-                        <span className="r">Alive</span>
+                        {!decided && <span className="r">Alive</span>}
                         {!decided && <span className="r" title="Most points still possible">Max</span>}
                         <span className="r">Pts</span>
                     </div>
@@ -126,7 +131,7 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                                     onClick={() => toggleExpand(user_id)}
                                     aria-expanded={isExpanded}
                                 >
-                                    <span className="lb-rank">{tied ? `T${rank}` : rank}</span>
+                                    <span className="lb-rank"><span className="sr-only">{tied ? "tied for " : "rank "}</span><span aria-hidden={tied || undefined}>{tied ? "T" : ""}</span>{rank}</span>
                                     <span>
                                         <span className="lb-name">
                                             {user_name}
@@ -137,13 +142,13 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                                         <span className="lb-teams-text" aria-hidden="true">
                                             {sortedPicks.map(({ team_name, eliminated, points_earned }, i) => (
                                                 <span key={team_name}>
-                                                    <span className={eliminated ? "lb-team-out" : undefined}>{team_name}</span> ({points_earned})
+                                                    <span className={eliminated ? "lb-team-out" : undefined}>{team_name}</span>{points_earned > 0 ? ` (${points_earned})` : ""}
                                                     {i !== sortedPicks.length - 1 ? " · " : ""}
                                                 </span>
                                             ))}
                                         </span>
                                     </span>
-                                    <span className="lb-alive"><span className="sr-only">teams alive </span>{teams_alive}/{picks.length}</span>
+                                    {!decided && <span className="lb-alive"><span className="sr-only">teams alive </span>{teams_alive}/{picks.length}</span>}
                                     {!decided && <span className="lb-max"><span className="sr-only">most possible </span>{max}</span>}
                                     <span className="lb-score"><span className="sr-only">points </span>{total_points}</span>
                                 </button>
@@ -166,7 +171,7 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                         );
                     })}
                     <p className="lb-key">
-                        Each win scores {ROUND_POINTS.slice(2).join(" / ")} by round (R64 to final), plus half the seed difference when a lower seed wins. Max is points banked plus every round your surviving teams could still win (not counting upset bonuses).
+                        Each win scores {ROUND_POINTS.slice(2).join(" / ")} by round (R64 to final), plus half the seed difference when a lower seed wins.{!decided && " Max is points banked plus every round your surviving teams could still win (not counting upset bonuses)."}
                         {me && <> <button className="link-btn" onClick={onChangeMe}>{me === "-" ? "Pick your name" : `Not ${me}? Change`}</button></>}
                     </p>
                 </div>

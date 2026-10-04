@@ -5,9 +5,11 @@ import { NCAA_URL } from "../config";
 import LiveLine from "./LiveLine";
 import Updated from "./Updated";
 import { Chevron } from "./Icons";
-import { championshipDecided, lastSync } from "./tournament";
+import { championshipDecided, eliminatedIn, lastSync, roundLabel, tipTime } from "./tournament";
 import { GamesView, PathView } from "./BracketViews";
 import { isPlayer } from "./useMe";
+import { setUrlParams, urlParam } from "./url";
+import LoadError from "./LoadError";
 
 type View = "games" | "path" | "bracket";
 const VIEW_KEY = "theeeeoplex_bracket_view";
@@ -29,7 +31,6 @@ interface TeamPickMap {
   [teamId: string]: string; // team_id → display_name
 }
 
-const ROUND_LABELS = ["", "", "R64", "R32", "Sweet 16", "Elite 8", "Final Four", "Championship"];
 
 // region order from bracket_position_id in r64
 function computeRegionOrder(games: BracketGame[]): [string[], string[]] {
@@ -87,11 +88,11 @@ function ChampSection({ ffLeft, ffRight, champGame, picks, highlightedTeams }: C
   return (
     <>
       <div className="bk-bottom-section">
-        <div className="bk-ff-label">{ROUND_LABELS[6]}</div>
+        <div className="bk-ff-label">{roundLabel(6, "long")}</div>
         <GameCard game={ffLeft} picks={picks} placeholder="Final Four" highlightedTeams={highlightedTeams} />
       </div>
       <div className="bk-championship">
-        <div className="bk-champ-label">{ROUND_LABELS[7]}</div>
+        <div className="bk-champ-label">{roundLabel(7, "long")}</div>
         <GameCard game={champGame} picks={picks} placeholder="Championship" highlightedTeams={highlightedTeams} />
         {champGame?.winner_team_id && (
           <div className="bk-champion-banner">
@@ -104,7 +105,7 @@ function ChampSection({ ffLeft, ffRight, champGame, picks, highlightedTeams }: C
         )}
       </div>
       <div className="bk-bottom-section">
-        <div className="bk-ff-label">{ROUND_LABELS[6]}</div>
+        <div className="bk-ff-label">{roundLabel(6, "long")}</div>
         <GameCard game={ffRight} picks={picks} placeholder="Final Four" highlightedTeams={highlightedTeams} />
       </div>
     </>
@@ -138,19 +139,17 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
   const top    = { id: game.team_1_id, name: name1, seed: game.team_1_seed, score: game.team_1_score };
   const bottom = { id: game.team_2_id, name: name2, seed: game.team_2_seed, score: game.team_2_score };
 
-  const topHighlighted    = !!highlightedTeams && !!top.id    && highlightedTeams.has(top.id);
-  const bottomHighlighted = !!highlightedTeams && !!bottom.id && highlightedTeams.has(bottom.id);
+  // yellow means "look here": band the shown player's teams only where they're still alive or undecided
+  const lost = (id: string | null) => !!game.winner_team_id && !!id && game.winner_team_id !== id;
+  const topHighlighted    = !!highlightedTeams && !!top.id    && highlightedTeams.has(top.id)    && !lost(top.id);
+  const bottomHighlighted = !!highlightedTeams && !!bottom.id && highlightedTeams.has(bottom.id) && !lost(bottom.id);
   const gameHighlighted   = topHighlighted || bottomHighlighted;
 
-  const gameTime = (()=> {
-    if (!game.start_time_epoch) return '';
-    const date = new Date(game.start_time_epoch * 1000);
-    const time = date.toLocaleString('en-US', {timeStyle: 'short'});
-    const isToday = date.toDateString() === new Date().toDateString();
-    return isToday ? time : `${date.toLocaleString('en-US', { weekday: 'long' })} ${time}`
-  });
+  const gameTime = () => tipTime(game.start_time_epoch);
 
   const ncaaUrl = game.bracket_position_id ? `${NCAA_URL}${game.bracket_position_id}` : null;
+  // a real link when there's somewhere to go, so keyboards, long-press and middle-click all work
+  const Card = ncaaUrl ? "a" : "div";
 
   // spoken summary, e.g. "Auburn (Dana) 83 def. Alabama St. (Grapes) 79, final"
   const label = (() => {
@@ -164,14 +163,11 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
   })();
 
   return (
-    <div
+    <Card
       className={`bk-game ${game.winner_team_id ? "bk-game-final" : ""} ${game.game_status === "live" ? "bk-game-live" : ""} ${gameHighlighted ? "bk-game-highlighted" : ""} ${ncaaUrl ? "bk-game-clickable" : ""}`}
       data-bracket-id={game.bracket_position_id ?? undefined}
-      onClick={ncaaUrl ? () => window.open(ncaaUrl, "_blank", "noopener,noreferrer") : undefined}
-      onKeyDown={ncaaUrl ? (e) => { if (e.key === "Enter") window.open(ncaaUrl, "_blank", "noopener,noreferrer"); } : undefined}
-      role={ncaaUrl ? "link" : undefined}
+      {...(ncaaUrl ? { href: ncaaUrl, target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={ncaaUrl ? `${label}. Opens on NCAA.com` : label}
-      tabIndex={ncaaUrl ? 0 : undefined}
     >
       {game.game_status === "live" && <span className="bk-live-badge">LIVE</span>}
       {name1 && name2 && game.game_status === "pre" && <span className="bk-live-badge">{gameTime()}</span>}
@@ -198,7 +194,7 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
         mirrored={mirrored}
         highlighted={bottomHighlighted}
       />
-    </div>
+    </Card>
   );
 }
 
@@ -231,8 +227,7 @@ interface RegionColumnProps {
 
 function RegionColumn({ region, games, picks, mirrored, highlightedTeams }: RegionColumnProps) {
   const rounds = [2, 3, 4, 5];
-  const roundNames: Record<number, string> = { 2: "R64", 3: "R32", 4: "Sweet 16", 5: "Elite 8" };
-
+  
   return (
     <div className="bk-region-col">
       <div className="bk-region-label">{region}</div>
@@ -242,7 +237,7 @@ function RegionColumn({ region, games, picks, mirrored, highlightedTeams }: Regi
           const slots = round === 2 ? 8 : round === 3 ? 4 : round === 4 ? 2 : 1;
           return (
             <div key={round} className={`bk-round-col bk-round-${round}`}>
-              <div className="bk-round-label">{roundNames[round]}</div>
+              <div className="bk-round-label">{roundLabel(round)}</div>
               <div className="bk-round-games">
                 {Array.from({ length: slots }).map((_, i) => (
                   <GameCard key={i} game={roundGames[i] ?? null} picks={picks} mirrored={mirrored} highlightedTeams={highlightedTeams} />
@@ -255,8 +250,6 @@ function RegionColumn({ region, games, picks, mirrored, highlightedTeams }: Regi
     </div>
   );
 }
-
-const ROUND_NAMES_SHORT: Record<number, string> = { 2: "R64", 3: "R32", 4: "Sweet 16", 5: "Elite 8" };
 
 // Phone view: two rounds side by side, filling the screen
 function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnProps) {
@@ -271,7 +264,7 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
     <div className="bk-mobile-region">
       <div className="bk-round-step">
         <button aria-label="Earlier rounds" disabled={start <= 2} onClick={() => setStart(start - 1)}><Chevron dir="left" size={14} /></button>
-        <span className="bk-round-step-label" aria-live="polite">{ROUND_NAMES_SHORT[start]} <span aria-hidden="true">→</span><span className="sr-only">and</span> {ROUND_NAMES_SHORT[start + 1]}</span>
+        <span className="bk-round-step-label">{roundLabel(start)} <span aria-hidden="true">→</span><span className="sr-only">and</span> {roundLabel(start + 1)}</span>
         <button aria-label="Later rounds" disabled={start >= 4} onClick={() => setStart(start + 1)}><Chevron dir="right" size={14} /></button>
       </div>
       <div className="bk-mobile-rounds">
@@ -280,7 +273,7 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
           const slots = round === 2 ? 8 : round === 3 ? 4 : round === 4 ? 2 : 1;
           return (
             <div key={round} className="bk-mobile-round">
-              <div className="bk-round-label">{ROUND_NAMES_SHORT[round]}</div>
+              <div className="bk-round-label">{roundLabel(round)}</div>
               <div className="bk-mobile-games">
                 {Array.from({ length: slots }).map((_, i) => (
                   <GameCard key={i} game={roundGames[i] ?? null} picks={picks} highlightedTeams={highlightedTeams} />
@@ -302,13 +295,32 @@ interface BracketProps {
 }
 
 export default function Bracket({ selectedUser, onSelectUser, players, me }: BracketProps) {
+  // a shared link (?view=path&player=Dana) wins over the view this device remembers
+  const [linked] = useState(() => {
+    const v = urlParam("view") as View | null;
+    return { view: v && VIEWS.some(([k]) => k === v) ? v : null, player: urlParam("player") };
+  });
   const [viewChoice, setViewChoice] = useState<View | null>(() => {
+    if (linked.view) return linked.view;
     try { return (localStorage.getItem(VIEW_KEY) as View | null) ?? null; } catch { return null; }
   });
-  const [pathPlayer, setPathPlayer] = useState<string | null>(null);
+  const [pathPlayer, setPathPlayerState] = useState<string | null>(linked.view === "path" ? linked.player : null);
+  useEffect(() => {
+    if (linked.view === "bracket" && linked.player !== null) onSelectUser(linked.player);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   function chooseView(v: View) {
     setViewChoice(v);
     try { localStorage.setItem(VIEW_KEY, v); } catch { /* private mode: this visit only */ }
+    setUrlParams({ view: v, player: v === "path" ? pathPlayer : v === "bracket" ? selectedUser || null : null });
+  }
+  function setPathPlayer(p: string) {
+    setPathPlayerState(p);
+    setUrlParams({ view: "path", player: p });
+  }
+  function showUser(u: string) {
+    onSelectUser(u);
+    setUrlParams({ view: "bracket", player: u || null });
   }
   const [games, setGames] = useState<BracketGame[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
@@ -318,14 +330,16 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(() => {
+    setError(null);
     Promise.all([api.getGames(), api.getPicks()])
       .then(([g, p]) => {
         setGames(g);
         setPicks(p);
       })
-      .catch((e) => setError(e.message))
+      .catch((e) => setError(e instanceof Error ? e.message : String(e)))
       .finally(() => { setLoading(false); setRefreshing(false); });
   }, []);
+  const retry = () => { setRefreshing(true); load(); };
 
   useEffect(() => {
     load();
@@ -340,7 +354,7 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
   }
 
   if (loading) return <div className="spinner">Loading bracket…</div>;
-  if (error) return <div className="error-banner">{error}</div>;
+  if (error && games.length === 0) return <LoadError what="the bracket" detail={error} polls onRetry={retry} />;
 
   const [leftRegions, rightRegions] = computeRegionOrder(games);
   const allRegions = [...leftRegions, ...rightRegions];
@@ -348,8 +362,9 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
   const ffLeft = getFFGame(games, "left");
   const ffRight = getFFGame(games, "right");
 
+  // only the shown player's teams still alive get the band; a team that's out never says "look here"
   const highlightedTeams: Set<string> | undefined = selectedUser
-    ? new Set(picks.filter(p => p.user_name === selectedUser).map(p => p.team_id))
+    ? new Set(picks.filter(p => p.user_name === selectedUser && eliminatedIn(games, p.team_id) === null).map(p => p.team_id))
     : undefined;
 
   const ffHasTeams = !!(ffLeft?.team_1_id || ffLeft?.team_2_id || ffRight?.team_1_id || ffRight?.team_2_id);
@@ -376,9 +391,10 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
 
   return (
     <div className="bk-page">
+      {error && <LoadError what="the bracket" detail={error} stale polls onRetry={retry} />}
       <div className="bk-status">
         {view !== "games" && <LiveLine games={games} owners={teamPickMap} me={me} />}
-        <Updated at={lastSync(games)} refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />
+        <Updated at={lastSync(games)} refreshing={refreshing} onRefresh={retry} />
       </div>
       <div className="seg" role="group" aria-label="Bracket view">
         {VIEWS.map(([key, label]) => (
@@ -392,11 +408,11 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
     {players.length > 0 && (
       <div className="bk-toolbar">
         <label className="label" htmlFor="bk-showing">Showing</label>
-        <select id="bk-showing" className="bk-user-select" value={selectedUser} onChange={e => onSelectUser(e.target.value)}>
+        <select id="bk-showing" className="bk-user-select" value={selectedUser} onChange={e => showUser(e.target.value)}>
           <option value="">Everyone</option>
           {players.map(u => <option key={u} value={u}>{u}</option>)}
         </select>
-        {selectedUser && <button className="bk-user-clear" onClick={() => onSelectUser("")}>Clear</button>}
+        {selectedUser && <button className="bk-user-clear" onClick={() => showUser("")}>Clear</button>}
       </div>
     )}
     <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>

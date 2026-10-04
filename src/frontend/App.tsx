@@ -3,16 +3,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import Tabs from "./Tabs";
-import { ROUND_NAMES, SEASON_YEAR, TABS, TOURNAMENT_HEAD, TOURNAMENT_SUBHEAD } from "../config";
+import { SEASON_YEAR, TABS, TOURNAMENT_HEAD, TOURNAMENT_SUBHEAD } from "../config";
 import { Game, Pick, Team, User } from "../types";
 import Draft from "./Draft";
 import Leaderboard from "./Leaderboard";
 import Bracket from "./Bracket";
 import History from "./History";
 import Admin from "./Admin";
+import LoadError from "./LoadError";
+import { setUrlParams, urlParam } from "./url";
 import { useAdmin } from "./useAdmin";
 import { isPlayer, useMe } from "./useMe";
-import { regionOrder } from "./tournament";
+import { regionOrder, roundLabel } from "./tournament";
 
 // Masthead edition line: the round being played (first round with an unfinished game) and its day
 function editionLine(games: Game[]): string {
@@ -24,11 +26,20 @@ function editionLine(games: Game[]): string {
 	const next = open.filter(g => g.round === round && g.start_time_epoch).sort((a, b) => a.start_time_epoch! - b.start_time_epoch!)[0];
 	const epoch = live ? Date.now() / 1000 : next?.start_time_epoch;
 	const day = epoch ? new Date(epoch * 1000).toLocaleDateString("en-US", { weekday: "short" }) : "";
-	return [ROUND_NAMES[round - 2] ?? "", day].filter(Boolean).join(" · ");
+	return [roundLabel(round, "long"), day].filter(Boolean).join(" · ");
 }
 
+// Deep links: ?tab=bracket&view=path&player=Dana. "standings" is the public name for the leaderboard tab.
+const TAB_ALIASES: Record<string, string> = { standings: "leaderboard" };
+function tabFromUrl(): string | null {
+	const t = urlParam("tab");
+	if (!t) return null;
+	const key = TAB_ALIASES[t] ?? t;
+	return [...TABS.map(([k]) => k as string), "admin"].includes(key) ? key : null;
+}
 function App() {
-	const [tab, setTab] = useState<string>(TABS[0][0]);
+	const [linkedTab] = useState(tabFromUrl);
+	const [tab, setTab] = useState<string>(linkedTab ?? TABS[0][0]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [users, setUsers] = useState<User[]>([]);
@@ -55,15 +66,13 @@ function App() {
 			setUsers(u);
 			setTeams(t);
 			setPicks(p);
-			if (p.length === 0){
-				setTab("draft")
-			}
+			if (p.length === 0 && !linkedTab) setTab("draft");
 		} catch (e) {
 			setError(e instanceof Error ? e.message : String(e));
 		} finally {
 			setLoading(false);
 		}
-	}, []);
+	}, [linkedTab]);
 
 	useEffect(() => { load(); }, [load]);
 
@@ -90,6 +99,8 @@ function App() {
 
 	function changeTab(next: string) {
 		setTab(next);
+		// a tab switch starts a fresh link; views and players belong to the tab they were set on
+		setUrlParams({ tab: next === TABS[0][0] ? null : next === "leaderboard" ? "standings" : next, view: null, player: null });
 		window.scrollTo(0, 0);
 	}
 
@@ -105,7 +116,7 @@ function App() {
 			<Tabs tab={tab} setTab={changeTab} tabs={allTabs} live={standingsLive ? ["leaderboard"] : []} />
 
 			<main className="page" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
-				{error && <div className="error-banner">Couldn't load the pool ({error}). Refresh to try again.</div>}
+				{error && <LoadError what="the pool" detail={error} onRetry={load} />}
 				{askWho && (
 					<div className="who">
 						<span className="who-q">Who are you?</span>
@@ -119,9 +130,9 @@ function App() {
 					<div className="spinner">Loading…</div>
 				) : (
 					<>
-						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} />}
-						{tab === "draft" && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} />}
-						{tab === "bracket" && <Bracket selectedUser={bracketUser} onSelectUser={setBracketUser} players={bracketUsers} me={me} />}
+						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} onOpenGames={() => { changeTab("bracket"); setUrlParams({ view: "games" }); }} />}
+						{tab === "draft" && !error && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} />}
+						{tab === "bracket" && !error && <Bracket selectedUser={bracketUser} onSelectUser={setBracketUser} players={bracketUsers} me={me} />}
 						{tab === "history" && <History />}
 						{tab === "admin" && isAdmin && <Admin />}
 					</>

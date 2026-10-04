@@ -1,21 +1,14 @@
 import { useState } from "react";
+import { Chevron } from "./Icons";
 import { Game } from "../types";
-import { bankedPoints, currentRound, eliminatedIn, maxRemaining, RoadStop, teamRoad, winValue } from "./tournament";
+import { bankedPoints, currentRound, eliminatedIn, maxRemaining, outLabel, RoadStop, roundLabel, teamRoad, tipTime, winValue } from "./tournament";
 
 export interface NamedGame extends Game {
   team_1_name?: string | null;
   team_2_name?: string | null;
 }
 
-const ROUND_SHORT: Record<number, string> = { 2: "R64", 3: "R32", 4: "Sweet 16", 5: "Elite 8", 6: "Final Four", 7: "Final" };
-const ROUND_TINY: Record<number, string> = { 2: "R64", 3: "R32", 4: "S16", 5: "E8", 6: "F4", 7: "Final" };
-
-const when = (g: Game) => {
-  if (!g.start_time_epoch) return "";
-  const d = new Date(g.start_time_epoch * 1000);
-  const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-  return d.toDateString() === new Date().toDateString() ? time : `${d.toLocaleString("en-US", { weekday: "short" })} ${time}`;
-};
+const when = (g: Game) => tipTime(g.start_time_epoch);
 
 interface Ctx {
   games: NamedGame[];
@@ -49,8 +42,8 @@ function BoxScore({ g, ctx, me }: { g: NamedGame; ctx: Ctx; me: string }) {
   return (
     <div className={`gm-box${live ? " live" : ""}`}>
       <div className="gm-box-head">
-        <span>{g.region ?? ROUND_SHORT[g.round]}{live ? "" : final ? "" : when(g) ? ` · ${when(g)}` : ""}</span>
-        {live ? <span className="live-tag">Live</span> : final ? <span>Final</span> : null}
+        <span>{g.region ?? roundLabel(g.round)}{live ? "" : final ? "" : when(g) ? ` · ${when(g)}` : ""}</span>
+        {final ? <span>Final</span> : null}
       </div>
       {sides.map((s, i) => {
         const won = final && g.winner_team_id === s.id;
@@ -102,7 +95,7 @@ function Road({ stops, ctx, teamId }: { stops: RoadStop[]; ctx: Ctx; teamId: str
         return (
           <li key={stop.round} className={`road-stop${stop.status !== "future" ? " now" : ""}`}>
             <span className="road-round">
-              {ROUND_TINY[stop.round]}
+              {roundLabel(stop.round, "tiny")}
               {live ? <span className="live-tag">Live</span> : stop.status === "next" && g && when(g) ? ` · ${when(g)}` : ""}
             </span>
             <span className="road-opp">vs {main}{score && <> · {score}</>}</span>
@@ -132,34 +125,41 @@ export function GamesView({ games, owners, names, seeds, me }: Ctx & { me: strin
   const myTeams = Object.keys(owners).filter(id => owners[id] === me);
   const myRoads = myTeams.map(id => ({ id, stops: teamRoad(games, id) })).filter(r => r.stops.length);
 
-  const column = (title: string, list: NamedGame[], empty: string) => (
-    <section className="gm-col">
-      <h3 className="gm-col-head">{title}</h3>
+  const column = (key: string, title: string, list: NamedGame[], empty: string) => (
+    <section className={`gm-col gm-col-${key}`}>
+      <h2 className="gm-col-head">{title}</h2>
       {list.length ? list.map(g => <BoxScore key={g.id} g={g} ctx={ctx} me={me} />) : <p className="gm-empty">{empty}</p>}
     </section>
   );
+  const at = rounds.indexOf(round);
 
   return (
     <div>
       <div className="gm-rounds" role="group" aria-label="Round">
         {rounds.map(r => (
-          <button key={r} className={`chip${r === round ? " on" : ""}`} aria-pressed={r === round} onClick={() => setRound(r)}>{ROUND_SHORT[r]}</button>
+          <button key={r} className={`chip${r === round ? " on" : ""}`} aria-pressed={r === round} onClick={() => setRound(r)}>{roundLabel(r)}</button>
         ))}
       </div>
-      {myRoads.length > 0 && (
-        <div className="road-strip" aria-label="Your teams' next games">
-          {myRoads.map(r => (
-            <div key={r.id} className="road-strip-row">
-              <span className="road-strip-team">{names[r.id]}</span>
-              <Road stops={r.stops.slice(0, 1)} ctx={ctx} teamId={r.id} />
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="gm-cols">
-        {column("Live", live, "Nothing on right now.")}
-        {column("Up next", next, waiting ? `${waiting} game${waiting > 1 ? "s" : ""} waiting on earlier results.` : "No games left to play.")}
-        {column("Final", final, "No results yet this round.")}
+      <div className="gm-round-step bk-round-step">
+        <button aria-label="Earlier round" disabled={at <= 0} onClick={() => setRound(rounds[at - 1])}><Chevron dir="left" size={14} /></button>
+        <span className="bk-round-step-label">{roundLabel(round, "long")}</span>
+        <button aria-label="Later round" disabled={at >= rounds.length - 1} onClick={() => setRound(rounds[at + 1])}><Chevron dir="right" size={14} /></button>
+      </div>
+      <div className={`gm-cols${final.length ? "" : " no-final"}`}>
+        {myRoads.length > 0 && (
+          <section className="gm-col gm-col-mine road-strip">
+            <h2 className="gm-col-head">Your games <small>{me}</small></h2>
+            {myRoads.map(r => (
+              <div key={r.id} className="road-strip-row">
+                <span className="road-strip-team">{names[r.id]}</span>
+                <Road stops={r.stops.slice(0, 1)} ctx={ctx} teamId={r.id} />
+              </div>
+            ))}
+          </section>
+        )}
+        {column("live", "Live", live, "Nothing on right now.")}
+        {column("next", "Up next", next, waiting ? `${waiting} game${waiting > 1 ? "s" : ""} waiting on earlier results.` : "No games left to play.")}
+        {final.length > 0 && column("final", "Final", final, "")}
       </div>
     </div>
   );
@@ -190,20 +190,20 @@ export function PathView({ games, owners, names, seeds, player, players, onPlaye
       {alive.length === 0 && !champion && <p className="gm-empty">No teams left on the road.</p>}
       {alive.map(t => (
         <section key={t.id} className="path-team">
-          <h3 className="path-team-head">
+          <h2 className="path-team-head">
             {names[t.id]} <small>{seeds[t.id]} seed · +{bankedPoints(games, t.id)} so far</small>
-          </h3>
+          </h2>
           <Road stops={t.stops} ctx={ctx} teamId={t.id} />
         </section>
       ))}
       {out.length > 0 && (
         <section className="path-out">
-          <h3 className="gm-col-head">Out <small>{out.length} team{out.length > 1 ? "s" : ""}</small></h3>
+          <h2 className="gm-col-head">Out <small>{out.length} team{out.length > 1 ? "s" : ""}</small></h2>
           {out.map(id => (
             <div key={id} className="roster-line out">
               <span className="roster-seed">{seeds[id]}</span>
               <span className="roster-team">{names[id]}</span>
-              <span className="roster-out">{ROUND_TINY[eliminatedIn(games, id) ?? 2]}</span>
+              <span className="roster-out">{outLabel(eliminatedIn(games, id) ?? 2)}</span>
               <span className="roster-pts">{bankedPoints(games, id) ? `+${bankedPoints(games, id)}` : "—"}</span>
             </div>
           ))}

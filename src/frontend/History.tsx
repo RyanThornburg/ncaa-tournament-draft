@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
+import LoadError from "./LoadError";
 import { HISTORICAL_DATA, HISTORICAL_NOTES } from "../config";
 import { Chevron, SortArrows } from "./Icons";
 import RosterLine from "./RosterLine";
@@ -87,7 +88,7 @@ export default function History() {
     }
 
     if (loading) return <div className="spinner">Loading…</div>;
-    if (error) return <div className="error-banner">{error}</div>;
+    if (error) return <LoadError what="past seasons" detail={error} onRetry={load} />;
 
     const allYears = Object.values(yearData);
     if (allYears.length === 0) return <div className="empty-note">No past seasons archived yet.</div>;

@@ -172,3 +172,22 @@ export function currentRound(games: Game[]): number {
     const played = games.filter(g => g.round >= 2 && g.winner_team_id);
     return played.length ? Math.max(...played.map(g => g.round)) : 2;
 }
+
+// One vocabulary for rounds everywhere: long for headings, short for chips and labels, tiny for tight columns
+const ROUND_LONG: Record<number, string> = { 2: "Round of 64", 3: "Round of 32", 4: "Sweet 16", 5: "Elite 8", 6: "Final Four", 7: "Championship" };
+const ROUND_SHORT: Record<number, string> = { 2: "R64", 3: "R32", 4: "Sweet 16", 5: "Elite 8", 6: "Final Four", 7: "Final" };
+const ROUND_TINY: Record<number, string> = { 2: "R64", 3: "R32", 4: "S16", 5: "E8", 6: "F4", 7: "Final" };
+export function roundLabel(round: number, size: "long" | "short" | "tiny" = "short"): string {
+    return (size === "long" ? ROUND_LONG : size === "tiny" ? ROUND_TINY : ROUND_SHORT)[round] ?? "";
+}
+
+/** Tip time: "7:10 PM" today, "Mon 7:10 PM" otherwise. */
+export function tipTime(epoch: number | null | undefined): string {
+    if (!epoch) return "";
+    const d = new Date(epoch * 1000);
+    const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
+    return d.toDateString() === new Date().toDateString() ? time : `${d.toLocaleString("en-US", { weekday: "short" })} ${time}`;
+}
+
+/** Out-label: the round a team lost in; losing the title game reads "Lost final", not a game status. */
+export const outLabel = (round: number) => round === 7 ? "Lost final" : roundLabel(round, "tiny");
