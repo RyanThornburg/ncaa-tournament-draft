@@ -52,6 +52,7 @@ export interface Game {
     start_time_epoch: number | null;
     location: string | null;
     data_source: string;
+    updated_at?: string;
 }
 
 export interface UserScore {

@@ -51,6 +51,7 @@ export default function History() {
     const [expandedYear, setExpandedYear] = useState<number | null>(null);
     const [sortCol, setSortCol] = useState<SortCol>("year");
     const [sortDir, setSortDir] = useState<SortDir>("desc");
+    const [showAll, setShowAll] = useState<Set<number>>(new Set());
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -141,6 +142,7 @@ export default function History() {
         <button
             className={`hist-th sortable${score ? " score" : ""}${sortCol === col ? " sorted" : ""}`}
             onClick={() => handleSort(col)}
+            aria-label={`${label}${score ? (col === "winner_score" ? " (winner)" : " (low)") : ""}${sortCol === col ? `, sorted ${sortDir === "asc" ? "ascending" : "descending"}` : ", sort"}`}
         >
             {score && <SortIndicator col={col} />}{label}{!score && <SortIndicator col={col} />}
         </button>
@@ -162,12 +164,13 @@ export default function History() {
 
                     {sorted.map(row => {
                         const isExpanded = expandedYear === row.year;
+                        const RowTag = row.expandable ? "button" : "div";
+                        const allShown = showAll.has(row.year);
                         return (
                             <div key={row.year}>
-                                <button
+                                <RowTag
                                     className={`hist-tr${isExpanded ? " expanded" : ""}${row.expandable ? "" : " static"}`}
-                                    onClick={() => row.expandable && toggleYear(row.year)}
-                                    aria-expanded={row.expandable ? isExpanded : undefined}
+                                    {...(row.expandable ? { onClick: () => toggleYear(row.year), "aria-expanded": isExpanded } : {})}
                                 >
                                     <span className="hist-td year">{row.year}</span>
                                     <span className="hist-td winner"><span>{row.winner}</span></span>
@@ -175,12 +178,12 @@ export default function History() {
                                     <span className="hist-td muted">{row.loser}</span>
                                     <span className="hist-td score muted">{row.loser !== "-" ? row.loserScore : "-"}</span>
                                     <span className="hist-row-chevron">{row.expandable && <Chevron dir={isExpanded ? "up" : "down"} size={10} />}</span>
-                                </button>
+                                </RowTag>
 
                                 {isExpanded && (
                                     <div className="hist-detail">
                                         <div className="roster-grid">
-                                            {row.scores.map(user => (
+                                            {(allShown ? row.scores : row.scores.slice(0, 3)).map(user => (
                                                 <div key={user.user_id} className="roster-card">
                                                     <div className="roster-card-header">
                                                         <div className="roster-name">{user.rank}. {user.user_name}</div>
@@ -199,6 +202,11 @@ export default function History() {
                                                 </div>
                                             ))}
                                         </div>
+                                        {!allShown && row.scores.length > 3 && (
+                                            <button className="btn-cancel hist-show-all" onClick={() => setShowAll(prev => new Set(prev).add(row.year))}>
+                                                Show all {row.scores.length} rosters
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </div>

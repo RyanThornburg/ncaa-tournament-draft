@@ -3,6 +3,9 @@ import { api } from "./api";
 import { Game, Pick } from "../types";
 import { NCAA_URL } from "../config";
 import LiveLine from "./LiveLine";
+import Updated from "./Updated";
+import { Chevron } from "./Icons";
+import { lastSync } from "./tournament";
 
 // bracket_position_id ranges by round:
 //  r64 (round 2): 200s
@@ -261,11 +264,9 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
   return (
     <div className="bk-mobile-region">
       <div className="bk-round-step">
-        {[2, 3, 4].map(r => (
-          <button key={r} className={r === start ? "active" : ""} aria-pressed={r === start} onClick={() => setStart(r)}>
-            {ROUND_NAMES_SHORT[r]} · {ROUND_NAMES_SHORT[r + 1]}
-          </button>
-        ))}
+        <button aria-label="Earlier rounds" disabled={start <= 2} onClick={() => setStart(start - 1)}><Chevron dir="left" size={14} /></button>
+        <span className="bk-round-step-label" aria-live="polite">{ROUND_NAMES_SHORT[start]} <span aria-hidden="true">→</span><span className="sr-only">and</span> {ROUND_NAMES_SHORT[start + 1]}</span>
+        <button aria-label="Later rounds" disabled={start >= 4} onClick={() => setStart(start + 1)}><Chevron dir="right" size={14} /></button>
       </div>
       <div className="bk-mobile-rounds">
         {rounds.map(round => {
@@ -298,6 +299,7 @@ export default function Bracket({ selectedUser, me }: BracketProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mobileSelChoice, setMobileSel] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(() => {
     Promise.all([api.getGames(), api.getPicks()])
@@ -306,7 +308,7 @@ export default function Bracket({ selectedUser, me }: BracketProps) {
         setPicks(p);
       })
       .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+      .finally(() => { setLoading(false); setRefreshing(false); });
   }, []);
 
   useEffect(() => {
@@ -345,7 +347,10 @@ export default function Bracket({ selectedUser, me }: BracketProps) {
 
   return (
     <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
-      <LiveLine games={games} owners={teamPickMap} me={me} />
+      <div className="bk-status">
+        <LiveLine games={games} owners={teamPickMap} me={me} />
+        <Updated at={lastSync(games)} refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />
+      </div>
       <div className="bk-mobile-nav">
         {allRegions.map(r => (
           <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} aria-pressed={mobileSel === r} onClick={() => setMobileSel(r)}>

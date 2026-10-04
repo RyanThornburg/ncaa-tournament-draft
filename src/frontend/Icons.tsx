@@ -1,10 +1,12 @@
 // Small stroke icons, drawn to match the 2px rules used across the page.
 interface IconProps { size?: number }
 
-export function Chevron({ dir, size = 12 }: IconProps & { dir: "up" | "down" }) {
+const CHEVRON_PATHS = { up: "M2 8l4-4 4 4", down: "M2 4l4 4 4-4", left: "M8 2L4 6l4 4", right: "M4 2l4 4-4 4" };
+
+export function Chevron({ dir, size = 12 }: IconProps & { dir: "up" | "down" | "left" | "right" }) {
     return (
         <svg width={size} height={size} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden="true">
-            <path d={dir === "up" ? "M2 8l4-4 4 4" : "M2 4l4 4 4-4"} />
+            <path d={CHEVRON_PATHS[dir]} />
         </svg>
     );
 }

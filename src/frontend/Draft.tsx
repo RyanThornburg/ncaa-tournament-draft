@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DraftOrderEntry, Team, User, Pick, LeaderboardEntry } from '../types';
 import { api } from './api';
 import DraftOrderEditor from './DraftOrderEditor';
 import RosterLine from './RosterLine';
 
-export default function Draft({ teams, users, isAdmin = false }: { teams: Team[], users: User[], isAdmin?: boolean }){
+export default function Draft({ teams, users, isAdmin = false, regionOrder }: { teams: Team[], users: User[], isAdmin?: boolean, regionOrder?: (regions: string[]) => string[] }){
     const [draftOrder, setDraftOrder] = useState<DraftOrderEntry[]>([]);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     
@@ -13,6 +13,9 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [showOrderEditor, setShowOrderEditor] = useState(false);
+    const [pendingId, setPendingId] = useState<string | null>(null);
+    const [query, setQuery] = useState("");
+    const searchRef = useRef<HTMLInputElement>(null);
     const maxRounds = Math.floor(teams.length / users.length);
 
     const load = useCallback(async (showLoading = true)=> {
@@ -34,7 +37,7 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
             setPicks(p);
             setLeaderboard(l);
         } catch (e) {
-            setError(e instanceof Error ? e.message : String(e));
+            setError(`Couldn't load the draft (${e instanceof Error ? e.message : String(e)}). Refresh to try again.`);
         } finally {
             if (showLoading) setLoading(false);
         }
@@ -58,7 +61,8 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
     const currentDraftUser = users.find(u => u.id === currentDrafterId) ?? null;
     const isDraftDone = picks && draftIndex >= teams.length;
     const draftedTeamIds = new Set(picks.map(p=> p.team_id));
-    const regions = [...new Set(teams.map(t => t.region))].sort();
+    const allRegions = [...new Set(teams.map(t => t.region))].sort();
+    const regions = regionOrder ? regionOrder(allRegions) : allRegions;
     const lastPicked = picks.length ? picks[picks.length - 1] : undefined;
 
     // mapping teams/users
@@ -69,18 +73,49 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
         ownerNameMap[p.team_id] = p.user_name;
     });
 
-    async function handlePick(teamId: string) {
-        if (!isAdmin || !currentDraftUser || isDraftDone || saving) return;
+    const pendingTeam = pendingId ? teams.find(t => t.id === pendingId) ?? null : null;
+    const q = query.trim().toLowerCase();
+    const matches = (t: Team) => !q || t.name.toLowerCase().includes(q);
+    const firstMatch = q ? teams.filter(t => !draftedTeamIds.has(t.id) && matches(t)).sort((a, b) => a.overall_rank - b.overall_rank)[0] : undefined;
+
+    // a pick is two steps on a shared screen: choose, then confirm
+    function choose(teamId: string) {
+        if (!isAdmin || !currentDraftUser || isDraftDone || saving || draftedTeamIds.has(teamId)) return;
+        setPendingId(teamId);
+    }
+
+    async function confirmPick() {
+        if (!pendingId || !currentDrafterId || saving) return;
         setSaving(true);
         try {
-            await api.postPicks(currentDrafterId, teamId, draftIndex + 1);
+            await api.postPicks(currentDrafterId, pendingId, draftIndex + 1);
+            setPendingId(null);
+            setQuery("");
             await load(false);
+            searchRef.current?.focus();
         } catch (e) {
-            setError(e instanceof Error ? e.message : String(e));
+            const msg = e instanceof Error ? e.message : String(e);
+            if (msg.includes("mismatch")) {
+                await load(false);
+                setError("Another pick landed first, so the board has been refreshed. Check whose turn it is and pick again.");
+            } else {
+                setError(`That pick didn't save (${msg}). Try again.`);
+            }
+            setPendingId(null);
         } finally {
             setSaving(false);
         }
     }
+
+    useEffect(() => {
+        if (!pendingId) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") { e.preventDefault(); setPendingId(null); }
+            if (e.key === "Enter" && document.activeElement !== searchRef.current) { e.preventDefault(); confirmPick(); }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    });
 
     async function handleResetLastPick() {
         if (picks.length === 0 || saving) return;
@@ -90,24 +125,19 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
             await api.deleteLastPick(lastPick.pick_order);
             await load(false);
         } catch (e) {
-            if (e instanceof Error && e.message.includes("mismatch")) {
-               await load(false); // refresh stale state
+            const msg = e instanceof Error ? e.message : String(e);
+            if (msg.includes("mismatch")) {
+                await load(false);
+                setError("The board changed before the undo went through, so it has been refreshed. Check the last pick and try again.");
+            } else {
+                setError(`Couldn't undo the last pick (${msg}).`);
             }
-            setError(e instanceof Error ? e.message : String(e));
         } finally {
             setSaving(false);
         }
     }
 
-    async function handleResetDraft() {
-        if (!confirm("Reset the entire draft? This cannot be undone")) return;
-        try {
-            await api.deletePicks();
-            await load();
-        } catch (e) {
-            setError(e instanceof Error ? e.message : String(e));
-        }
-    }
+    const lastLine = lastPicked ? `Pick ${lastPicked.pick_order}: ${lastPicked.user_name} takes ${lastPicked.team_name}` : "";
 
     return (
         <>
@@ -119,90 +149,128 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
             />
         )}
         {error && <div className="error-banner">{error}</div>}
+        <div className="sr-only" aria-live="polite">{lastLine}</div>
         {loading ? (
             <div className="spinner">Loading…</div>
         ) : (
         <div>
             {isDraftDone ? (
                 <div className="draft-complete">
-                    <h3>Draft complete</h3>
-                    {isAdmin && (
+                    <div>
+                        <h3>Draft complete</h3>
+                        {lastPicked && <p className="draft-last">Last pick: {lastPicked.user_name} took {lastPicked.team_name}</p>}
+                    </div>
+                    {isAdmin && lastPicked && (
                         <div className="draft-actions">
-                            {lastPicked && <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>}
-                            <button className="btn-danger" onClick={handleResetDraft}>Reset draft</button>
+                            <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>
                         </div>
                     )}
                 </div>
-            ):(
+            ) : (
                 <div className="draft-header">
                     <div className="draft-clock">
-                        <div className="draft-turn">On the clock: <em>{currentDraftUser?.display_name}</em>{saving ? " …" : ""}</div>
-                        <span className="draft-count">Pick {draftIndex + 1} of {users.length * 8} · {(users.length * 8) - draftIndex} remaining</span>
+                        {pendingTeam ? (
+                            <>
+                                <div className="draft-turn">{currentDraftUser?.display_name} takes <em>{pendingTeam.name}</em>?</div>
+                                <div className="draft-confirm">
+                                    <button className="btn-confirm" onClick={confirmPick} disabled={saving}>{saving ? "Saving…" : "Confirm pick"}</button>
+                                    <button className="btn-cancel" onClick={() => setPendingId(null)} disabled={saving}>Cancel</button>
+                                    <span className="draft-count">Enter to confirm · Esc to cancel</span>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="draft-turn">On the clock: <em>{currentDraftUser?.display_name}</em></div>
+                                <span className="draft-count">Pick {draftIndex + 1} of {teams.length} · {teams.length - draftIndex} remaining</span>
+                            </>
+                        )}
                     </div>
-                    <div className="draft-meta">
-                        <span className="label">Best available</span>
-                        <div className="draft-meta-row">
-                        {teams
-                            .filter(t => !(draftedTeamIds.has(t.id)))
-                            .sort((a, b) => a.overall_rank - b.overall_rank)
-                            .slice(0, 3)
-                            .map(team => (
-                                <button
-                                    key={team.id}
-                                    className="team-btn inline"
-                                    onClick={() => handlePick(team.id)}
-                                    disabled={!isAdmin || saving}
-                                >
-                                    <span className="seed-badge rank" title="Overall rank">#{team.overall_rank}</span>
-                                    <span className="team-name">{team.name}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    {lastPicked && (
+                    {lastPicked && !pendingTeam && (
+                        <p className="draft-last"><span className="draft-last-num">{lastPicked.pick_order}</span> {lastPicked.user_name} takes {lastPicked.team_name}</p>
+                    )}
+                    <div className="draft-tools">
+                        {isAdmin && (
+                            <input
+                                ref={searchRef}
+                                className="admin-input draft-search"
+                                type="search"
+                                placeholder="Find a team…"
+                                aria-label="Find a team to pick"
+                                value={query}
+                                onChange={e => setQuery(e.target.value)}
+                                onKeyDown={e => {
+                                    if (e.key === "Enter" && firstMatch) { e.preventDefault(); choose(firstMatch.id); }
+                                    if (e.key === "Escape") setQuery("");
+                                }}
+                            />
+                        )}
                         <div className="draft-meta">
-                            <span className="label">Last picked</span>
+                            <span className="label">Best available, by overall rank</span>
                             <div className="draft-meta-row">
-                                <span className="team-btn inline">
-                                    <span className="team-name">{lastPicked.team_name}</span>
-                                    <span className="team-owner">{lastPicked.user_name}</span>
-                                </span>
+                            {teams
+                                .filter(t => !(draftedTeamIds.has(t.id)))
+                                .sort((a, b) => a.overall_rank - b.overall_rank)
+                                .slice(0, 3)
+                                .map(team => (
+                                    <button
+                                        key={team.id}
+                                        className="team-btn inline"
+                                        onClick={() => choose(team.id)}
+                                        disabled={!isAdmin || saving}
+                                    >
+                                        <span className="seed-badge rank" title="Overall rank">#{team.overall_rank}</span>
+                                        <span className="team-name">{team.name}</span>
+                                    </button>
+                                ))}
                             </div>
                         </div>
-                    )}
-                    {isAdmin && (
-                        <div className="draft-actions">
-                            {picks.length > 0 ? (
-                                <>
-                                    <button className="btn-cancel" onClick={handleResetLastPick}>Undo last pick</button>
-                                    <button className="btn-danger" onClick={handleResetDraft}>Reset draft</button>
-                                </>
-                            ) : (
-                                <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
-                            )}
-                        </div>
-                    )}
+                        {isAdmin && (
+                            <div className="draft-actions">
+                                {picks.length > 0 ? (
+                                    <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>
+                                ) : (
+                                    <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
             {!isDraftDone && (
-            <div className="draft-order">
-                {DRAFT_ORDER.slice(Math.max(0, draftIndex - 2), draftIndex + maxRounds+1).map((uid, i) => {
-                    const gi = Math.max(0, draftIndex - 2) + i;
-                    const uname = users.find(u => u.id === uid)?.display_name ?? uid;
-                    return (
-                        <div key={gi} className={`draft-pill${gi === draftIndex ? " current" : ""}${gi < draftIndex ? " done" : ""}`}>
-                            {gi + 1}. {uname}
-                        </div>
-                    );
-                })}
-            </div>)}
+            <>
+                <div className="draft-order" aria-label="Upcoming picks">
+                    {DRAFT_ORDER.slice(Math.max(0, draftIndex - 2), draftIndex + maxRounds+1).map((uid, i) => {
+                        const gi = Math.max(0, draftIndex - 2) + i;
+                        const uname = users.find(u => u.id === uid)?.display_name ?? uid;
+                        return (
+                            <div key={gi} className={`draft-pill${gi === draftIndex ? " current" : ""}${gi < draftIndex ? " done" : ""}`}>
+                                {gi + 1}. {uname}
+                            </div>
+                        );
+                    })}
+                </div>
+                {picks.length > 0 && (
+                    <div className="drafter-strip">
+                        {draftOrder.map(entry => {
+                            const mine = picks.filter(p => p.user_id === entry.user_id);
+                            return (
+                                <div key={entry.user_id} className={`drafter${entry.user_id === currentDrafterId ? " current" : ""}`}>
+                                    <div className="drafter-name">{entry.user_name} <span className="drafter-count">{mine.length}</span></div>
+                                    <div className="drafter-teams">{mine.map(p => p.team_name).join(" · ") || "—"}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </>
+            )}
             {isDraftDone && picks.length > 0 ? (
             <div className="roster-grid">
                 {draftOrder.map(entry => {
                     const user = users.find(u => u.id === entry.user_id);
-                    const userPoints = leaderboard
-                        .filter(l=> l.user_id == entry.user_id)[0]
-                    const userPicks = userPoints.picks.sort((a, b) => a.pick_order - b.pick_order);
+                    const userPoints = leaderboard.find(l => l.user_id == entry.user_id);
+                    if (!userPoints) return null;
+                    const userPicks = [...userPoints.picks].sort((a, b) => a.pick_order - b.pick_order);
                     return (
                         <div className="roster-card" key={entry.user_id}>
                             <div className="roster-card-header">
@@ -230,7 +298,7 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                         <div className="region-title">{region}</div>
                         <div className="team-list">
                         {teams
-                            .filter(t => t.region === region)
+                            .filter(t => t.region === region && matches(t))
                             .sort((a, b) => {
                                 const aDrafted = draftedTeamIds.has(a.id) ? 1 : 0;
                                 const bDrafted = draftedTeamIds.has(b.id) ? 1 : 0;
@@ -242,11 +310,11 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                                 return (
                                     <button
                                     key={team.id}
-                                    className={`team-btn${isDrafted ? " drafted" : ""}`}
+                                    className={`team-btn${isDrafted ? " drafted" : ""}${team.id === pendingId ? " pending" : ""}${team.id === firstMatch?.id ? " match" : ""}`}
                                     disabled={isDrafted || saving || !isAdmin}
-                                    onClick={() => handlePick(team.id)}
+                                    onClick={() => choose(team.id)}
                                     >
-                                        <span className={`seed-badge${team.seed <= 4 ? ` s${team.seed}` : ""}`}>{team.seed}</span>
+                                        <span className="seed-badge" title="Seed">{team.seed}</span>
                                         <span className="team-name">{team.name}</span>
                                         {owner && <span className="team-owner">{owner}</span>}
                                     </button>
@@ -257,6 +325,7 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                 ))}
             </div>
             )}
+
         </div>
         )}
     </>

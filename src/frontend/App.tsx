@@ -12,6 +12,7 @@ import History from "./History";
 import Admin from "./Admin";
 import { useAdmin } from "./useAdmin";
 import { isPlayer, useMe } from "./useMe";
+import { regionOrder } from "./tournament";
 
 // Masthead edition line: the round being played (first round with an unfinished game) and its day
 function editionLine(games: Game[]): string {
@@ -73,7 +74,7 @@ function App() {
 
 	const bracketUsers = [...new Set(picks.map(p => p.user_name))].sort();
 	const bracketUser = bracketChoice ?? (isPlayer(me) ? me : "");
-	const askWho = me === "" && bracketUsers.length > 0 && (tab === "leaderboard" || tab === "bracket");
+	const askWho = me === "" && bracketUsers.length > 0 && tab === "leaderboard";
 
 	return (
 		<div className="app">
@@ -99,14 +100,14 @@ function App() {
 				)}
 				{tab === "bracket" && !loading && bracketUsers.length > 0 && (
 					<div className="bk-toolbar">
-						<span className="label">Highlight</span>
+						<span className="label">Showing</span>
 						<select
 							className="bk-user-select"
 							aria-label="Highlight a player's teams"
 							value={bracketUser}
 							onChange={e => setBracketUser(e.target.value)}
 						>
-							<option value="">Nobody</option>
+							<option value="">Everyone</option>
 							{bracketUsers.map(u => <option key={u} value={u}>{u}</option>)}
 						</select>
 						{bracketUser && (
@@ -119,7 +120,7 @@ function App() {
 				) : (
 					<>
 						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} />}
-						{tab === "draft" && <Draft teams={teams} users={users} isAdmin={isAdmin} />}
+						{tab === "draft" && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} />}
 						{tab === "bracket" && <Bracket selectedUser={bracketUser} me={me} />}
 						{tab === "history" && <History />}
 						{tab === "admin" && isAdmin && <Admin />}

@@ -27,6 +27,21 @@ export default function Admin() {
     const [newUser, setNewUser] = useState<EditState>({ name: "", displayName: "", email: "" });
 
     const [archiveConfirm, setArchiveConfirm] = useState(false);
+    const [resetConfirm, setResetConfirm] = useState(false);
+    const [resetting, setResetting] = useState(false);
+
+    async function resetDraft() {
+        setResetting(true);
+        try {
+            await api.deletePicks();
+            setResetConfirm(false);
+            setError(null);
+        } catch (e) {
+            setError(`Couldn't reset the draft (${e instanceof Error ? e.message : String(e)}).`);
+        } finally {
+            setResetting(false);
+        }
+    }
     const [archiving, setArchiving] = useState(false);
 
     async function archiveSeason() {
@@ -160,6 +175,26 @@ export default function Admin() {
                     </div>
                 </div>
             )}
+
+            <div className="admin-card">
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                    <div>
+                        <div className="admin-card-name">Reset draft</div>
+                        <div className="admin-card-meta">Delete every pick for {SEASON_YEAR}. The draft order is kept. This can't be undone.</div>
+                    </div>
+                    {resetConfirm ? (
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <span className="admin-card-meta">Delete all picks?</span>
+                            <button className="btn-cancel" onClick={() => setResetConfirm(false)}>Keep picks</button>
+                            <button className="btn-danger" onClick={resetDraft} disabled={resetting}>
+                                {resetting ? "Deleting…" : "Delete all picks"}
+                            </button>
+                        </div>
+                    ) : (
+                        <button className="btn-cancel" onClick={() => setResetConfirm(true)}>Reset draft</button>
+                    )}
+                </div>
+            </div>
 
             <div className="admin-card">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>

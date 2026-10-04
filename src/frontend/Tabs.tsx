@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface TabsProps {
     tab: string;
@@ -8,6 +8,17 @@ interface TabsProps {
 
 export default function Tabs({ tab, setTab, tabs }: TabsProps) {
     const refs = useRef<(HTMLButtonElement | null)[]>([]);
+
+    // keep the active tab in view when the row scrolls on narrow phones
+    const i = tabs.findIndex(([key]) => key === tab);
+    useEffect(() => {
+        const el = refs.current[i];
+        const row = el?.parentElement;
+        if (!el || !row) return;
+        // scroll the tab row only (never the page)
+        if (el.offsetLeft < row.scrollLeft) row.scrollLeft = el.offsetLeft - 16;
+        else if (el.offsetLeft + el.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = el.offsetLeft + el.offsetWidth - row.clientWidth + 16;
+    }, [i]);
 
     // arrow keys move between tabs (WAI-ARIA tabs pattern)
     function onKeyDown(e: React.KeyboardEvent, i: number) {
