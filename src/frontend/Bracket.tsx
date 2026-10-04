@@ -5,7 +5,13 @@ import { NCAA_URL } from "../config";
 import LiveLine from "./LiveLine";
 import Updated from "./Updated";
 import { Chevron } from "./Icons";
-import { lastSync } from "./tournament";
+import { championshipDecided, lastSync } from "./tournament";
+import { GamesView, PathView } from "./BracketViews";
+import { isPlayer } from "./useMe";
+
+type View = "games" | "path" | "bracket";
+const VIEW_KEY = "theeeeoplex_bracket_view";
+const VIEWS: [View, string][] = [["games", "Games"], ["path", "My path"], ["bracket", "Full bracket"]];
 
 // bracket_position_id ranges by round:
 //  r64 (round 2): 200s
@@ -290,10 +296,20 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
 
 interface BracketProps {
   selectedUser: string;
+  onSelectUser: (user: string) => void;
+  players: string[];
   me: string;
 }
 
-export default function Bracket({ selectedUser, me }: BracketProps) {
+export default function Bracket({ selectedUser, onSelectUser, players, me }: BracketProps) {
+  const [viewChoice, setViewChoice] = useState<View | null>(() => {
+    try { return (localStorage.getItem(VIEW_KEY) as View | null) ?? null; } catch { return null; }
+  });
+  const [pathPlayer, setPathPlayer] = useState<string | null>(null);
+  function chooseView(v: View) {
+    setViewChoice(v);
+    try { localStorage.setItem(VIEW_KEY, v); } catch { /* private mode: this visit only */ }
+  }
   const [games, setGames] = useState<BracketGame[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [loading, setLoading] = useState(true);
@@ -345,12 +361,45 @@ export default function Bracket({ selectedUser, me }: BracketProps) {
   const myRegion = myOpen[0] ? (myOpen[0].region ?? "__ff__") : null;
   const mobileSel = mobileSelChoice ?? myRegion ?? (ffHasTeams || allRegions.length === 0 ? "__ff__" : allRegions[0]);
 
+  // remembered view per device; by default Games during the tournament, the full bracket once it's over
+  const view: View = viewChoice ?? (championshipDecided(games) ? "bracket" : "games");
+  const names: Record<string, string> = {};
+  const seeds: Record<string, number> = {};
+  for (const p of picks) { names[p.team_id] = p.team_name; seeds[p.team_id] = p.seed; }
+  for (const g of games) {
+    if (g.team_1_id && g.team_1_name) names[g.team_1_id] ??= g.team_1_name;
+    if (g.team_2_id && g.team_2_name) names[g.team_2_id] ??= g.team_2_name;
+    if (g.team_1_id && g.team_1_seed != null) seeds[g.team_1_id] ??= g.team_1_seed;
+    if (g.team_2_id && g.team_2_seed != null) seeds[g.team_2_id] ??= g.team_2_seed;
+  }
+  const player = pathPlayer ?? (isPlayer(me) && players.includes(me) ? me : players[0] ?? "");
+
   return (
-    <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
+    <div className="bk-page">
       <div className="bk-status">
-        <LiveLine games={games} owners={teamPickMap} me={me} />
+        {view !== "games" && <LiveLine games={games} owners={teamPickMap} me={me} />}
         <Updated at={lastSync(games)} refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />
       </div>
+      <div className="seg" role="group" aria-label="Bracket view">
+        {VIEWS.map(([key, label]) => (
+          <button key={key} className={view === key ? "on" : ""} aria-pressed={view === key} onClick={() => chooseView(key)}>{label}</button>
+        ))}
+      </div>
+      {view === "games" && <GamesView games={games} owners={teamPickMap} names={names} seeds={seeds} me={me} />}
+      {view === "path" && <PathView games={games} owners={teamPickMap} names={names} seeds={seeds} player={player} players={players} onPlayer={setPathPlayer} />}
+      {view === "bracket" && (
+    <>
+    {players.length > 0 && (
+      <div className="bk-toolbar">
+        <label className="label" htmlFor="bk-showing">Showing</label>
+        <select id="bk-showing" className="bk-user-select" value={selectedUser} onChange={e => onSelectUser(e.target.value)}>
+          <option value="">Everyone</option>
+          {players.map(u => <option key={u} value={u}>{u}</option>)}
+        </select>
+        {selectedUser && <button className="bk-user-clear" onClick={() => onSelectUser("")}>Clear</button>}
+      </div>
+    )}
+    <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
       <div className="bk-mobile-nav">
         {allRegions.map(r => (
           <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} aria-pressed={mobileSel === r} onClick={() => setMobileSel(r)}>
@@ -396,6 +445,9 @@ export default function Bracket({ selectedUser, me }: BracketProps) {
         <div className="bk-bottom">
           <ChampSection ffLeft={ffLeft} ffRight={ffRight} champGame={champGame} picks={teamPickMap} highlightedTeams={highlightedTeams} />
         </div>
+      )}
+    </div>
+    </>
       )}
     </div>
   );

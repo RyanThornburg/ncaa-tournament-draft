@@ -223,6 +223,46 @@ components:
   tab-live-marker:
     backgroundColor: "{colors.live-red}"
     size: "8px"
+  segmented-switch:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "6px 4px"
+    height: "{spacing.touch}"
+    typography: "{typography.nav}"
+  segmented-switch-active:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  segmented-switch-hover:
+    backgroundColor: "{colors.paper-deep}"
+  chip:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "4px 10px"
+    height: "36px"
+    typography: "{typography.nav}"
+  chip-active:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  chip-hover:
+    backgroundColor: "{colors.paper-deep}"
+  box-score:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    typography: "{typography.name-s}"
+  box-score-mine:
+    backgroundColor: "{colors.highlight}"
+    textColor: "{colors.ink}"
+  road-stop:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    padding: "7px 10px 8px 8px"
+    typography: "{typography.name-s}"
+  road-stop-current:
+    backgroundColor: "{colors.highlight}"
+    textColor: "{colors.ink}"
 ---
 
 # Design System: TheeeeOPlex
@@ -251,16 +291,16 @@ The world rejects the dark navy-and-gold sports dashboard: no cards, no pills, n
 A monochrome newsprint page marked by one highlighter and one press red.
 
 ### Primary
-- **Press Red** (live-red): means live, the frame, or danger. The LIVE tag (in the live line, beside a standings name with a team playing, and in a roster row's out column), the live bracket game's doubled top rule and badge, the 8px live marker square before the Standings tab label, the 6px masthead rule and the matching 6px rule under the pool champion banner, error banners, the danger button, and the text caret. Never a background fill for anything except the LIVE tag, the live bracket badge and the danger hover. Not a selection or navigation color.
+- **Press Red** (live-red): means live, the frame, or danger. The LIVE tag (in the live line, beside a standings name with a team playing, and in a roster row's out column), the live bracket game's doubled top rule and badge, the 3px red top rule of a live box score and the LIVE tag in its head and in a live road stop, the 8px live marker square before the Standings tab label, the 6px masthead rule and the matching 6px rule under the pool champion banner, error banners, the danger button, and the text caret. Never a background fill for anything except the LIVE tag, the live bracket badge and the danger hover. Not a selection or navigation color.
 
 ### Secondary
-- **Highlighter Yellow** (highlight): means "look here", nothing else. Exactly six uses: the leader row (every tied leader; no band while the top score is 0), the on-the-clock drafter's name, the pending pick (its team row and its name in the "X takes Y?" headline, until confirmed or cancelled), the History champion's name, the team slots of the player chosen in the bracket's Showing select, and text selection. Struck text sitting on it steps up to soft ink to hold contrast.
+- **Highlighter Yellow** (highlight): means "look here", nothing else. Exactly eight uses: the leader row (every tied leader; no band while the top score is 0), the on-the-clock drafter's name, the pending pick (its team row and its name in the "X takes Y?" headline, until confirmed or cancelled), the History champion's name, the team slots of the player chosen in Full bracket's Showing select, the reader's own team row in a Games box score, the current stop (live or next game) of each road in My path, and text selection. Struck text sitting on the band steps up to soft ink to hold contrast. The compact "your teams' current game" strip in Games is deliberately unbanded: every row in it would be yellow, so it says nothing.
 
 ### Neutral
 - **Newsprint** (paper): page ground, modal ground, text on ink, and the active label and its 4px top rule in the phone section bar.
-- **Deep Newsprint** (paper-deep): the hover fill for pickable team rows, clickable bracket games, the cancel button and the who-are-you name buttons.
+- **Deep Newsprint** (paper-deep): the hover fill for pickable team rows, clickable bracket games, the cancel button, the who-are-you name buttons, the Bracket view switch segments and the round chips.
 - **Field Paper** (field-paper): the one lighter surface, used only inside text inputs.
-- **Ink** (ink): body text, heavy rules, masthead ground, the pool champion banner and bracket champion banner, the confirm button, focus outlines, the active tab underline, the phone section bar ground, the current draft pill fill, the last-pick number block, the You tag, the 3px underline under the current drafter and the first search match, and the 3px drag insertion rule.
+- **Ink** (ink): body text, heavy rules, masthead ground, the pool champion banner and bracket champion banner, the confirm button, focus outlines, the active tab underline, the phone section bar ground, the current draft pill fill, the active segment of the Bracket view switch and the active round chip, the My path champion line, the last-pick number block, the You tag, the 3px underline under the current drafter and the first search match, and the 3px drag insertion rule.
 - **Soft Ink** (ink-soft): secondary text (roster lines, nav at rest, owner names), confirm-button hover.
 - **Muted** (muted): column labels, seeds, meta lines, chevrons, the Scores synced stamp, the standings Max numerals, and History's low finisher.
 - **Faded** (faded): eliminated and drafted items, placeholders, dimmed bracket games. Always paired with a strike-through when it means "out".
@@ -285,10 +325,10 @@ A monochrome newsprint page marked by one highlighter and one press red.
 - **Headline** (800, clamp(2rem, 6vw, 3.25rem), 0.95, uppercase): the Draft tab "on the clock" and "X takes Y?" line, and the pool champion's name line ("Dana wins the 2026 pool").
 - **Deck** (800, clamp(1.375rem, 3.5vw, 2rem), 1.05, uppercase): the draft's last-pick line, one step under Headline in the same voice.
 - **Section** (800, 1.75rem, 1, uppercase): section heads, modal, admin and draft-complete heads, leaderboard points, the bracket champion's name.
-- **Title** (800, 1.375rem, 1.05, uppercase): region heads, roster names and totals, bracket region labels, the "Who are you?" question; player names in standings set Title at 700.
-- **Name** (700, 1.25rem, 1.1, uppercase): pickable team rows on the Draft tab, admin user names, History year, winner, scores and low finisher, draft-order numbers, phone bracket scores (800).
-- **Name-S** (700, 1.1rem, uppercase): who-are-you name buttons, the pick order strip, drafter names (800), the draft search field, draft-order names, Final Four and champion labels, the phone round-pair label (800), empty-state notes in muted.
-- **Nav** (700, 1rem, 0.02em, uppercase): primary tabs, bracket region tabs, the bracket Showing select, inline team buttons. On phones the bottom-bar labels scale down as clamp(0.8rem, 3.8vw, 1rem) so five tabs fit at 200% zoom.
+- **Title** (800, 1.375rem, 1.05, uppercase): region heads, roster names and totals, box-score scores, My path team heads, bracket region labels, the "Who are you?" question; player names in standings set Title at 700.
+- **Name** (700, 1.25rem, 1.1, uppercase): Games column heads (Live, Up next, Final, and My path's Out, at 800 on a 3px ink rule), pickable team rows on the Draft tab, admin user names, History year, winner, scores and low finisher, draft-order numbers, phone bracket scores (800).
+- **Name-S** (700, 1.1rem, uppercase): who-are-you name buttons, the pick order strip, drafter names (800), the draft search field, draft-order names, Final Four and champion labels, the phone round-pair label (800), box-score team names (winners 800), road-stop opponents, empty-state notes in muted.
+- **Nav** (700, 1rem, 0.02em, uppercase): primary tabs, bracket region tabs, the Bracket view switch, round chips, the Showing and Path for selects, inline team buttons, team names in the Games strip. On phones the bottom-bar labels scale down as clamp(0.8rem, 3.8vw, 1rem) so five tabs fit at 200% zoom.
 - **Slot** (700, 0.92rem, 1, uppercase) and **slot score** (800, 1rem): bracket team names and scores in the 164px desktop game; winners step names up to 800. Phone region view raises names to Data size in the headline face.
 - **Body** (400, 0.9375rem, 1.35, tabular numerals): agate default for rows, rosters, History cells, inputs, the pool champion's points line.
 - **Data** (400 to 700, 1rem, tabular numerals): standings rank (700), alive count and the Max column (400, muted).
@@ -320,7 +360,9 @@ At 1100px and up, where the board is usually shown over a compressed screen shar
 
 A single column page, max 1440px, with 20px gutters (16px at 760px and below). Content blocks set their own measure: standings 920px, history 720px, admin 680px. Rows are CSS grids with fixed numeric columns and a flexible name column (standings: rank, name, alive, points). Rhythm is tight: rows pad 6 to 10px vertically, groups open 18px above a head, grids gap 24px.
 
-Breakpoints: 1023px (bracket switches to a region-tabbed, round-stepped two-column view, capped at 760px wide, so tablets never get a half-hidden desktop bracket; region tabs, the round arrows and the Showing select all take a 44px minimum), 640px (draft regions go to two columns), 760/761px (standings collapse team lists into tap-to-expand rosters; the section nav leaves the top and becomes a fixed bottom bar, and the page takes bottom padding of 96px plus the safe-area inset so the bar never covers content), 1100px (draft regions go to four columns). From 1024px the desktop bracket is a fixed 170px-column grid with computed offsets so games align to their feeders; it scrolls horizontally rather than reflowing.
+The Bracket tab opens with the scores-synced status row (plus the live line in My path and Full bracket), then a three-way view switch (max 460px wide, full width below 1024px). Games runs Live, Up next and Final as three equal columns 28px apart, stacking to one column below 1024px. A road in My path is four stops across on desktop and a list below 1024px (round label left, opponent centre, points right). Games' "your teams' current game" strip is an auto-fill grid of 260px-minimum cells on desktop and a single ruled list (team name left, game right) below 1024px.
+
+Breakpoints: 1023px (Games columns stack, roads become lists, the view switch goes full width; Full bracket switches to a region-tabbed, round-stepped two-column view, capped at 760px wide, so tablets never get a half-hidden desktop bracket; region tabs, the round arrows and the Showing select all take a 44px minimum), 640px (draft regions go to two columns), 760/761px (standings collapse team lists into tap-to-expand rosters; the section nav leaves the top and becomes a fixed bottom bar, and the page takes bottom padding of 96px plus the safe-area inset so the bar never covers content), 1100px (draft regions go to four columns). From 1024px the desktop bracket is a fixed 170px-column grid with computed offsets so games align to their feeders; it scrolls horizontally rather than reflowing.
 
 The Draft tab does not scroll inside itself: all four region lists run at full length in the page. The drafter strip is an auto-fill grid of 160px-minimum columns.
 
@@ -329,7 +371,7 @@ The Draft tab does not scroll inside itself: all four region lists run at full l
 Flat. There are no cast shadows. Depth and grouping come from rule weight and the highlighter band: a 1px hairline separates rows, a 1px ink line closes table headers, a 2px ink line closes an expanded or leading row, a 3px ink line sits under every head, and 6px rules (red under the masthead and under the pool champion banner, ink atop the modal) mark the page's top-level frames. The only overlay is the modal scrim (ink at 60%). The phone section bar is fixed to the foot of the viewport but casts nothing: it is an ink band, the masthead's material repeated at the bottom.
 
 ### Shadow Vocabulary
-- **Live rule thickener** (`box-shadow: inset 0 2px 0 var(--red)`): doubles the top rule of a live bracket game.
+- **Live rule thickener** (`box-shadow: inset 0 2px 0 var(--red)`): doubles the top rule of a live bracket game. (A live box score in Games does the same with a real 3px red top border.)
 - **Insertion rule** (`box-shadow: inset 0 3px 0 var(--ink)`): marks the drop point while dragging in the draft-order editor.
 - **Underline rule** (`box-shadow: inset 0 -3px 0 var(--ink)`): marks the first search match among team rows and the current drafter in the drafter strip.
 
@@ -340,7 +382,7 @@ All three read as rules, not shadows; they are the only box-shadows in the syste
 
 ## Shapes
 
-Square everywhere (0px radius on buttons, inputs, selects, modals, tags). No containers with four borders except inline team buttons, who-are-you name buttons, the phone round arrows and inputs; the only filled blocks are the masthead, the phone section bar, the champion banners, tags, the tab live marker and the last-pick number; everything else is bounded above and below by rules only. Icons are small SVG strokes at 2px with square caps, drawn to match the rules; the select caret is two CSS gradient triangles.
+Square everywhere (0px radius on buttons, inputs, selects, modals, tags). No containers with four borders except inline team buttons, who-are-you name buttons, the phone round arrows, the Bracket view switch (2px ink frame, 1px ink dividers), round chips and inputs; the only filled blocks are the masthead, the phone section bar, the champion banners and the My path champion line, tags, the tab live marker, the active view segment and round chip, and the last-pick number; everything else is bounded above and below by rules only. Icons are small SVG strokes at 2px with square caps, drawn to match the rules; the select caret is two CSS gradient triangles.
 
 ## Components
 
@@ -359,7 +401,7 @@ Blunt, uppercase, square.
 - **Focus:** 2px ink outline flush (0 offset).
 - **Static/read-only:** transparent fill, hairline border, muted text.
 - **Search (draft):** the input style at 44px min height, Name-S caps (placeholder sentence case 500). Typing filters the region lists; the first match is underlined with a 3px ink rule and Enter chooses it, Esc clears.
-- **Select (bracket Showing):** a muted Label "Showing" before it; borderless except a 2px ink underline, Nav caps, gradient-triangle caret.
+- **Select (Showing, Path for):** a muted Label before it ("Showing" in Full bracket, "Path for" in My path); borderless except a 2px ink underline, Nav caps, gradient-triangle caret, 44px minimum below 1024px. The Showing select lives inside the Full bracket view, in a toolbar just above the bracket, with a Clear link while a player is shown.
 
 ### Navigation
 - **Masthead:** ink band, display title, tracked masthead-gray subhead split left/right, closed by a 6px red rule.
@@ -369,6 +411,12 @@ Blunt, uppercase, square.
 - **Live marker:** while one of the reader's teams is playing (any live game when no reader is chosen), an 8px press-red square sits before the Standings label, with a screen-reader-only "(live)" after it. It says live, not selected; it appears in both the top tabs and the phone bar.
 - **Phone round stepper:** one centered round-pair label ("R32 → Sweet 16", Name-S at 800) between two 44px square 1px-ink-bordered arrow buttons carrying 2px stroke chevrons; an arrow at the end of the range fades to 25%.
 
+### Bracket View Switch
+A segmented control of three square buttons, Games · My path · Full bracket, inside a 2px ink frame divided by 1px ink rules. Each segment is 44px minimum, Nav caps in ink; hover fills deep newsprint; the active segment fills ink with newsprint text (aria-pressed). It is 460px max on desktop and full width below 1024px. The choice is remembered per device (localStorage); with no stored choice it opens on Games while the tournament runs and on Full bracket once the final is decided.
+
+### Chips
+Round filters in Games (R64, R32, Sweet 16, Elite 8, Final Four, Final): square 1px ink-bordered buttons, 36px minimum, Nav caps, deep-newsprint hover, ink fill with newsprint text when active. Games opens on the current round (the lowest round with an unfinished, fully set game). Chips are square filters, never pills.
+
 ### Who Are You? Strip
 A one-time identity question shown on Standings and Bracket until answered: a 2px ink rule above, 1px below, "Who are you?" in Title, then each player as a square 1px ink-bordered name button (Name-S caps, 36px min height, deep-newsprint hover) and a "Just looking" underlined text link. The answer is remembered on the device (localStorage); a "Not you? Change" link in the scoring key reopens it. The chosen name follows the reader: You tag in standings, own roster opened, own team in the live line set heavier, own teams highlighted in the bracket by default.
 
@@ -377,7 +425,7 @@ A one-time identity question shown on Standings and Bracket until answered: a 2p
 - **You:** the inverse of ink: ink fill, newsprint Label type, 2px 5px, after the reader's own name.
 
 ### Scores Synced Stamp
-"Scores synced n min ago" (from the server's last feed sync; "just now" under a minute, a weekday and time past 90 minutes) in Small muted agate, followed by an underlined Refresh text button in ink 700 that reads "Refreshing…" while disabled. On Standings it sits right-aligned on the section head's 3px rule (wrapping beneath the head on phones); on the Bracket it shares a status row with the live line, right-aligned when nothing is live. Ticks every 30 seconds.
+"Scores synced n min ago" (from the server's last feed sync; "just now" under a minute, a weekday and time past 90 minutes) in Small muted agate, followed by an underlined Refresh text button in ink 700 that reads "Refreshing…" while disabled. On Standings it sits right-aligned on the section head's 3px rule (wrapping beneath the head on phones); on the Bracket it shares the status row above the view switch with the live line (My path and Full bracket only), right-aligned when nothing is live. Ticks every 30 seconds.
 
 ### Pool Champion Banner
 Shown on Standings only once the championship game is decided, above the section head: an ink block (16px 18px 14px) closed by a 6px red rule, the masthead's frame repeated. The name line is in the Headline voice in newsprint ("Dana wins the 2026 pool"; tied leaders "share" it), followed by a masthead-gray Body line (72ch max) giving points and the margin over second. The section head then reads "Final standings" and the Max column drops out.
@@ -389,7 +437,7 @@ Grid rows of rank, condensed-caps name, alive x/8, Max and big right-aligned poi
 Seed (Small), team, out column, points (+n) on a dotted hairline. Zero points render as an em dash, never "+0". Alive teams are plain ink; out teams are faded and struck through with the round they fell in (Label caps). A team playing now carries a live-stakes line under its name: a LIVE tag, its score against the opponent ("61–58 vs Arizona", Small agate 700 caps), then the stake in soft-ink 400 sentence case ("+4 if they win").
 
 ### Live Line
-A red LIVE tag followed by in-progress scores in agate caps, in Caps, each team followed by its owner in parentheses (400, sentence case, soft ink; the reader's own owner name in 700 ink), separated by hairline-gray slashes. Renders nothing when nothing is live.
+A red LIVE tag followed by in-progress scores in agate caps, in Caps, each team followed by its owner in parentheses (400, sentence case, soft ink; the reader's own owner name in 700 ink), separated by hairline-gray slashes. Renders nothing when nothing is live. On the Bracket tab it shows in My path and Full bracket, not in Games, which has its own Live column.
 
 ### Draft Night
 - **Clock:** the Headline line "On the clock: Name" with the name on the yellow band, a muted Label count beneath ("Pick 24 of 64 · 41 remaining").
@@ -404,7 +452,16 @@ A red LIVE tag followed by in-progress scores in agate caps, in Caps, each team 
 A sortable ruled table of seasons in Name type (year, champion on the yellow band, the low finisher in the same face at 500 muted, scores). An archived season expands to its top three rosters with a cancel-style "Show all N rosters" button; seasons from before the site are static rows with no chevron and no hover.
 
 ### Bracket Game
-164px wide, two 34px team slots between 1px ink rules, split by a hairline. Winner name steps up to 800 weight; loser slot faded and struck. A live game takes a doubled red top rule and a red LIVE badge; an upcoming game's badge carries its tip time in muted on newsprint. Clickable games hover to deep newsprint. Under the bracket's Showing select, that player's team slots band yellow with their owner in ink 700, and every other slot fades to faded ink, names and scores dropping to 500.
+164px wide, two 34px team slots between 1px ink rules, split by a hairline. Winner name steps up to 800 weight; loser slot faded and struck. A live game takes a doubled red top rule and a red LIVE badge; an upcoming game's badge carries its tip time in muted on newsprint. Clickable games hover to deep newsprint. Under Full bracket's Showing select, that player's team slots band yellow with their owner in ink 700, and every other slot fades to faded ink, names and scores dropping to 500.
+
+### Box Score (Games)
+One game set like the paper's box score, stacked in the Live, Up next and Final columns (each under a Name-size 800 head on a 3px ink rule). A 2px ink top rule (3px press red when live) and a 1px ink bottom rule; a head line in Label caps soft ink with the region (or round) and tip time, and a LIVE tag or "Final" at right. Two team rows split by hairlines: seed in Small muted, name in Name-S caps with the owner beneath in Small soft-ink sentence case ("Elliott · you" for the reader), score in Title 800 at right. Winner steps to 800; loser faded and struck (owner line not struck). The reader's own team row bands highlighter yellow. An unfinished game closes with a stake line in Small soft ink, 72ch max: "Win is worth +7 to Elliott or +5 to Grapes", or "Dana banks +5 either way" when one player owns both sides. Empty columns say so in Small muted: "Nothing on right now.", "N games waiting on earlier results." / "No games left to play.", "No results yet this round."
+
+### Your Teams Strip (Games)
+Between the round chips and the columns, each of the reader's surviving teams shows only its current game as a road stop: team name in Nav caps 800, then round and tip time (or LIVE tag), "vs Opponent" (with the live score), and "+N if they win". It is never banded; desktop runs an auto-fill grid of cells, phones a single hairline-ruled list with the opponent's owner dropped.
+
+### Road (My path)
+A Path for select (defaults to the reader) with the player's totals at right ("20 pts · max 85", Small 700 soft ink). Each surviving team gets a Title head with a muted Small note ("1 seed · +4 so far") over its road: one stop per remaining round between a 1px ink rule above and a 2px ink rule below, divided by hairlines. A stop carries the round in Label caps (with tip time or a LIVE tag), "vs Opponent" in Name-S caps (two possible opponents joined by " / "; a wider field as "Midwest winner" or "Other half"), the opponents' owners or "N left · top seed X (Owner)" in Small soft ink, and the points in Small 700 ("+5 if they win" on the current stop, "+7" beyond). The current stop bands highlighter yellow; later stops stay plain. Four stops across on desktop, a list on phones. An ink block line announces a team that "won it all"; then an Out list of eliminated teams as struck roster lines with the round they fell in, and a muted scoring note.
 
 ### Modal
 Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% ink scrim.
@@ -414,7 +471,7 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 ### Do:
 - **Do** separate rows with 1px hairline rules and close heads with a 3px ink rule.
 - **Do** set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.
-- **Do** reserve the highlighter yellow for "look here": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, and text selection.
+- **Do** reserve the highlighter yellow for "look here": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, the reader's own team in a box score, the current stop of a road, and text selection.
 - **Do** say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.
 - **Do** show eliminated or used items faded and struck through, in place.
 - **Do** keep red for live state, the masthead rule, and errors or destructive actions.
@@ -427,7 +484,7 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 - **Don't** wrap content in cards, pills or rounded containers; bound it with rules.
 - **Don't** add cast or glow shadows; depth is rule weight.
 - **Don't** introduce a third accent hue or a dark navy-and-gold dashboard palette.
-- **Don't** use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state (the Standings live marker reports live play, not selection).
+- **Don't** use yellow for hover, drag-over, search matches, winners, alive status, the current drafter's pill, active segments or chips, or a strip where every row would carry it; don't use red for navigation state (the Standings live marker reports live play, not selection).
 - **Don't** remove eliminated teams or past picks from view.
 - **Don't** use icon fonts or glyph icons; use small 2px square-capped SVG strokes.
 - **Don't** call for a font weight that is not loaded (Barlow 600, Roboto 500) or load fonts from a CDN.

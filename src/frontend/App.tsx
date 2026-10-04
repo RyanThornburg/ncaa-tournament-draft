@@ -115,30 +115,13 @@ function App() {
 						</div>
 					</div>
 				)}
-				{tab === "bracket" && !loading && bracketUsers.length > 0 && (
-					<div className="bk-toolbar">
-						<span className="label">Showing</span>
-						<select
-							className="bk-user-select"
-							aria-label="Highlight a player's teams"
-							value={bracketUser}
-							onChange={e => setBracketUser(e.target.value)}
-						>
-							<option value="">Everyone</option>
-							{bracketUsers.map(u => <option key={u} value={u}>{u}</option>)}
-						</select>
-						{bracketUser && (
-							<button className="bk-user-clear" onClick={() => setBracketUser("")}>Clear</button>
-						)}
-					</div>
-				)}
 				{loading ? (
 					<div className="spinner">Loading…</div>
 				) : (
 					<>
 						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} />}
 						{tab === "draft" && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} />}
-						{tab === "bracket" && <Bracket selectedUser={bracketUser} me={me} />}
+						{tab === "bracket" && <Bracket selectedUser={bracketUser} onSelectUser={setBracketUser} players={bracketUsers} me={me} />}
 						{tab === "history" && <History />}
 						{tab === "admin" && isAdmin && <Admin />}
 					</>

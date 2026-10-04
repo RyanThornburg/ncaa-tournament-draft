@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T23:30:00Z",
+  "generatedAt": "2026-10-04T23:59:00Z",
   "title": "Design System: TheeeeOPlex",
   "extensions": {
     "colorMeta": {
@@ -197,19 +197,19 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Region heads, roster names and totals, standings player names (700), the Who are you? question; draft team rows at 1100px and up."
+        "purpose": "Region heads, roster names and totals, standings player names (700), the Who are you? question; draft team rows at 1100px and up. Box-score scores; My path team heads."
       },
       "name": {
         "displayName": "Name",
-        "purpose": "Draft team rows, admin user names, History year, winner, low finisher (500 muted) and scores, phone bracket scores."
+        "purpose": "Draft team rows, admin user names, History year, winner, low finisher (500 muted) and scores, phone bracket scores. Games column heads (800)."
       },
       "name-s": {
         "displayName": "Name, small",
-        "purpose": "Who-are-you buttons, pick order strip, drafter names, draft search, Final Four and champion labels, phone round-pair label."
+        "purpose": "Who-are-you buttons, pick order strip, drafter names, draft search, Final Four and champion labels, phone round-pair label. Box-score team names; road-stop opponents."
       },
       "nav": {
         "displayName": "Nav",
-        "purpose": "Section tabs (top on desktop, bottom bar on phones at clamp(0.8rem, 3.8vw, 1rem)), bracket region tabs, Showing select."
+        "purpose": "Section tabs (top on desktop, bottom bar on phones at clamp(0.8rem, 3.8vw, 1rem)), bracket region tabs, the Bracket view switch, round chips, Showing and Path for selects, team names in the Games strip."
       },
       "slot": {
         "displayName": "Slot",
@@ -381,7 +381,7 @@
       "name": "Bracket Game",
       "kind": "card",
       "refersTo": "bracket-slot-highlighted",
-      "description": "Two team slots between ink rules; winner set heavier, loser faded and struck; the slots of the player in the Showing select band yellow.",
+      "description": "Two team slots between ink rules; winner set heavier, loser faded and struck; the slots of the player in Full bracket's Showing select band yellow.",
       "html": "<div class=\"ds-game\"><div class=\"ds-slot ds-win\"><span class=\"ds-seed\">1</span><span class=\"ds-name\">Auburn</span><span class=\"ds-pick\">Dana</span><span class=\"ds-score\">83</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">16</span><span class=\"ds-name\">Alabama St.</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">79</span></div></div><div class=\"ds-game\"><div class=\"ds-slot ds-win ds-hl\"><span class=\"ds-seed\">4</span><span class=\"ds-name\">Arizona</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">75</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">5</span><span class=\"ds-name\">Oregon</span><span class=\"ds-pick\">Ryan</span><span class=\"ds-score\">65</span></div></div>",
       "css": ".ds-game { width: 164px; margin-bottom: 8px; border-top: 1px solid #111111; border-bottom: 1px solid #111111; color: #111111; cursor: pointer; transition: opacity 0.15s; } .ds-game:hover { background: #dedcd5; } .ds-slot { display: flex; align-items: center; gap: 5px; padding: 0 4px; height: 34px; line-height: 1; } .ds-seed { font: 400 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; width: 15px; text-align: center; } .ds-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 700 0.92rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-win .ds-name { font-weight: 800; } .ds-pick { font: 400 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; max-width: 44px; overflow: hidden; text-overflow: ellipsis; } .ds-score { font: 800 1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; min-width: 20px; text-align: right; } .ds-lose .ds-name, .ds-lose .ds-score { color: #66645e; text-decoration: line-through; } .ds-lose .ds-pick { color: #66645e; } .ds-hl { background: #f5d65a; } .ds-hl .ds-pick { color: #111111; font-weight: 700; } .ds-div { height: 1px; background: #b9b7b0; }"
     },
@@ -408,6 +408,38 @@
       "description": "Phone bracket: one round-pair label between two 44px square arrow buttons with 2px stroke chevrons.",
       "html": "<div class=\"ds-step\"><button class=\"ds-step-btn\" aria-label=\"Earlier rounds\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" aria-hidden=\"true\"><path d=\"M8 2L4 6l4 4\"/></svg></button><span class=\"ds-step-label\">R32 → Sweet 16</span><button class=\"ds-step-btn\" aria-label=\"Later rounds\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\" aria-hidden=\"true\"><path d=\"M4 2l4 4-4 4\"/></svg></button></div>",
       "css": ".ds-step { display: flex; align-items: center; gap: 8px; max-width: 390px; color: #111111; } .ds-step-btn { flex: 0 0 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #111111; border-radius: 0; background: none; color: #111111; cursor: pointer; transition: background 0.12s; } .ds-step-btn:hover:not(:disabled) { background: #dedcd5; } .ds-step-btn:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-step-btn:disabled { opacity: 0.25; cursor: not-allowed; } .ds-step-label { flex: 1; text-align: center; font: 800 1.1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; }"
+    },
+    {
+      "name": "Bracket View Switch",
+      "kind": "nav",
+      "refersTo": "segmented-switch",
+      "description": "Three-way segmented switch (Games · My path · Full bracket): 2px ink frame, 44px segments, ink-filled active; full width below 1024px; remembered per device.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Bracket view\"><button class=\"ds-seg-on\" aria-pressed=\"true\">Games</button><button aria-pressed=\"false\">My path</button><button aria-pressed=\"false\">Full bracket</button></div>",
+      "css": ".ds-seg { display: flex; width: min(100%, 460px); border: 2px solid #111111; } .ds-seg button { flex: 1; min-height: 44px; padding: 6px 4px; border: none; border-right: 1px solid #111111; border-radius: 0; background: none; cursor: pointer; font: 700 1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #111111; } .ds-seg button:last-child { border-right: none; } .ds-seg button:hover { background: #dedcd5; } .ds-seg button.ds-seg-on { background: #111111; color: #e9e8e3; } .ds-seg button:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+    },
+    {
+      "name": "Round Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Square 1px ink-bordered round filters in Games; ink-filled when active.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">R64</button><button class=\"ds-chip\">R32</button><button class=\"ds-chip ds-chip-on\" aria-pressed=\"true\">Sweet 16</button><button class=\"ds-chip\">Elite 8</button></div>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 6px; } .ds-chip { min-height: 36px; padding: 4px 10px; border: 1px solid #111111; border-radius: 0; background: none; cursor: pointer; font: 700 1rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; color: #111111; } .ds-chip:hover { background: #dedcd5; } .ds-chip.ds-chip-on { background: #111111; color: #e9e8e3; } .ds-chip:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+    },
+    {
+      "name": "Box Score",
+      "kind": "card",
+      "refersTo": "box-score",
+      "description": "A Games box score: ink rules (red 3px top when live), owner under each team, the reader's team banded yellow, stake line beneath.",
+      "html": "<div class=\"ds-box ds-box-live\"><div class=\"ds-box-head\"><span>East</span><span class=\"ds-live-tag\">Live</span></div><div class=\"ds-bt ds-bt-mine\"><span class=\"ds-bt-seed\">8</span><span class=\"ds-bt-name\">Mississippi St.<small>Elliott · you</small></span><span class=\"ds-bt-score\">61</span></div><div class=\"ds-bt\"><span class=\"ds-bt-seed\">4</span><span class=\"ds-bt-name\">Arizona<small>Grapes</small></span><span class=\"ds-bt-score\">58</span></div><div class=\"ds-box-stake\">Win is worth +7 to Elliott or +5 to Grapes</div></div>",
+      "css": ".ds-box { max-width: 440px; border-top: 2px solid #111111; border-bottom: 1px solid #111111; color: #111111; font-variant-numeric: tabular-nums; } .ds-box-live { border-top: 3px solid #c8202f; } .ds-box-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 3px; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #3a3936; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-bt { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 6px; padding: 5px 4px 5px 0; border-top: 1px solid #b9b7b0; } .ds-bt-seed { font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #55534e; text-align: right; } .ds-bt-name { font: 700 1.1rem/1.05 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-bt-name small { display: block; margin-top: 2px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: none; color: #3a3936; } .ds-bt-score { font: 800 1.375rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; } .ds-bt-mine { background: #f5d65a; } .ds-box-stake { padding: 3px 0 6px; font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; }"
+    },
+    {
+      "name": "Road",
+      "kind": "custom",
+      "refersTo": "road-stop",
+      "description": "My path: a surviving team's remaining stops between ink rules; the current stop banded yellow; four across on desktop, a list on phones.",
+      "html": "<ol class=\"ds-road\"><li class=\"ds-stop ds-stop-now\"><span class=\"ds-stop-round\">S16 · Mon 5:22 PM</span><span class=\"ds-stop-opp\">vs Memphis</span><span class=\"ds-stop-sub\">Elliott's</span><span class=\"ds-stop-val\">+5 if they win</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">E8</span><span class=\"ds-stop-opp\">vs Missouri / St. John's</span><span class=\"ds-stop-sub\">Sam's / Jules's</span><span class=\"ds-stop-val\">+7</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">F4</span><span class=\"ds-stop-opp\">vs Midwest winner</span><span class=\"ds-stop-sub\">4 left · top seed Houston (Ryan)</span><span class=\"ds-stop-val\">+9</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">Final</span><span class=\"ds-stop-opp\">vs Other half</span><span class=\"ds-stop-sub\">8 left · top seed Auburn (Dana)</span><span class=\"ds-stop-val\">+11</span></li></ol>",
+      "css": ".ds-road { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #111111; border-bottom: 2px solid #111111; color: #111111; } .ds-stop { display: flex; flex-direction: column; gap: 2px; padding: 7px 10px 8px 8px; border-right: 1px solid #b9b7b0; } .ds-stop:last-child { border-right: none; } .ds-stop-now { background: #f5d65a; } .ds-stop-round { font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #3a3936; } .ds-stop-opp { font: 700 1.1rem/1.1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-stop-sub { font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; } .ds-stop-val { font: 700 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; }"
     }
   ],
   "narrative": {
@@ -467,7 +499,7 @@
     "dos": [
       "Do separate rows with 1px hairline rules and close heads with a 3px ink rule.",
       "Do set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.",
-      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, and text selection.",
+      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, the reader's own team in a box score, the current stop of a road, and text selection.",
       "Do say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.",
       "Do show eliminated or used items faded and struck through, in place.",
       "Do keep red for live state, the masthead rule, and errors or destructive actions.",
@@ -480,7 +512,7 @@
       "Don't wrap content in cards, pills or rounded containers; bound it with rules.",
       "Don't add cast or glow shadows; depth is rule weight.",
       "Don't introduce a third accent hue or a dark navy-and-gold dashboard palette.",
-      "Don't use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state (the Standings live marker reports live play, not selection).",
+      "Don't use yellow for hover, drag-over, search matches, winners, alive status, the current drafter's pill, active segments or chips, or a strip where every row would carry it; don't use red for navigation state (the Standings live marker reports live play, not selection).",
       "Don't remove eliminated teams or past picks from view.",
       "Don't use icon fonts or glyph icons; use small 2px square-capped SVG strokes.",
       "Don't call for a font weight that is not loaded (Barlow 600, Roboto 500) or load fonts from a CDN."
