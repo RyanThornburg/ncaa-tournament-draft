@@ -260,7 +260,7 @@
     "breakpoints": [
       {
         "name": "bracket-phone",
-        "value": "600px"
+        "value": "1023px"
       },
       {
         "name": "draft-2col",

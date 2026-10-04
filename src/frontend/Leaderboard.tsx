@@ -76,7 +76,13 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
 
     return (
         <div className="standings">
-            {error && <div className="error-banner">Couldn't refresh standings ({error}). Showing the last scores loaded; it will retry in 2 minutes.</div>}
+            {error && (
+                <div className="error-banner" role="alert" title={error}>
+                    {leaderboard.length > 0
+                        ? "Couldn't refresh standings. Showing the last scores loaded; it will try again in 2 minutes."
+                        : "Couldn't load standings. It will try again in 2 minutes, or tap Refresh."}
+                </div>
+            )}
             <LiveLine games={games} owners={owners} me={me} />
             {decided && champs.length > 0 && (
                 <div className="pool-champion">
@@ -164,7 +170,7 @@ export default function Leaderboard({ me, onChangeMe }: { me: string; onChangeMe
                         {me && <> <button className="link-btn" onClick={onChangeMe}>{me === "-" ? "Pick your name" : `Not ${me}? Change`}</button></>}
                     </p>
                 </div>
-            ) : (
+            ) : !error && (
                 <div className="empty-note">Standings start once the draft is finished.</div>
             )}
         </div>

@@ -214,8 +214,6 @@
   .bk-mobile-nav { display: none; }
   .bk-mobile-view { display: none; }
   .bk-root { overflow-x: auto; padding: 16px 0 32px; }
-  .bk-root > .live-line { margin: 0 0 22px; }
-  @media (max-width: 600px) { .bk-root > .live-line { margin-top: 14px; } }
 
   /* Highlight: dim non-matching games, mark matching */
   .bk-user-filter .bk-game:not(.bk-game-highlighted) :is(.bk-team-name, .bk-score, .bk-picker, .bk-seed) { color: var(--faded); font-weight: 500; }
@@ -286,7 +284,7 @@
     .lb-head, .lb-row { grid-template-columns: 26px 1fr 34px 38px 56px; gap: 0 8px; }
     .lb-expand { padding-left: 34px; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 1023px) {
     .bk-root { padding-top: 0; }
     .bk-mobile-nav { display: flex; gap: 16px; overflow-x: auto; margin: 12px 0 14px; border-bottom: 1px solid var(--ink); scrollbar-width: none; }
     .bk-mobile-tab { flex-shrink: 0; padding: 6px 0 4px; border: none; border-bottom: 4px solid transparent; background: none; cursor: pointer; font: 700 0.95rem var(--head); text-transform: uppercase; color: var(--ink-soft); }
@@ -320,7 +318,6 @@
   .refresh-btn { background: none; border: none; padding: 6px 0; cursor: pointer; font: 700 0.8rem var(--agate); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   .bk-status { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px; margin-bottom: 10px; }
   .bk-status .live-line { margin: 0; }
-  .bk-root > .bk-status:only-child, .bk-status:not(:has(.live-line)) { justify-content: flex-end; }
 
   /* ── LIVE STAKES ON ROSTERS ──────────────────────────────────────────── */
   .roster-line { align-items: start; }
@@ -363,7 +360,7 @@
     .tab.active { color: var(--paper); border-top-color: var(--paper); }
     .tab:focus-visible { outline-color: var(--paper); outline-offset: -4px; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 1023px) {
     .bk-mobile-tab { min-height: 44px; }
     .bk-round-step { display: flex; align-items: center; gap: 8px; }
     .bk-round-step button { flex: 0 0 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; }
@@ -374,3 +371,5 @@
   }
   .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 30px 1fr 56px 84px; }
   @media (max-width: 760px) { .leaderboard.final .lb-head, .leaderboard.final .lb-row { grid-template-columns: 26px 1fr 40px 60px; } }
+  .draft-search::-webkit-search-cancel-button { appearance: none; }
+  .bk-mobile-view { max-width: 760px; }

@@ -171,7 +171,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder }: { 
                     <div className="draft-clock">
                         {pendingTeam ? (
                             <>
-                                <div className="draft-turn">{currentDraftUser?.display_name} takes <em>{pendingTeam.name}</em>?</div>
+                                <div className="draft-turn">{currentDraftUser?.display_name} takes <em>{pendingTeam.name}?</em></div>
                                 <div className="draft-confirm">
                                     <button className="btn-confirm" onClick={confirmPick} disabled={saving}>{saving ? "Saving…" : "Confirm pick"}</button>
                                     <button className="btn-cancel" onClick={() => setPendingId(null)} disabled={saving}>Cancel</button>
