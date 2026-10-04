@@ -186,6 +186,24 @@ components:
   bracket-slot-highlighted:
     backgroundColor: "{colors.highlight}"
     textColor: "{colors.ink}"
+  tab:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-soft}"
+    typography: "{typography.nav}"
+    padding: "12px 0 8px"
+  tab-active:
+    textColor: "{colors.ink}"
+  section-bar-phone:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.masthead-gray}"
+    typography: "{typography.nav}"
+    padding: "12px 2px 10px"
+    height: "56px"
+  section-bar-phone-active:
+    textColor: "{colors.paper}"
+  tab-live-marker:
+    backgroundColor: "{colors.live-red}"
+    size: "8px"
 ---
 
 # Design System: TheeeeOPlex
@@ -214,21 +232,21 @@ The world rejects the dark navy-and-gold sports dashboard: no cards, no pills, n
 A monochrome newsprint page marked by one highlighter and one press red.
 
 ### Primary
-- **Press Red** (live-red): means live, the frame, or danger. The LIVE tag (in the live line, beside a standings name with a team playing, and in a roster row's out column), the live bracket game's doubled top rule and badge, the 6px masthead rule and the matching 6px rule under the pool champion banner, error banners, the danger button, and the text caret. Never a background fill for anything except the LIVE tag, the live bracket badge and the danger hover. Not a selection or navigation color.
+- **Press Red** (live-red): means live, the frame, or danger. The LIVE tag (in the live line, beside a standings name with a team playing, and in a roster row's out column), the live bracket game's doubled top rule and badge, the 8px live marker square before the Standings tab label, the 6px masthead rule and the matching 6px rule under the pool champion banner, error banners, the danger button, and the text caret. Never a background fill for anything except the LIVE tag, the live bracket badge and the danger hover. Not a selection or navigation color.
 
 ### Secondary
-- **Highlighter Yellow** (highlight): means "look here", nothing else. Exactly six uses: the leader row (every tied leader; no band while the top score is 0), the on-the-clock drafter's name, the pending pick (its team row and its name in the "X takes Y?" headline, until confirmed or cancelled), the Historical champion's name, the team slots of the player chosen in the bracket's Showing select, and text selection. Struck text sitting on it steps up to soft ink to hold contrast.
+- **Highlighter Yellow** (highlight): means "look here", nothing else. Exactly six uses: the leader row (every tied leader; no band while the top score is 0), the on-the-clock drafter's name, the pending pick (its team row and its name in the "X takes Y?" headline, until confirmed or cancelled), the History champion's name, the team slots of the player chosen in the bracket's Showing select, and text selection. Struck text sitting on it steps up to soft ink to hold contrast.
 
 ### Neutral
-- **Newsprint** (paper): page ground, modal ground, and text on ink.
+- **Newsprint** (paper): page ground, modal ground, text on ink, and the active label and its 4px top rule in the phone section bar.
 - **Deep Newsprint** (paper-deep): the hover fill for pickable team rows, clickable bracket games, the cancel button and the who-are-you name buttons.
 - **Field Paper** (field-paper): the one lighter surface, used only inside text inputs.
-- **Ink** (ink): body text, heavy rules, masthead ground, the pool champion banner and bracket champion banner, the confirm button, focus outlines, the active tab underline, the current draft pill fill, the last-pick number block, the You tag, the 3px underline under the current drafter and the first search match, and the 3px drag insertion rule.
+- **Ink** (ink): body text, heavy rules, masthead ground, the pool champion banner and bracket champion banner, the confirm button, focus outlines, the active tab underline, the phone section bar ground, the current draft pill fill, the last-pick number block, the You tag, the 3px underline under the current drafter and the first search match, and the 3px drag insertion rule.
 - **Soft Ink** (ink-soft): secondary text (roster lines, nav at rest, owner names), confirm-button hover.
 - **Muted** (muted): column labels, seeds, meta lines, chevrons, the Scores synced stamp, and the standings Max numerals.
 - **Faded** (faded): eliminated and drafted items, placeholders, dimmed bracket games. Always paired with a strike-through when it means "out".
 - **Hairline** (rule): 1px row dividers, dotted roster dividers, empty-game borders, the "/" between live games, scrollbar thumb.
-- **Masthead Gray** (masthead-gray): secondary text on ink grounds: the masthead subhead, the bracket champion label, and the pool champion's points line.
+- **Masthead Gray** (masthead-gray): secondary text on ink grounds: the masthead subhead, the bracket champion label, the pool champion's points line, and the resting labels of the phone section bar. Defined as the `--masthead-gray` custom property.
 - **White** (white): text on red fills only.
 
 ### Named Rules
@@ -245,11 +263,11 @@ A monochrome newsprint page marked by one highlighter and one press red.
 
 ### Hierarchy
 - **Display** (800, clamp(2.6rem, 9vw, 4.25rem), 0.88, uppercase): the masthead title only.
-- **Headline** (800, clamp(2rem, 6vw, 3.25rem), 0.95, uppercase): the Draft Board "on the clock" and "X takes Y?" line, and the pool champion's name line ("Dana wins the 2026 pool"). The draft's last-pick line steps down in the same voice (800, clamp(1.4rem, 3.5vw, 2rem), 1.05).
+- **Headline** (800, clamp(2rem, 6vw, 3.25rem), 0.95, uppercase): the Draft tab "on the clock" and "X takes Y?" line, and the pool champion's name line ("Dana wins the 2026 pool"). The draft's last-pick line steps down in the same voice (800, clamp(1.4rem, 3.5vw, 2rem), 1.05).
 - **Section** (800, 1.75rem, 1, uppercase): section heads (Standings, Admin bar), leaderboard points; modal and draft-complete heads run 1.8 to 2rem in the same voice.
 - **Title** (800, 1.35rem, uppercase): region heads, roster names and totals, bracket region labels.
 - **Name** (700, 1.4rem, 1.05, uppercase): player names in standings; team names in the bracket drop to 0.92rem in the same face.
-- **Team** (700, 1.2rem, 1.1, uppercase): pickable team rows on the Draft Board, admin user names, Historical winners. The search field (700, 1.1rem caps) and the pick order strip and drafter names (700 to 800, 1.05rem) sit just below in the same face; the standings Max column is 600 1.05rem muted.
+- **Team** (700, 1.2rem, 1.1, uppercase): pickable team rows on the Draft tab, admin user names, History winners. The search field (700, 1.1rem caps) and the pick order strip and drafter names (700 to 800, 1.05rem) sit just below in the same face; the standings Max column is 600 1.05rem muted.
 - **Nav** (700, 0.98rem, 0.02em, uppercase): primary tabs and bracket region tabs.
 - **Body** (400, 15px, 1.35, tabular numerals): agate default for rows, rosters, meta.
 - **Score, phone** (800, 1.2rem): bracket scores in the phone region view; the phone round-pair label runs 800 1.15rem.
@@ -268,13 +286,13 @@ A monochrome newsprint page marked by one highlighter and one press red.
 
 A single column page, max 1440px, with 20px gutters (16px at 760px and below). Content blocks set their own measure: standings 920px, history 720px, admin 680px. Rows are CSS grids with fixed numeric columns and a flexible name column (standings: rank, name, alive, points). Rhythm is tight: rows pad 6 to 10px vertically, groups open 18px above a head, grids gap 24px.
 
-Breakpoints: 600px (bracket switches to a region-tabbed, round-stepped two-column view; region tabs, the round arrows and the Showing select all take a 44px minimum), 640px (draft regions go to two columns), 760/761px (standings collapse team lists into tap-to-expand rosters; primary tabs take a 44px minimum and the tab row fades to transparent over its last 15% with a mask so a scrolled-off tab reads as more), 1100px (draft regions go to four columns). The desktop bracket is a fixed 170px-column grid with computed offsets so games align to their feeders; it scrolls horizontally rather than reflowing.
+Breakpoints: 600px (bracket switches to a region-tabbed, round-stepped two-column view; region tabs, the round arrows and the Showing select all take a 44px minimum), 640px (draft regions go to two columns), 760/761px (standings collapse team lists into tap-to-expand rosters; the section nav leaves the top and becomes a fixed bottom bar, and the page takes bottom padding of 96px plus the safe-area inset so the bar never covers content), 1100px (draft regions go to four columns). The desktop bracket is a fixed 170px-column grid with computed offsets so games align to their feeders; it scrolls horizontally rather than reflowing.
 
-The Draft Board does not scroll inside itself: all four region lists run at full length in the page. The drafter strip is an auto-fill grid of 160px-minimum columns.
+The Draft tab does not scroll inside itself: all four region lists run at full length in the page. The drafter strip is an auto-fill grid of 160px-minimum columns.
 
 ## Elevation & Depth
 
-Flat. There are no cast shadows. Depth and grouping come from rule weight and the highlighter band: a 1px hairline separates rows, a 1px ink line closes table headers, a 2px ink line closes an expanded or leading row, a 3px ink line sits under every head, and 6px rules (red under the masthead and under the pool champion banner, ink atop the modal) mark the page's top-level frames. The only overlay is the modal scrim (ink at 60%).
+Flat. There are no cast shadows. Depth and grouping come from rule weight and the highlighter band: a 1px hairline separates rows, a 1px ink line closes table headers, a 2px ink line closes an expanded or leading row, a 3px ink line sits under every head, and 6px rules (red under the masthead and under the pool champion banner, ink atop the modal) mark the page's top-level frames. The only overlay is the modal scrim (ink at 60%). The phone section bar is fixed to the foot of the viewport but casts nothing: it is an ink band, the masthead's material repeated at the bottom.
 
 ### Shadow Vocabulary
 - **Live rule thickener** (`box-shadow: inset 0 2px 0 var(--red)`): doubles the top rule of a live bracket game.
@@ -288,7 +306,7 @@ All three read as rules, not shadows; they are the only box-shadows in the syste
 
 ## Shapes
 
-Square everywhere (0px radius on buttons, inputs, selects, modals, tags). No containers with four borders except inline team buttons, who-are-you name buttons, the phone round arrows and inputs; the only filled blocks are the masthead, the champion banners, tags and the last-pick number; everything else is bounded above and below by rules only. Icons are small SVG strokes at 2px with square caps, drawn to match the rules; the select caret is two CSS gradient triangles.
+Square everywhere (0px radius on buttons, inputs, selects, modals, tags). No containers with four borders except inline team buttons, who-are-you name buttons, the phone round arrows and inputs; the only filled blocks are the masthead, the phone section bar, the champion banners, tags, the tab live marker and the last-pick number; everything else is bounded above and below by rules only. Icons are small SVG strokes at 2px with square caps, drawn to match the rules; the select caret is two CSS gradient triangles.
 
 ## Components
 
@@ -311,7 +329,10 @@ Blunt, uppercase, square.
 
 ### Navigation
 - **Masthead:** ink band, display title, tracked masthead-gray subhead split left/right, closed by a 6px red rule.
-- **Tabs:** headline face 700 caps in soft ink, 22px apart (18px on phones), horizontally scrollable without a scrollbar, sitting on a 2px ink rule. Active tab turns ink with a 4px ink underline; hover turns ink. On phones the row fades out at the right edge (mask) and each tab is 44px tall. The phone bracket's region tabs repeat this pattern at 44px on a 1px ink rule.
+- **Section nav:** Standings · Bracket · Draft · History, plus Admin for the commissioner, in that order on every screen size. Switching tabs scrolls the page to the top. Arrow keys, Home and End move between tabs.
+- **Tabs (desktop, 761px and up):** headline face 700 caps in soft ink, 22px apart, horizontally scrollable without a scrollbar, sitting on a 2px ink rule under the masthead. Active tab turns ink with a 4px ink underline; hover turns ink. The phone bracket's region tabs repeat this pattern at 44px on a 1px ink rule.
+- **Section bar (phones, 760px and below):** the same tabs as a fixed bar along the bottom edge, always visible: ink ground, tabs sharing the width equally, each 56px tall, labels in masthead gray, hover and active in newsprint, the active tab marked by a 4px newsprint rule on its top edge. The bar pads by the safe-area inset; focus outlines turn newsprint, inset 4px.
+- **Live marker:** while one of the reader's teams is playing (any live game when no reader is chosen), an 8px press-red square sits before the Standings label, with a screen-reader-only "(live)" after it. It says live, not selected; it appears in both the top tabs and the phone bar.
 - **Phone round stepper:** one centered round-pair label ("R32 → Sweet 16", headline 800 1.15rem caps) between two 44px square 1px-ink-bordered arrow buttons carrying 2px stroke chevrons; an arrow at the end of the range fades to 25%.
 
 ### Who Are You? Strip
@@ -343,9 +364,9 @@ A red LIVE tag followed by in-progress scores in agate caps, each team followed 
 - **Team rows:** Team type (1.2rem 700 caps), seed at left in Small (top-four seeds in ink 700), owner at right in Micro caps; hairline-divided, deep-newsprint hover; drafted rows faded and struck, sorted below the available ones.
 - **Pick order strip:** headline face 700 1.05rem caps, "24. Pete" entries; done entries faded and struck, the current one an ink-filled pill with newsprint text.
 - **Drafter strip:** a grid of every drafter's roster so far, between a 1px ink rule above and a 3px ink rule below; name and count in headline 800 1.05rem on a hairline, teams in Small soft ink joined by " · " (an em dash when empty). The current drafter's name takes a 3px ink underline.
-- **Reset draft** lives on Admin, not here; the Draft Board keeps only Undo last pick and Set draft order.
+- **Reset draft** lives on Admin, not here; the Draft tab keeps only Undo last pick and Set draft order.
 
-### Historical
+### History
 A sortable ruled table of seasons (year, champion on the yellow band, scores). An archived season expands to its top three rosters with a cancel-style "Show all N rosters" button; seasons from before the site are static rows with no chevron and no hover.
 
 ### Bracket Game
@@ -359,7 +380,7 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 ### Do:
 - **Do** separate rows with 1px hairline rules and close heads with a 3px ink rule.
 - **Do** set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.
-- **Do** reserve the highlighter yellow for "look here": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the Historical champion, a shown player's bracket slots, and text selection.
+- **Do** reserve the highlighter yellow for "look here": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, and text selection.
 - **Do** say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.
 - **Do** show eliminated or used items faded and struck through, in place.
 - **Do** keep red for live state, the masthead rule, and errors or destructive actions.
@@ -372,6 +393,6 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 - **Don't** wrap content in cards, pills or rounded containers; bound it with rules.
 - **Don't** add cast or glow shadows; depth is rule weight.
 - **Don't** introduce a third accent hue or a dark navy-and-gold dashboard palette.
-- **Don't** use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state.
+- **Don't** use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state (the Standings live marker reports live play, not selection).
 - **Don't** remove eliminated teams or past picks from view.
 - **Don't** use icon fonts or glyph icons; use small 2px square-capped SVG strokes.

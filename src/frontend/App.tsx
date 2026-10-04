@@ -56,7 +56,7 @@ function App() {
 			setTeams(t);
 			setPicks(p);
 			if (p.length === 0){
-				setTab(TABS[1][0])
+				setTab("draft")
 			}
 		} catch (e) {
 			setError(e instanceof Error ? e.message : String(e));
@@ -67,6 +67,12 @@ function App() {
 
 	useEffect(() => { load(); }, [load]);
 
+	// keep game status fresh for the masthead and the nav's live marker
+	useEffect(() => {
+		const t = setInterval(() => { api.getGames().then(setGames).catch(() => {}); }, 2 * 60 * 1000);
+		return () => clearInterval(t);
+	}, []);
+
 	const allTabs: readonly (readonly [string, string])[] = [
 		...TABS,
 		...(isAdmin ? [["admin", "Admin"] as const] : []),
@@ -75,6 +81,17 @@ function App() {
 	const bracketUsers = [...new Set(picks.map(p => p.user_name))].sort();
 	const bracketUser = bracketChoice ?? (isPlayer(me) ? me : "");
 	const askWho = me === "" && bracketUsers.length > 0 && tab === "leaderboard";
+
+	// Standings tab shows LIVE while one of the reader's teams is playing (any game, if no reader chosen)
+	const liveTeamIds = new Set(games.filter(g => g.game_status === "live").flatMap(g => [g.team_1_id, g.team_2_id]));
+	const standingsLive = isPlayer(me)
+		? picks.some(p => p.user_name === me && liveTeamIds.has(p.team_id))
+		: liveTeamIds.size > 0;
+
+	function changeTab(next: string) {
+		setTab(next);
+		window.scrollTo(0, 0);
+	}
 
 	return (
 		<div className="app">
@@ -85,7 +102,7 @@ function App() {
 					<span>{editionLine(games)}</span>
 				</div>
 			</header>
-			<Tabs tab={tab} setTab={setTab} tabs={allTabs} />
+			<Tabs tab={tab} setTab={changeTab} tabs={allTabs} live={standingsLive ? ["leaderboard"] : []} />
 
 			<main className="page" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
 				{error && <div className="error-banner">Couldn't load the pool ({error}). Refresh to try again.</div>}

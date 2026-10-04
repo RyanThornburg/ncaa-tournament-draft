@@ -4,9 +4,10 @@ interface TabsProps {
     tab: string;
     setTab: (tab: string) => void;
     tabs: readonly (readonly [string, string])[];
+    live?: string[];
 }
 
-export default function Tabs({ tab, setTab, tabs }: TabsProps) {
+export default function Tabs({ tab, setTab, tabs, live = [] }: TabsProps) {
     const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
     // keep the active tab in view when the row scrolls on narrow phones
@@ -33,7 +34,7 @@ export default function Tabs({ tab, setTab, tabs }: TabsProps) {
     }
 
     return (
-        <nav className="tabs-container">
+        <nav className="tabs-container" aria-label="Sections">
             <div className="tabs" role="tablist">
                 {tabs.map(([key, label], i) => (
                     <button
@@ -48,7 +49,9 @@ export default function Tabs({ tab, setTab, tabs }: TabsProps) {
                         onClick={() => setTab(key)}
                         onKeyDown={e => onKeyDown(e, i)}
                     >
+                        {live.includes(key) && <span className="tab-live" aria-hidden="true" />}
                         {label}
+                        {live.includes(key) && <span className="sr-only"> (live)</span>}
                     </button>
                 ))}
             </div>

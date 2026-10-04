@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T20:00:00Z",
+  "generatedAt": "2026-10-04T21:00:00Z",
   "title": "Design System: TheeeeOPlex",
   "extensions": {
     "colorMeta": {
@@ -185,7 +185,7 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Draft Board on-the-clock and pending-pick line; pool champion name line."
+        "purpose": "Draft tab on-the-clock and pending-pick line; pool champion name line."
       },
       "section": {
         "displayName": "Section",
@@ -201,11 +201,11 @@
       },
       "team": {
         "displayName": "Team",
-        "purpose": "Pickable Draft Board team rows, admin user names, Historical winners."
+        "purpose": "Pickable Draft tab team rows, admin user names, History winners."
       },
       "nav": {
         "displayName": "Nav",
-        "purpose": "Primary and bracket region tabs."
+        "purpose": "Section tabs (top on desktop, bottom bar on phones) and bracket region tabs."
       },
       "body": {
         "displayName": "Body (agate)",
@@ -313,9 +313,17 @@
       "name": "Masthead and Tabs",
       "kind": "nav",
       "refersTo": "masthead",
-      "description": "Ink masthead closed by a 6px red rule, condensed caps tabs with an ink active underline.",
-      "html": "<div class=\"ds-mast\"><div class=\"ds-mast-title\">TheeeeOPlex</div><div class=\"ds-mast-sub\"><span>The Ledgesheet is dead</span><span>Sweet 16 · Sun</span></div></div><nav class=\"ds-tabs\"><button class=\"ds-tab ds-tab-active\">Leaderboard</button><button class=\"ds-tab\">Draft Board</button><button class=\"ds-tab\">Bracket</button></nav>",
-      "css": ".ds-mast { background: #111111; color: #e9e8e3; padding: 18px 20px 12px; border-bottom: 6px solid #c8202f; } .ds-mast-title { font: 800 clamp(2.6rem, 9vw, 4.25rem)/0.88 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: -0.01em; text-transform: uppercase; } .ds-mast-sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 8px; font: 500 0.8rem 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #bdbbb4; } .ds-tabs { display: flex; gap: 22px; padding: 0 20px; border-bottom: 2px solid #111111; background: #e9e8e3; } .ds-tab { padding: 12px 0 8px; border: none; background: none; cursor: pointer; font: 700 0.98rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #3a3936; border-bottom: 4px solid transparent; transition: color 0.15s, border-color 0.15s; } .ds-tab:hover { color: #111111; } .ds-tab-active { color: #111111; border-bottom-color: #111111; } .ds-tab:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+      "description": "Ink masthead closed by a 6px red rule; desktop section tabs in condensed caps with a 4px ink active underline and the red live marker on Standings.",
+      "html": "<div class=\"ds-mast\"><div class=\"ds-mast-title\">TheeeeOPlex</div><div class=\"ds-mast-sub\"><span>The Ledgesheet is dead</span><span>Sweet 16 · Sun</span></div></div><nav class=\"ds-tabs\"><button class=\"ds-tab ds-tab-active\"><span class=\"ds-tab-live\" aria-hidden=\"true\"></span>Standings<span class=\"ds-sr\"> (live)</span></button><button class=\"ds-tab\">Bracket</button><button class=\"ds-tab\">Draft</button><button class=\"ds-tab\">History</button></nav>",
+      "css": ".ds-mast { background: #111111; color: #e9e8e3; padding: 18px 20px 12px; border-bottom: 6px solid #c8202f; } .ds-mast-title { font: 800 clamp(2.6rem, 9vw, 4.25rem)/0.88 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: -0.01em; text-transform: uppercase; } .ds-mast-sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 8px; font: 500 0.8rem 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #bdbbb4; } .ds-tabs { display: flex; gap: 22px; padding: 0 20px; border-bottom: 2px solid #111111; background: #e9e8e3; } .ds-tab { display: inline-flex; align-items: center; gap: 6px; padding: 12px 0 8px; border: none; background: none; cursor: pointer; font: 700 0.98rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #3a3936; border-bottom: 4px solid transparent; transition: color 0.15s, border-color 0.15s; } .ds-tab:hover { color: #111111; } .ds-tab-active { color: #111111; border-bottom-color: #111111; } .ds-tab:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-tab-live { width: 8px; height: 8px; background: #c8202f; flex-shrink: 0; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }"
+    },
+    {
+      "name": "Phone Section Bar",
+      "kind": "nav",
+      "refersTo": "section-bar-phone",
+      "description": "At 760px and below the section nav is a fixed bottom bar: ink ground, equal-width 56px tabs, masthead-gray labels, active label newsprint with a 4px newsprint top rule; live marker on Standings.",
+      "html": "<nav class=\"ds-bar\"><button class=\"ds-bar-tab\"><span class=\"ds-tab-live\" aria-hidden=\"true\"></span>Standings<span class=\"ds-sr\"> (live)</span></button><button class=\"ds-bar-tab ds-bar-active\">Bracket</button><button class=\"ds-bar-tab\">Draft</button><button class=\"ds-bar-tab\">History</button><button class=\"ds-bar-tab\">Admin</button></nav>",
+      "css": ".ds-bar { display: flex; padding: 0 4px env(safe-area-inset-bottom); background: #111111; border-top: 2px solid #111111; } .ds-bar-tab { flex: 1 1 0; min-height: 56px; padding: 12px 2px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-top: 4px solid transparent; background: none; cursor: pointer; font: 700 0.98rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #bdbbb4; transition: color 0.15s, border-color 0.15s; } .ds-bar-tab:hover { color: #e9e8e3; } .ds-bar-active { color: #e9e8e3; border-top-color: #e9e8e3; } .ds-bar-tab:focus-visible { outline: 2px solid #e9e8e3; outline-offset: -4px; } .ds-tab-live { width: 8px; height: 8px; background: #c8202f; flex-shrink: 0; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }"
     },
     {
       "name": "Who Are You? Strip",
@@ -437,7 +445,7 @@
     "dos": [
       "Do separate rows with 1px hairline rules and close heads with a 3px ink rule.",
       "Do set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.",
-      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the Historical champion, a shown player's bracket slots, and text selection.",
+      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the pending (unconfirmed) pick, the History champion, a shown player's bracket slots, and text selection.",
       "Do say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.",
       "Do show eliminated or used items faded and struck through, in place.",
       "Do keep red for live state, the masthead rule, and errors or destructive actions.",
@@ -450,7 +458,7 @@
       "Don't wrap content in cards, pills or rounded containers; bound it with rules.",
       "Don't add cast or glow shadows; depth is rule weight.",
       "Don't introduce a third accent hue or a dark navy-and-gold dashboard palette.",
-      "Don't use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state.",
+      "Don't use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state (the Standings live marker reports live play, not selection).",
       "Don't remove eliminated teams or past picks from view.",
       "Don't use icon fonts or glyph icons; use small 2px square-capped SVG strokes."
     ]

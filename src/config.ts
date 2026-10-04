@@ -17,10 +17,10 @@ export const ROUND_NAMES = [
 ];
 
 export const TABS = [
-    ["leaderboard", "Leaderboard"], // the first tab is the default
-    ["draft", "Draft Board"],
+    ["leaderboard", "Standings"], // the first tab is the default
     ["bracket", "Bracket"],
-    ["history", "Historical"],
+    ["draft", "Draft"],
+    ["history", "History"],
 ] as const;
 
 
