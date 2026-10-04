@@ -1,43 +1,270 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T14:00:00Z",
+  "generatedAt": "2026-10-04T18:00:00Z",
   "title": "Design System: TheeeeOPlex",
   "extensions": {
     "colorMeta": {
-      "paper":         { "role": "neutral",   "displayName": "Newsprint",          "canonical": "#e9e8e3", "tonalRamp": ["oklch(18% 0.006 95)", "oklch(30% 0.006 95)", "oklch(42% 0.006 95)", "oklch(54% 0.006 95)", "oklch(66% 0.006 95)", "oklch(78% 0.006 95)", "oklch(88% 0.006 95)", "oklch(95% 0.006 95)"] },
-      "field-paper":   { "role": "neutral",   "displayName": "Field Paper",        "canonical": "#f6f5f1", "tonalRamp": ["oklch(18% 0.004 95)", "oklch(30% 0.004 95)", "oklch(42% 0.004 95)", "oklch(54% 0.004 95)", "oklch(66% 0.004 95)", "oklch(78% 0.004 95)", "oklch(90% 0.004 95)", "oklch(97% 0.004 95)"] },
-      "ink":           { "role": "neutral",   "displayName": "Ink",                "canonical": "#111111", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#b9b7b0", "#dedcd5", "#e9e8e3"] },
-      "ink-soft":      { "role": "neutral",   "displayName": "Soft Ink",           "canonical": "#3a3936", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#b9b7b0", "#dedcd5", "#e9e8e3"] },
-      "muted":         { "role": "neutral",   "displayName": "Muted",              "canonical": "#55534e", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#b9b7b0", "#dedcd5", "#e9e8e3"] },
-      "faded":         { "role": "neutral",   "displayName": "Faded",              "canonical": "#66645e", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#b9b7b0", "#dedcd5", "#e9e8e3"] },
-      "rule":          { "role": "neutral",   "displayName": "Hairline",           "canonical": "#b9b7b0", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#b9b7b0", "#dedcd5", "#e9e8e3"] },
-      "masthead-gray": { "role": "neutral",   "displayName": "Masthead Gray",      "canonical": "#bdbbb4", "tonalRamp": ["#111111", "#3a3936", "#55534e", "#66645e", "#8a8882", "#bdbbb4", "#dedcd5", "#e9e8e3"] },
-      "highlight":     { "role": "secondary", "displayName": "Highlighter Yellow", "canonical": "#f2dfa0", "tonalRamp": ["oklch(25% 0.05 92)", "oklch(36% 0.07 92)", "oklch(48% 0.09 92)", "oklch(60% 0.10 92)", "oklch(72% 0.10 92)", "oklch(82% 0.09 92)", "oklch(90% 0.08 92)", "oklch(96% 0.04 92)"] },
-      "live-red":      { "role": "primary",   "displayName": "Press Red",          "canonical": "#c8202f", "tonalRamp": ["oklch(18% 0.07 25)", "oklch(28% 0.11 25)", "oklch(40% 0.16 25)", "oklch(53% 0.20 25)", "oklch(64% 0.17 25)", "oklch(75% 0.11 25)", "oklch(86% 0.06 25)", "oklch(95% 0.02 25)"] },
-      "white":         { "role": "neutral",   "displayName": "White",              "canonical": "#ffffff", "tonalRamp": ["#ffffff"] }
+      "paper": {
+        "role": "neutral",
+        "displayName": "Newsprint",
+        "canonical": "#e9e8e3",
+        "tonalRamp": [
+          "oklch(18% 0.006 95)",
+          "oklch(30% 0.006 95)",
+          "oklch(42% 0.006 95)",
+          "oklch(54% 0.006 95)",
+          "oklch(66% 0.006 95)",
+          "oklch(78% 0.006 95)",
+          "oklch(88% 0.006 95)",
+          "oklch(95% 0.006 95)"
+        ]
+      },
+      "paper-deep": {
+        "role": "neutral",
+        "displayName": "Deep Newsprint",
+        "canonical": "#dedcd5",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "field-paper": {
+        "role": "neutral",
+        "displayName": "Field Paper",
+        "canonical": "#f6f5f1",
+        "tonalRamp": [
+          "oklch(18% 0.004 95)",
+          "oklch(30% 0.004 95)",
+          "oklch(42% 0.004 95)",
+          "oklch(54% 0.004 95)",
+          "oklch(66% 0.004 95)",
+          "oklch(78% 0.004 95)",
+          "oklch(90% 0.004 95)",
+          "oklch(97% 0.004 95)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#3a3936",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#55534e",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "faded": {
+        "role": "neutral",
+        "displayName": "Faded",
+        "canonical": "#66645e",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#b9b7b0",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#b9b7b0",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "masthead-gray": {
+        "role": "neutral",
+        "displayName": "Masthead Gray",
+        "canonical": "#bdbbb4",
+        "tonalRamp": [
+          "#111111",
+          "#3a3936",
+          "#55534e",
+          "#66645e",
+          "#8a8882",
+          "#bdbbb4",
+          "#dedcd5",
+          "#e9e8e3"
+        ]
+      },
+      "highlight": {
+        "role": "secondary",
+        "displayName": "Highlighter Yellow",
+        "canonical": "#f5d65a",
+        "tonalRamp": [
+          "oklch(25% 0.06 95)",
+          "oklch(36% 0.09 95)",
+          "oklch(48% 0.11 95)",
+          "oklch(60% 0.13 95)",
+          "oklch(72% 0.14 95)",
+          "oklch(80% 0.14 95)",
+          "oklch(88% 0.13 95)",
+          "oklch(95% 0.06 95)"
+        ]
+      },
+      "live-red": {
+        "role": "primary",
+        "displayName": "Press Red",
+        "canonical": "#c8202f",
+        "tonalRamp": [
+          "oklch(18% 0.07 25)",
+          "oklch(28% 0.11 25)",
+          "oklch(40% 0.16 25)",
+          "oklch(53% 0.20 25)",
+          "oklch(64% 0.17 25)",
+          "oklch(75% 0.11 25)",
+          "oklch(86% 0.06 25)",
+          "oklch(95% 0.02 25)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#ffffff"
+        ]
+      }
     },
     "typographyMeta": {
-      "display":  { "displayName": "Display",  "purpose": "Masthead title only." },
-      "headline": { "displayName": "Headline", "purpose": "Draft Board on-the-clock line." },
-      "section":  { "displayName": "Section",  "purpose": "Section heads on a 3px ink rule; leaderboard points." },
-      "title":    { "displayName": "Title",    "purpose": "Region heads, roster names and totals." },
-      "name":     { "displayName": "Name",     "purpose": "Player names in standings." },
-      "nav":      { "displayName": "Nav",      "purpose": "Primary and bracket region tabs." },
-      "body":     { "displayName": "Body (agate)", "purpose": "Default tabular text with tabular numerals." },
-      "label":    { "displayName": "Label",    "purpose": "Column heads, toolbar and round labels." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Masthead title only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Draft Board on-the-clock line."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Section heads on a 3px ink rule; leaderboard points."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Region heads, roster names and totals."
+      },
+      "name": {
+        "displayName": "Name",
+        "purpose": "Player names in standings."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Primary and bracket region tabs."
+      },
+      "body": {
+        "displayName": "Body (agate)",
+        "purpose": "Default tabular text with tabular numerals."
+      },
+      "score-phone": {
+        "displayName": "Score, phone",
+        "purpose": "Bracket scores in the phone region view."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Meta lines, Updated stamp, scoring key, roster seeds."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Bracket seeds, owners and round labels; roster out-round labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Column heads, toolbar labels, LIVE and You tags. With Micro, the 11px floor for functional text."
+      }
     },
     "shadows": [
-      { "name": "live-rule", "value": "inset 0 2px 0 #c8202f", "purpose": "Doubles the top rule of a live bracket game. The only box-shadow; reads as rule weight." }
+      {
+        "name": "live-rule",
+        "value": "inset 0 2px 0 #c8202f",
+        "purpose": "Doubles the top rule of a live bracket game. Reads as rule weight."
+      },
+      {
+        "name": "insertion-rule",
+        "value": "inset 0 3px 0 #111111",
+        "purpose": "Drop point while dragging in the draft-order editor. Reads as rule weight."
+      }
     ],
     "motion": [
-      { "name": "state-fast", "value": "0.12s ease", "purpose": "Button and row background/color changes." },
-      { "name": "state", "value": "0.15s ease", "purpose": "Tab color and underline, bracket game opacity." }
+      {
+        "name": "state-fast",
+        "value": "0.12s ease",
+        "purpose": "Button, row and game background/color changes."
+      },
+      {
+        "name": "state",
+        "value": "0.15s ease",
+        "purpose": "Tab color and underline, bracket game opacity."
+      }
     ],
     "breakpoints": [
-      { "name": "bracket-phone", "value": "600px" },
-      { "name": "draft-2col", "value": "640px" },
-      { "name": "phone", "value": "760px" },
-      { "name": "draft-4col", "value": "1100px" }
+      {
+        "name": "bracket-phone",
+        "value": "600px"
+      },
+      {
+        "name": "draft-2col",
+        "value": "640px"
+      },
+      {
+        "name": "phone",
+        "value": "760px"
+      },
+      {
+        "name": "draft-4col",
+        "value": "1100px"
+      }
     ]
   },
   "components": [
@@ -53,9 +280,9 @@
       "name": "Cancel Button",
       "kind": "button",
       "refersTo": "button-cancel",
-      "description": "Secondary action: ink outline, highlighter on hover.",
+      "description": "Secondary action: ink outline, deep newsprint on hover.",
       "html": "<button class=\"ds-btn-cancel\">Cancel</button>",
-      "css": ".ds-btn-cancel { background: transparent; color: #111111; border: 2px solid #111111; border-radius: 0; padding: 8px 16px; font: 700 0.85rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: background 0.12s, color 0.12s; } .ds-btn-cancel:hover { background: #f2dfa0; } .ds-btn-cancel:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+      "css": ".ds-btn-cancel { background: transparent; color: #111111; border: 2px solid #111111; border-radius: 0; padding: 8px 16px; font: 700 0.85rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: background 0.12s, color 0.12s; } .ds-btn-cancel:hover { background: #dedcd5; } .ds-btn-cancel:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
     },
     {
       "name": "Danger Button",
@@ -77,72 +304,117 @@
       "name": "Masthead and Tabs",
       "kind": "nav",
       "refersTo": "masthead",
-      "description": "Ink masthead closed by a 6px red rule, condensed caps tabs with a red active underline.",
+      "description": "Ink masthead closed by a 6px red rule, condensed caps tabs with an ink active underline.",
       "html": "<div class=\"ds-mast\"><div class=\"ds-mast-title\">TheeeeOPlex</div><div class=\"ds-mast-sub\"><span>The Ledgesheet is dead</span><span>Sweet 16 · Sun</span></div></div><nav class=\"ds-tabs\"><button class=\"ds-tab ds-tab-active\">Leaderboard</button><button class=\"ds-tab\">Draft Board</button><button class=\"ds-tab\">Bracket</button></nav>",
-      "css": ".ds-mast { background: #111111; color: #e9e8e3; padding: 18px 20px 12px; border-bottom: 6px solid #c8202f; } .ds-mast-title { font: 800 clamp(2.6rem, 9vw, 4.25rem)/0.88 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: -0.01em; text-transform: uppercase; } .ds-mast-sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 8px; font: 500 0.8rem 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #bdbbb4; } .ds-tabs { display: flex; gap: 22px; padding: 0 20px; border-bottom: 2px solid #111111; background: #e9e8e3; } .ds-tab { padding: 12px 0 8px; border: none; background: none; cursor: pointer; font: 700 0.98rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #3a3936; border-bottom: 4px solid transparent; transition: color 0.15s, border-color 0.15s; } .ds-tab:hover { color: #111111; } .ds-tab-active { color: #111111; border-bottom-color: #c8202f; } .ds-tab:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+      "css": ".ds-mast { background: #111111; color: #e9e8e3; padding: 18px 20px 12px; border-bottom: 6px solid #c8202f; } .ds-mast-title { font: 800 clamp(2.6rem, 9vw, 4.25rem)/0.88 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: -0.01em; text-transform: uppercase; } .ds-mast-sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 8px; font: 500 0.8rem 'Barlow Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #bdbbb4; } .ds-tabs { display: flex; gap: 22px; padding: 0 20px; border-bottom: 2px solid #111111; background: #e9e8e3; } .ds-tab { padding: 12px 0 8px; border: none; background: none; cursor: pointer; font: 700 0.98rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.02em; color: #3a3936; border-bottom: 4px solid transparent; transition: color 0.15s, border-color 0.15s; } .ds-tab:hover { color: #111111; } .ds-tab-active { color: #111111; border-bottom-color: #111111; } .ds-tab:focus-visible { outline: 2px solid #111111; outline-offset: 2px; }"
+    },
+    {
+      "name": "Who Are You? Strip",
+      "kind": "custom",
+      "refersTo": "who-name",
+      "description": "One-time identity question; the answer is remembered on the device.",
+      "html": "<div class=\"ds-who\"><span class=\"ds-who-q\">Who are you?</span><div class=\"ds-who-names\"><button class=\"ds-who-name\">Mike</button><button class=\"ds-who-name\">Elliott</button><button class=\"ds-who-name\">Grapes</button><button class=\"ds-link\">Just looking</button></div></div>",
+      "css": ".ds-who { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px 0; border-top: 2px solid #111111; border-bottom: 1px solid #111111; color: #111111; } .ds-who-q { font: 800 1.35rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-who-names { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; } .ds-who-name { min-height: 36px; padding: 4px 12px; border: 1px solid #111111; border-radius: 0; background: none; color: #111111; cursor: pointer; font: 700 1.05rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-who-name:hover { background: #dedcd5; } .ds-who-name:focus-visible, .ds-link:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-link { background: none; border: none; padding: 0; cursor: pointer; font: 700 0.8rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #111111; text-decoration: underline; text-underline-offset: 3px; }"
+    },
+    {
+      "name": "Section Head with Updated Stamp",
+      "kind": "custom",
+      "refersTo": "updated-stamp",
+      "description": "Section head and a muted Updated stamp sharing one 3px ink rule.",
+      "html": "<div class=\"ds-srow\"><h2 class=\"ds-shead\">Standings</h2><span class=\"ds-updated\">Updated 2 min ago</span></div>",
+      "css": ".ds-srow { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 3px solid #111111; color: #111111; } .ds-shead { margin: 0; padding-bottom: 4px; font: 800 1.75rem/1 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-updated { padding-bottom: 6px; white-space: nowrap; font: 500 0.8rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #55534e; }"
     },
     {
       "name": "Live Line",
       "kind": "chip",
       "refersTo": "live-tag",
-      "description": "Red LIVE tag followed by in-progress scores in agate caps.",
-      "html": "<div class=\"ds-live\"><span class=\"ds-live-tag\">Live</span><span class=\"ds-live-game\">Mississippi St. 61 · Arizona 58</span></div>",
-      "css": ".ds-live { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font: 700 0.85rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: #111111; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; }"
+      "description": "Red LIVE tag followed by in-progress scores in agate caps, each team followed by its owner.",
+      "html": "<div class=\"ds-live\"><span class=\"ds-live-tag\">Live</span><span class=\"ds-live-game\">Mississippi St.<span class=\"ds-live-owner\"> (Elliott)</span> 61 · Arizona<span class=\"ds-live-owner ds-mine\"> (Grapes)</span> 58</span></div>",
+      "css": ".ds-live { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font: 700 0.85rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; color: #111111; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-live-owner { font-weight: 500; text-transform: none; color: #3a3936; } .ds-live-owner.ds-mine { font-weight: 700; color: #111111; }"
     },
     {
       "name": "Standings Table",
       "kind": "custom",
       "refersTo": "leader-row",
-      "description": "Ruled grid of rank, name, alive and points; leader banded yellow and closed by a 2px ink rule.",
-      "html": "<div class=\"ds-lb\"><div class=\"ds-lb-head\"><span></span><span>Player</span><span class=\"r\">Alive</span><span class=\"r\">Pts</span></div><button class=\"ds-lb-row ds-lb-lead\"><span class=\"ds-lb-rank\">1</span><span class=\"ds-lb-name\">Mike</span><span class=\"ds-lb-alive\">3/8</span><span class=\"ds-lb-score\">23</span></button><button class=\"ds-lb-row\"><span class=\"ds-lb-rank\">2</span><span class=\"ds-lb-name\">Elliott</span><span class=\"ds-lb-alive\">4/8</span><span class=\"ds-lb-score\">20</span></button></div>",
-      "css": ".ds-lb { color: #111111; font-variant-numeric: tabular-nums; } .ds-lb-head, .ds-lb-row { display: grid; grid-template-columns: 30px 1fr 56px 84px; align-items: center; gap: 0 10px; } .ds-lb-head { padding: 6px 0 4px; border-bottom: 1px solid #111111; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #55534e; } .ds-lb-head .r { text-align: right; } .ds-lb-row { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #b9b7b0; background: none; text-align: left; cursor: pointer; color: inherit; } .ds-lb-row:hover .ds-lb-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; } .ds-lb-row:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-lb-lead { background: #f2dfa0; border-bottom: 2px solid #111111; } .ds-lb-rank { font: 700 1rem 'Roboto Condensed', 'Arial Narrow', sans-serif; } .ds-lb-name { font: 700 1.4rem/1.05 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-lb-alive { font: 400 1rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-align: right; } .ds-lb-score { font: 800 1.75rem/1 'Barlow Condensed', 'Arial Narrow', sans-serif; text-align: right; }"
+      "description": "Ruled grid of rank (T2 when tied), name with You/LIVE tags, alive and points; every leader banded yellow and closed by a 2px ink rule; scoring key below.",
+      "html": "<div class=\"ds-lb\"><div class=\"ds-lb-head\"><span></span><span>Player</span><span class=\"r\">Alive</span><span class=\"r\">Pts</span></div><button class=\"ds-lb-row ds-lb-lead\"><span class=\"ds-lb-rank\">1</span><span class=\"ds-lb-name\">Mike</span><span class=\"ds-lb-alive\">3/8</span><span class=\"ds-lb-score\">23</span></button><button class=\"ds-lb-row\"><span class=\"ds-lb-rank\">T2</span><span class=\"ds-lb-name\">Elliott <span class=\"ds-live-tag\">Live</span></span><span class=\"ds-lb-alive\">4/8</span><span class=\"ds-lb-score\">20</span></button><button class=\"ds-lb-row\"><span class=\"ds-lb-rank\">T2</span><span class=\"ds-lb-name\">Grapes <span class=\"ds-you-tag\">You</span></span><span class=\"ds-lb-alive\">2/8</span><span class=\"ds-lb-score\">20</span></button><p class=\"ds-lb-key\">Each win scores 1 / 3 / 5 / 7 / 9 / 11 by round, plus half the seed difference when a lower seed wins.</p></div>",
+      "css": ".ds-lb { color: #111111; font-variant-numeric: tabular-nums; } .ds-lb-head, .ds-lb-row { display: grid; grid-template-columns: 30px 1fr 56px 84px; align-items: center; gap: 0 10px; } .ds-lb-head { padding: 6px 0 4px; border-bottom: 1px solid #111111; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #55534e; } .ds-lb-head .r { text-align: right; } .ds-lb-row { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #b9b7b0; background: none; text-align: left; cursor: pointer; color: inherit; } .ds-lb-row:hover .ds-lb-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; } .ds-lb-row:focus-visible { outline: 2px solid #111111; outline-offset: 2px; } .ds-lb-lead { background: #f5d65a; border-bottom: 2px solid #111111; } .ds-lb-rank { font: 700 1rem 'Roboto Condensed', 'Arial Narrow', sans-serif; } .ds-lb-name { font: 700 1.4rem/1.05 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; display: flex; align-items: center; gap: 6px; } .ds-lb-alive { font: 400 1rem 'Roboto Condensed', 'Arial Narrow', sans-serif; text-align: right; } .ds-lb-score { font: 800 1.75rem/1 'Barlow Condensed', 'Arial Narrow', sans-serif; text-align: right; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; } .ds-you-tag { background: #111111; color: #e9e8e3; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.06em; padding: 2px 5px; } .ds-lb-key { margin-top: 10px; font: 400 0.8rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #55534e; }"
     },
     {
       "name": "Roster Line",
       "kind": "custom",
       "refersTo": "roster-line",
-      "description": "Seed, team, out-round, points on a dotted hairline; alive teams under-marked yellow, out teams struck.",
-      "html": "<div class=\"ds-roster\"><div class=\"ds-rl\"><span class=\"ds-rl-seed\">2</span><span class=\"ds-rl-team\"><span>Alabama</span></span><span class=\"ds-rl-out\"></span><span class=\"ds-rl-pts\">+4</span></div><div class=\"ds-rl ds-rl-x\"><span class=\"ds-rl-seed\">6</span><span class=\"ds-rl-team\"><span>Ole Miss</span></span><span class=\"ds-rl-out\">R32</span><span class=\"ds-rl-pts\">+1</span></div></div>",
-      "css": ".ds-roster { font: 400 15px/1.35 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #111111; font-variant-numeric: tabular-nums; } .ds-rl { display: grid; grid-template-columns: 22px 1fr 44px 52px; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted #b9b7b0; font-size: 0.92rem; } .ds-rl:last-child { border-bottom: none; } .ds-rl-seed { color: #55534e; font-size: 0.8rem; } .ds-rl-team span { background: linear-gradient(transparent 55%, #f2dfa0 55%); } .ds-rl-out { font: 700 0.72rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #3a3936; text-transform: uppercase; } .ds-rl-pts { text-align: right; font-weight: 700; } .ds-rl-x .ds-rl-team, .ds-rl-x .ds-rl-seed, .ds-rl-x .ds-rl-pts { color: #66645e; } .ds-rl-x .ds-rl-team span { background: none; text-decoration: line-through; }"
+      "description": "Seed, team, out column, points on a dotted hairline; alive teams plain ink, live teams tagged, out teams struck with their round.",
+      "html": "<div class=\"ds-roster\"><div class=\"ds-rl\"><span class=\"ds-rl-seed\">4</span><span class=\"ds-rl-team\">Arizona</span><span class=\"ds-rl-out\"><span class=\"ds-live-tag\">Live</span></span><span class=\"ds-rl-pts\">+4</span></div><div class=\"ds-rl\"><span class=\"ds-rl-seed\">2</span><span class=\"ds-rl-team\">Alabama</span><span class=\"ds-rl-out\"></span><span class=\"ds-rl-pts\">+4</span></div><div class=\"ds-rl ds-rl-x\"><span class=\"ds-rl-seed\">6</span><span class=\"ds-rl-team\">Ole Miss</span><span class=\"ds-rl-out\">R32</span><span class=\"ds-rl-pts\">+1</span></div></div>",
+      "css": ".ds-roster { font: 400 15px/1.35 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #111111; font-variant-numeric: tabular-nums; } .ds-rl { display: grid; grid-template-columns: 22px 1fr 44px 52px; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted #b9b7b0; font-size: 0.92rem; } .ds-rl:last-child { border-bottom: none; } .ds-rl-seed { color: #55534e; font-size: 0.8rem; } .ds-rl-out { font: 700 0.72rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #3a3936; text-transform: uppercase; } .ds-rl-pts { text-align: right; font-weight: 700; } .ds-rl-x .ds-rl-team, .ds-rl-x .ds-rl-seed, .ds-rl-x .ds-rl-pts { color: #66645e; } .ds-rl-x .ds-rl-team { text-decoration: line-through; } .ds-live-tag { background: #c8202f; color: #ffffff; font: 700 0.7rem 'Roboto Condensed', 'Arial Narrow', sans-serif; letter-spacing: 0.06em; padding: 2px 6px; }"
     },
     {
       "name": "Bracket Game",
       "kind": "card",
-      "refersTo": "bracket-game",
-      "description": "Two team slots between ink rules; winner banded yellow, loser faded and struck.",
-      "html": "<div class=\"ds-game\"><div class=\"ds-slot ds-win\"><span class=\"ds-seed\">1</span><span class=\"ds-name\">Auburn</span><span class=\"ds-pick\">Dana</span><span class=\"ds-score\">83</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">16</span><span class=\"ds-name\">Alabama St.</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">79</span></div></div>",
-      "css": ".ds-game { width: 164px; border-top: 1px solid #111111; border-bottom: 1px solid #111111; color: #111111; } .ds-slot { display: flex; align-items: center; gap: 5px; padding: 0 4px; height: 34px; line-height: 1; } .ds-win { background: #f2dfa0; } .ds-seed { font: 400 0.66rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #55534e; width: 15px; text-align: center; } .ds-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 700 0.92rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-pick { font: 400 0.66rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #3a3936; } .ds-score { font: 800 1rem 'Barlow Condensed', 'Arial Narrow', sans-serif; min-width: 20px; text-align: right; } .ds-lose .ds-name, .ds-lose .ds-score { color: #66645e; text-decoration: line-through; } .ds-lose .ds-pick { color: #66645e; } .ds-div { height: 1px; background: #b9b7b0; } .ds-game:hover .ds-name { text-decoration: underline; text-underline-offset: 2px; }"
+      "refersTo": "bracket-slot-highlighted",
+      "description": "Two team slots between ink rules; winner set heavier, loser faded and struck; a highlighted player's slots band yellow.",
+      "html": "<div class=\"ds-game\"><div class=\"ds-slot ds-win\"><span class=\"ds-seed\">1</span><span class=\"ds-name\">Auburn</span><span class=\"ds-pick\">Dana</span><span class=\"ds-score\">83</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">16</span><span class=\"ds-name\">Alabama St.</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">79</span></div></div><div class=\"ds-game\"><div class=\"ds-slot ds-win ds-hl\"><span class=\"ds-seed\">4</span><span class=\"ds-name\">Arizona</span><span class=\"ds-pick\">Grapes</span><span class=\"ds-score\">75</span></div><div class=\"ds-div\"></div><div class=\"ds-slot ds-lose\"><span class=\"ds-seed\">5</span><span class=\"ds-name\">Oregon</span><span class=\"ds-pick\">Ryan</span><span class=\"ds-score\">65</span></div></div>",
+      "css": ".ds-game { width: 164px; margin-bottom: 8px; border-top: 1px solid #111111; border-bottom: 1px solid #111111; color: #111111; cursor: pointer; transition: opacity 0.15s; } .ds-game:hover { background: #dedcd5; } .ds-slot { display: flex; align-items: center; gap: 5px; padding: 0 4px; height: 34px; line-height: 1; } .ds-seed { font: 400 0.72rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #55534e; width: 15px; text-align: center; } .ds-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 700 0.92rem 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; } .ds-win .ds-name { font-weight: 800; } .ds-pick { font: 400 0.72rem 'Roboto Condensed', 'Arial Narrow', sans-serif; color: #3a3936; max-width: 44px; overflow: hidden; text-overflow: ellipsis; } .ds-score { font: 800 1rem 'Barlow Condensed', 'Arial Narrow', sans-serif; min-width: 20px; text-align: right; } .ds-lose .ds-name, .ds-lose .ds-score { color: #66645e; text-decoration: line-through; } .ds-lose .ds-pick { color: #66645e; } .ds-hl { background: #f5d65a; } .ds-hl .ds-pick { color: #111111; font-weight: 700; } .ds-div { height: 1px; background: #b9b7b0; }"
     }
   ],
   "narrative": {
     "northStar": "The Late Edition",
-    "overview": "The pool is printed, not rendered. Every surface reads as a page of the sports section after the night's games: newsprint gray ground, a black masthead closed by a heavy red rule, condensed all-caps heads, and dense agate tables of names, seeds and points. Structure comes from rules (horizontal lines of graded weight), never from boxes. Information is set like a box score: tabular numerals, right-aligned points, tight rows.\n\nDensity is high and deliberate. Rows are ruled, not carded; groups are announced by a condensed head sitting on a 3px black rule. Two inks beyond black do all the signalling: a highlighter yellow that marks what is winning or alive (and what your pointer is on), and a press red reserved for live action, the masthead rule, the active nav underline, and destructive or error states. Eliminated teams stay on the page, struck through and faded, because the record is the point.\n\nThe world rejects the dark navy-and-gold sports dashboard: no cards, no pills, no glows, no rounded corners, no cast shadows.",
+    "overview": "The pool is printed, not rendered. Every surface reads as a page of the sports section after the night's games: newsprint gray ground, a black masthead closed by a heavy red rule, condensed all-caps heads, and dense agate tables of names, seeds and points. Structure comes from rules (horizontal lines of graded weight), never from boxes. Information is set like a box score: tabular numerals, right-aligned points, tight rows.\n\nDensity is high and deliberate. Rows are ruled, not carded; groups are announced by a condensed head sitting on a 3px black rule. Two inks beyond black do all the signalling: a highlighter yellow that means only \"look here\" (the leader, whoever is on the clock, the champion, the player you asked to follow), and a press red reserved for live action, the masthead rule, and destructive or error states. Everything else (winners, alive teams, the current pick, hovers, active tabs) is said in ink: weight, fill, rule. Eliminated teams stay on the page, struck through and faded, because the record is the point.\n\nThe world rejects the dark navy-and-gold sports dashboard: no cards, no pills, no glows, no rounded corners, no cast shadows.",
     "keyCharacteristics": [
       "Newsprint ground, black ink, gray hairlines, heavy black rules under every head.",
       "Barlow Condensed caps for heads, names and big numerals; Roboto Condensed agate for everything tabular.",
-      "One highlighter (yellow) and one press red; nothing else carries hue.",
+      "One highlighter (yellow, \"look here\") and one press red (live, frame, danger); nothing else carries hue.",
       "Square corners everywhere; depth is only rule weight and the highlighter band.",
+      "The reader is known: a one-time \"Who are you?\" strip, then a You tag and their roster opened by default.",
       "Losers struck through, never removed."
     ],
     "rules": [
-      { "name": "The Two Inks Rule", "body": "Yellow means \"winning, alive, or under your hand\"; red means \"live, active, or destructive\". No third hue enters the page.", "section": "colors" },
-      { "name": "The Struck, Not Gone Rule", "body": "Out means faded plus line-through, in place. Never hide or remove an eliminated team, drafted team, or past pick.", "section": "colors" },
-      { "name": "The Headline Face Rule", "body": "Anything a reader scans for (names, scores, heads) is Barlow Condensed caps. Anything a reader reads across (rosters, meta, seeds) is Roboto Condensed agate.", "section": "typography" },
-      { "name": "The Numerals Rule", "body": "Points are the largest thing in their row, right-aligned, set in the headline face at 800.", "section": "typography" },
-      { "name": "The Rule Weight Rule", "body": "Hierarchy is drawn in line weight: 1px divides, 2px closes, 3px heads, 6px frames.", "section": "elevation" }
+      {
+        "name": "The Two Inks Rule",
+        "body": "Yellow means \"look here\"; red means \"live, the frame, or danger\". Winning, alive, current, hovered and active are said in ink (weight, fill, rule), never in yellow or red. No third hue enters the page.",
+        "section": "colors"
+      },
+      {
+        "name": "The Struck, Not Gone Rule",
+        "body": "Out means faded plus line-through, in place. Never hide or remove an eliminated team, drafted team, or past pick.",
+        "section": "colors"
+      },
+      {
+        "name": "The Headline Face Rule",
+        "body": "Anything a reader scans for (names, scores, heads) is Barlow Condensed caps. Anything a reader reads across (rosters, meta, seeds) is Roboto Condensed agate.",
+        "section": "typography"
+      },
+      {
+        "name": "The Agate Floor Rule",
+        "body": "Functional text never sets below 11px (0.7rem at the 16px root). Micro and Label are the floor, not a step toward smaller.",
+        "section": "typography"
+      },
+      {
+        "name": "The Numerals Rule",
+        "body": "Points are the largest thing in their row, right-aligned, set in the headline face at 800.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rule Weight Rule",
+        "body": "Hierarchy is drawn in line weight: 1px divides, 2px closes, 3px heads, 6px frames.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do separate rows with 1px hairline rules and close heads with a 3px ink rule.",
       "Do set names, heads and scores in Barlow Condensed uppercase; set tabular content in Roboto Condensed with tabular numerals.",
-      "Do mark winners, the leader and alive teams with the highlighter yellow, as a band or a 55% under-marker.",
+      "Do reserve the highlighter yellow for \"look here\": the leader(s), the on-the-clock drafter, the Historical champion, a highlighted player's bracket slots, and text selection.",
+      "Do say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.",
       "Do show eliminated or used items faded and struck through, in place.",
-      "Do keep red for live state, the masthead rule, the active tab underline, and errors or destructive actions.",
+      "Do keep red for live state, the masthead rule, and errors or destructive actions.",
+      "Do keep functional text at 11px (0.7rem) or larger.",
       "Do keep every corner square."
     ],
     "donts": [
       "Don't wrap content in cards, pills or rounded containers; bound it with rules.",
       "Don't add cast or glow shadows; depth is rule weight.",
       "Don't introduce a third accent hue or a dark navy-and-gold dashboard palette.",
+      "Don't use yellow for hover, drag-over, winners, alive status or the current pick; don't use red for navigation state.",
       "Don't remove eliminated teams or past picks from view.",
       "Don't use icon fonts or glyph icons; use small 2px square-capped SVG strokes."
     ]

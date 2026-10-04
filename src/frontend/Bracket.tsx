@@ -143,6 +143,17 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
 
   const ncaaUrl = game.bracket_position_id ? `${NCAA_URL}${game.bracket_position_id}` : null;
 
+  // spoken summary, e.g. "Auburn (Dana) 83 def. Alabama St. (Grapes) 79, final"
+  const label = (() => {
+    const who = (t: typeof top) => `${t.name ?? "TBD"}${t.id && picks[t.id] ? ` (${picks[t.id]})` : ""}`;
+    if (game.winner_team_id) {
+      const [w, l] = game.winner_team_id === top.id ? [top, bottom] : [bottom, top];
+      return `${who(w)} ${w.score ?? ""} def. ${who(l)} ${l.score ?? ""}, final`;
+    }
+    if (game.game_status === "live") return `${who(top)} ${top.score ?? 0}, ${who(bottom)} ${bottom.score ?? 0}, live`;
+    return `${who(top)} vs ${who(bottom)}${gameTime() ? `, ${gameTime()}` : ""}`;
+  })();
+
   return (
     <div
       className={`bk-game ${game.winner_team_id ? "bk-game-final" : ""} ${game.game_status === "live" ? "bk-game-live" : ""} ${gameHighlighted ? "bk-game-highlighted" : ""} ${ncaaUrl ? "bk-game-clickable" : ""}`}
@@ -150,6 +161,7 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
       onClick={ncaaUrl ? () => window.open(ncaaUrl, "_blank", "noopener,noreferrer") : undefined}
       onKeyDown={ncaaUrl ? (e) => { if (e.key === "Enter") window.open(ncaaUrl, "_blank", "noopener,noreferrer"); } : undefined}
       role={ncaaUrl ? "link" : undefined}
+      aria-label={ncaaUrl ? `${label}. Opens on NCAA.com` : label}
       tabIndex={ncaaUrl ? 0 : undefined}
     >
       {game.game_status === "live" && <span className="bk-live-badge">LIVE</span>}
@@ -250,7 +262,7 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
     <div className="bk-mobile-region">
       <div className="bk-round-step">
         {[2, 3, 4].map(r => (
-          <button key={r} className={r === start ? "active" : ""} onClick={() => setStart(r)}>
+          <button key={r} className={r === start ? "active" : ""} aria-pressed={r === start} onClick={() => setStart(r)}>
             {ROUND_NAMES_SHORT[r]} · {ROUND_NAMES_SHORT[r + 1]}
           </button>
         ))}
@@ -277,9 +289,10 @@ function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnPr
 
 interface BracketProps {
   selectedUser: string;
+  me: string;
 }
 
-export default function Bracket({ selectedUser }: BracketProps) {
+export default function Bracket({ selectedUser, me }: BracketProps) {
   const [games, setGames] = useState<BracketGame[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [loading, setLoading] = useState(true);
@@ -322,19 +335,24 @@ export default function Bracket({ selectedUser }: BracketProps) {
     : undefined;
 
   const ffHasTeams = !!(ffLeft?.team_1_id || ffLeft?.team_2_id || ffRight?.team_1_id || ffRight?.team_2_id);
-  // phones open on the Final Four once it's set, otherwise on the first region
-  const mobileSel = mobileSelChoice ?? (ffHasTeams || allRegions.length === 0 ? "__ff__" : allRegions[0]);
+  // phones open where the reader's live or next game is; else the Final Four once set; else the first region
+  const myTeams = new Set(picks.filter(p => p.user_name === me).map(p => p.team_id));
+  const myOpen = games
+    .filter(g => g.team_1_id && g.team_2_id && !g.winner_team_id && (myTeams.has(g.team_1_id) || myTeams.has(g.team_2_id)))
+    .sort((a, b) => (a.game_status === "live" ? -1 : 0) - (b.game_status === "live" ? -1 : 0) || (a.start_time_epoch ?? 0) - (b.start_time_epoch ?? 0));
+  const myRegion = myOpen[0] ? (myOpen[0].region ?? "__ff__") : null;
+  const mobileSel = mobileSelChoice ?? myRegion ?? (ffHasTeams || allRegions.length === 0 ? "__ff__" : allRegions[0]);
 
   return (
     <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
-      <LiveLine games={games} />
+      <LiveLine games={games} owners={teamPickMap} me={me} />
       <div className="bk-mobile-nav">
         {allRegions.map(r => (
-          <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} onClick={() => setMobileSel(r)}>
+          <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} aria-pressed={mobileSel === r} onClick={() => setMobileSel(r)}>
             {r}
           </button>
         ))}
-        <button className={`bk-mobile-tab${mobileSel === "__ff__" ? " active" : ""}`} onClick={() => setMobileSel("__ff__")}>
+        <button className={`bk-mobile-tab${mobileSel === "__ff__" ? " active" : ""}`} aria-pressed={mobileSel === "__ff__"} onClick={() => setMobileSel("__ff__")}>
           Final Four
         </button>
       </div>

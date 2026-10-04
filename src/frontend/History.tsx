@@ -10,6 +10,7 @@ interface HistoryPick {
     pick_order: number;
     points: number;
     eliminated: 0 | 1;
+    eliminated_round?: number | null;
 }
 
 interface HistoryScore {
@@ -88,7 +89,7 @@ export default function History() {
     if (error) return <div className="error-banner">{error}</div>;
 
     const allYears = Object.values(yearData);
-    if (allYears.length === 0) return <div className="spinner">No historical data yet.</div>;
+    if (allYears.length === 0) return <div className="empty-note">No past seasons archived yet.</div>;
 
     const rows: DisplayRow[] = allYears.map(yd => {
         const sorted = [...yd.scores].sort((a, b) => a.rank - b.rank);
@@ -192,6 +193,7 @@ export default function History() {
                                                             teamName={pick.team_name}
                                                             points={pick.points}
                                                             eliminated={!!pick.eliminated}
+                                                            eliminatedRound={pick.eliminated_round}
                                                         />
                                                     ))}
                                                 </div>

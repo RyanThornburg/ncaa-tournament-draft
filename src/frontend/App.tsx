@@ -11,6 +11,7 @@ import Bracket from "./Bracket";
 import History from "./History";
 import Admin from "./Admin";
 import { useAdmin } from "./useAdmin";
+import { isPlayer, useMe } from "./useMe";
 
 // Masthead edition line: the round being played (first round with an unfinished game) and its day
 function editionLine(games: Game[]): string {
@@ -33,7 +34,9 @@ function App() {
   	const [teams, setTeams] = useState<Team[]>([]);
 	const [picks, setPicks] = useState<Pick[]>([]);
 	const [games, setGames] = useState<Game[]>([]);
-	const [bracketUser, setBracketUser] = useState<string>("");
+	// null = follow the reader ("me"); "" = nobody highlighted
+	const [bracketChoice, setBracketUser] = useState<string | null>(null);
+	const [me, setMe] = useMe();
 
 	const { isAdmin } = useAdmin();
 
@@ -69,6 +72,8 @@ function App() {
 	];
 
 	const bracketUsers = [...new Set(picks.map(p => p.user_name))].sort();
+	const bracketUser = bracketChoice ?? (isPlayer(me) ? me : "");
+	const askWho = me === "" && bracketUsers.length > 0 && (tab === "leaderboard" || tab === "bracket");
 
 	return (
 		<div className="app">
@@ -81,8 +86,17 @@ function App() {
 			</header>
 			<Tabs tab={tab} setTab={setTab} tabs={allTabs} />
 
-			<main className="page">
-				{error && <div className="error-banner">{error}</div>}
+			<main className="page" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+				{error && <div className="error-banner">Couldn't load the pool ({error}). Refresh to try again.</div>}
+				{askWho && (
+					<div className="who">
+						<span className="who-q">Who are you?</span>
+						<div className="who-names">
+							{bracketUsers.map(u => <button key={u} className="who-name" onClick={() => setMe(u)}>{u}</button>)}
+							<button className="link-btn" onClick={() => setMe("-")}>Just looking</button>
+						</div>
+					</div>
+				)}
 				{tab === "bracket" && !loading && bracketUsers.length > 0 && (
 					<div className="bk-toolbar">
 						<span className="label">Highlight</span>
@@ -104,9 +118,9 @@ function App() {
 					<div className="spinner">Loading…</div>
 				) : (
 					<>
-						{tab === "leaderboard" && <Leaderboard />}
+						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} />}
 						{tab === "draft" && <Draft teams={teams} users={users} isAdmin={isAdmin} />}
-						{tab === "bracket" && <Bracket selectedUser={bracketUser} />}
+						{tab === "bracket" && <Bracket selectedUser={bracketUser} me={me} />}
 						{tab === "history" && <History />}
 						{tab === "admin" && isAdmin && <Admin />}
 					</>

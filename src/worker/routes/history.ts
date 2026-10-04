@@ -66,7 +66,7 @@ history.get("/:year", async (c) => {
         winMapRaw.get(row.winner_team_id)!.push({ round: row.round, loser_seed: row.loser_seed });
     }
 
-    const userMap = new Map<string, { user_name: string; total_points: number; picks: { team_name: string; seed: number; pick_order: number; points: number; eliminated: 0 | 1 }[] }>();
+    const userMap = new Map<string, { user_name: string; total_points: number; picks: { team_name: string; seed: number; pick_order: number; points: number; eliminated: 0 | 1; eliminated_round: number | null }[] }>();
 
     for (const row of pickRows) {
         if (!userMap.has(row.user_id)) {
@@ -76,7 +76,7 @@ history.get("/:year", async (c) => {
         const wins = winMapRaw.get(row.team_id) ?? [];
         const points = wins.reduce((sum, w) => sum + calculateUpsetPoints(row.seed, w.loser_seed, w.round), 0);
         user.total_points += points;
-        user.picks.push({ team_name: row.team_name, seed: row.seed, pick_order: row.pick_order, points, eliminated: row.eliminated });
+        user.picks.push({ team_name: row.team_name, seed: row.seed, pick_order: row.pick_order, points, eliminated: row.eliminated, eliminated_round: row.eliminated_round });
     }
 
     const scores = Array.from(userMap.entries())

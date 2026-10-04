@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 interface TabsProps {
     tab: string;
     setTab: (tab: string) => void;
@@ -5,16 +7,35 @@ interface TabsProps {
 }
 
 export default function Tabs({ tab, setTab, tabs }: TabsProps) {
+    const refs = useRef<(HTMLButtonElement | null)[]>([]);
+
+    // arrow keys move between tabs (WAI-ARIA tabs pattern)
+    function onKeyDown(e: React.KeyboardEvent, i: number) {
+        const last = tabs.length - 1;
+        const next = e.key === "ArrowRight" ? (i === last ? 0 : i + 1)
+            : e.key === "ArrowLeft" ? (i === 0 ? last : i - 1)
+            : e.key === "Home" ? 0 : e.key === "End" ? last : null;
+        if (next === null) return;
+        e.preventDefault();
+        setTab(tabs[next][0]);
+        refs.current[next]?.focus();
+    }
+
     return (
         <nav className="tabs-container">
             <div className="tabs" role="tablist">
-                {tabs.map(([key, label]) => (
+                {tabs.map(([key, label], i) => (
                     <button
                         key={key}
+                        ref={el => { refs.current[i] = el; }}
+                        id={`tab-${key}`}
                         role="tab"
                         aria-selected={tab === key}
+                        aria-controls={`panel-${key}`}
+                        tabIndex={tab === key ? 0 : -1}
                         className={`tab${tab === key ? " active" : ""}`}
                         onClick={() => setTab(key)}
+                        onKeyDown={e => onKeyDown(e, i)}
                     >
                         {label}
                     </button>

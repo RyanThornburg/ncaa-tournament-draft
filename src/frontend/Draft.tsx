@@ -146,14 +146,14 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                             .filter(t => !(draftedTeamIds.has(t.id)))
                             .sort((a, b) => a.overall_rank - b.overall_rank)
                             .slice(0, 3)
-                            .map((team, i) => (
+                            .map(team => (
                                 <button
                                     key={team.id}
                                     className="team-btn inline"
                                     onClick={() => handlePick(team.id)}
                                     disabled={!isAdmin || saving}
                                 >
-                                    <span className={`seed-badge s${i+1}`}>{team.overall_rank}</span>
+                                    <span className="seed-badge rank" title="Overall rank">#{team.overall_rank}</span>
                                     <span className="team-name">{team.name}</span>
                                 </button>
                             ))}
