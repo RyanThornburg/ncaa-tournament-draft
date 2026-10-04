@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import { Game, Pick } from "../types";
 import { NCAA_URL } from "../config";
+import LiveLine from "./LiveLine";
 
 // bracket_position_id ranges by round:
 //  r64 (round 2): 200s
@@ -42,14 +43,15 @@ interface TeamSlotProps {
   seed: number | null;
   score: number | null;
   isWinner: boolean;
+  isLoser?: boolean;
   pickerName: string | null;
   mirrored?: boolean;
   highlighted?: boolean;
 }
 
-function TeamSlot({ teamId, teamName, seed, score, isWinner, pickerName, mirrored, highlighted }: TeamSlotProps) {
+function TeamSlot({ teamId, teamName, seed, score, isWinner, isLoser, pickerName, mirrored, highlighted }: TeamSlotProps) {
   const isEmpty = !teamId && !teamName;
-  const cls = `bk-team-slot ${isWinner ? "bk-winner" : ""} ${isEmpty ? "bk-empty" : ""} ${highlighted ? "bk-highlighted" : ""}`;
+  const cls = `bk-team-slot ${isWinner ? "bk-winner" : ""} ${isLoser ? "bk-loser" : ""} ${isEmpty ? "bk-empty" : ""} ${highlighted ? "bk-highlighted" : ""}`;
   const scoreEl = score !== null && score !== undefined
     ? <span className={`bk-score ${isWinner ? "bk-score-win" : ""}`}>{score}</span>
     : null;
@@ -146,6 +148,9 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
       className={`bk-game ${game.winner_team_id ? "bk-game-final" : ""} ${game.game_status === "live" ? "bk-game-live" : ""} ${gameHighlighted ? "bk-game-highlighted" : ""} ${ncaaUrl ? "bk-game-clickable" : ""}`}
       data-bracket-id={game.bracket_position_id ?? undefined}
       onClick={ncaaUrl ? () => window.open(ncaaUrl, "_blank", "noopener,noreferrer") : undefined}
+      onKeyDown={ncaaUrl ? (e) => { if (e.key === "Enter") window.open(ncaaUrl, "_blank", "noopener,noreferrer"); } : undefined}
+      role={ncaaUrl ? "link" : undefined}
+      tabIndex={ncaaUrl ? 0 : undefined}
     >
       {game.game_status === "live" && <span className="bk-live-badge">LIVE</span>}
       {name1 && name2 && game.game_status === "pre" && <span className="bk-live-badge">{gameTime()}</span>}
@@ -155,6 +160,7 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
         seed={top.seed}
         score={hasScore ? (top.score ?? 0) : null}
         isWinner={game.winner_team_id !== null && game.winner_team_id === top.id}
+        isLoser={game.winner_team_id !== null && !!top.id && game.winner_team_id !== top.id}
         pickerName={top.id ? (picks[top.id] ?? null) : null}
         mirrored={mirrored}
         highlighted={topHighlighted}
@@ -166,6 +172,7 @@ function GameCard({ game, picks, placeholder, mirrored, highlightedTeams }: Game
         seed={bottom.seed}
         score={hasScore ? (bottom.score ?? 0) : null}
         isWinner={game.winner_team_id !== null && game.winner_team_id === bottom.id}
+        isLoser={game.winner_team_id !== null && !!bottom.id && game.winner_team_id !== bottom.id}
         pickerName={bottom.id ? (picks[bottom.id] ?? null) : null}
         mirrored={mirrored}
         highlighted={bottomHighlighted}
@@ -228,6 +235,46 @@ function RegionColumn({ region, games, picks, mirrored, highlightedTeams }: Regi
   );
 }
 
+const ROUND_NAMES_SHORT: Record<number, string> = { 2: "R64", 3: "R32", 4: "Sweet 16", 5: "Elite 8" };
+
+// Phone view: two rounds side by side, filling the screen
+function MobileRegion({ region, games, picks, highlightedTeams }: RegionColumnProps) {
+  // open on the round before the first unfinished one, so live/next games sit in the right column
+  const open = games.filter(g => g.region === region && g.team_1_id && g.team_2_id && g.game_status !== "final" && g.game_status !== "forfeit");
+  const current = open.length ? Math.min(...open.map(g => g.round)) : 5;
+  const [startChoice, setStart] = useState<number | null>(null);
+  const start = startChoice ?? Math.min(4, Math.max(2, current - 1));
+  const rounds = [start, start + 1];
+
+  return (
+    <div className="bk-mobile-region">
+      <div className="bk-round-step">
+        {[2, 3, 4].map(r => (
+          <button key={r} className={r === start ? "active" : ""} onClick={() => setStart(r)}>
+            {ROUND_NAMES_SHORT[r]} · {ROUND_NAMES_SHORT[r + 1]}
+          </button>
+        ))}
+      </div>
+      <div className="bk-mobile-rounds">
+        {rounds.map(round => {
+          const roundGames = getRegionRoundGames(games, region, round);
+          const slots = round === 2 ? 8 : round === 3 ? 4 : round === 4 ? 2 : 1;
+          return (
+            <div key={round} className="bk-mobile-round">
+              <div className="bk-round-label">{ROUND_NAMES_SHORT[round]}</div>
+              <div className="bk-mobile-games">
+                {Array.from({ length: slots }).map((_, i) => (
+                  <GameCard key={i} game={roundGames[i] ?? null} picks={picks} highlightedTeams={highlightedTeams} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 interface BracketProps {
   selectedUser: string;
 }
@@ -237,7 +284,7 @@ export default function Bracket({ selectedUser }: BracketProps) {
   const [picks, setPicks] = useState<Pick[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [mobileSel, setMobileSel] = useState<string>("__ff__");
+  const [mobileSelChoice, setMobileSel] = useState<string | null>(null);
 
   const load = useCallback(() => {
     Promise.all([api.getGames(), api.getPicks()])
@@ -275,9 +322,12 @@ export default function Bracket({ selectedUser }: BracketProps) {
     : undefined;
 
   const ffHasTeams = !!(ffLeft?.team_1_id || ffLeft?.team_2_id || ffRight?.team_1_id || ffRight?.team_2_id);
+  // phones open on the Final Four once it's set, otherwise on the first region
+  const mobileSel = mobileSelChoice ?? (ffHasTeams || allRegions.length === 0 ? "__ff__" : allRegions[0]);
 
   return (
     <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
+      <LiveLine games={games} />
       <div className="bk-mobile-nav">
         {allRegions.map(r => (
           <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} onClick={() => setMobileSel(r)}>
@@ -285,13 +335,13 @@ export default function Bracket({ selectedUser }: BracketProps) {
           </button>
         ))}
         <button className={`bk-mobile-tab${mobileSel === "__ff__" ? " active" : ""}`} onClick={() => setMobileSel("__ff__")}>
-          F4 / Champ
+          Final Four
         </button>
       </div>
 
       <div className="bk-mobile-view">
         {mobileSel !== "__ff__" && (
-          <RegionColumn region={mobileSel} games={games} picks={teamPickMap} highlightedTeams={highlightedTeams} />
+          <MobileRegion key={mobileSel} region={mobileSel} games={games} picks={teamPickMap} highlightedTeams={highlightedTeams} />
         )}
         {mobileSel === "__ff__" && (
           <div className="bk-mobile-ff">

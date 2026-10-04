@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { DraftOrderEntry, Team, User, Pick, LeaderboardEntry } from '../types';
 import { api } from './api';
 import DraftOrderEditor from './DraftOrderEditor';
+import RosterLine from './RosterLine';
 
 export default function Draft({ teams, users, isAdmin = false }: { teams: Team[], users: User[], isAdmin?: boolean }){
     const [draftOrder, setDraftOrder] = useState<DraftOrderEntry[]>([]);
@@ -124,28 +125,23 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
         <div>
             {isDraftDone ? (
                 <div className="draft-complete">
-
-                    <div>
-                        <h3>Draft Complete!</h3>
-                        {isAdmin && (<div style={{ display: "flex", gap: 8, marginTop: 8, justifyContent: "center", flexWrap: "wrap" }}>
-                            {lastPicked && <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo Last Pick</button>}
-                            <button className="btn-danger" onClick={handleResetDraft}>Reset Draft</button>
-                        </div>)}
-                    </div>
-
+                    <h3>Draft complete</h3>
+                    {isAdmin && (
+                        <div className="draft-actions">
+                            {lastPicked && <button className="btn-cancel" onClick={handleResetLastPick} disabled={saving}>Undo last pick</button>}
+                            <button className="btn-danger" onClick={handleResetDraft}>Reset draft</button>
+                        </div>
+                    )}
                 </div>
             ):(
                 <div className="draft-header">
-                    <div>
-                        <div style={{ fontSize: "0.8rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>
-                            Pick {draftIndex + 1} of {users.length * 8}
-                        </div>
-                        <div className="draft-turn">🏀 {currentDraftUser?.display_name}'s Pick{saving ? " (saving…)" : ""}</div>
+                    <div className="draft-clock">
+                        <div className="draft-turn">On the clock: <em>{currentDraftUser?.display_name}</em>{saving ? " …" : ""}</div>
+                        <span className="draft-count">Pick {draftIndex + 1} of {users.length * 8} · {(users.length * 8) - draftIndex} remaining</span>
                     </div>
-                    <div>
-                        
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: "0.8rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Best Available</div>
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <div className="draft-meta">
+                        <span className="label">Best available</span>
+                        <div className="draft-meta-row">
                         {teams
                             .filter(t => !(draftedTeamIds.has(t.id)))
                             .sort((a, b) => a.overall_rank - b.overall_rank)
@@ -153,38 +149,39 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                             .map((team, i) => (
                                 <button
                                     key={team.id}
-                                    className="team-btn"
-                                    style={{ width: "auto", paddingBlock: 0, alignItems: "center" }}
+                                    className="team-btn inline"
                                     onClick={() => handlePick(team.id)}
-                                    
+                                    disabled={!isAdmin || saving}
                                 >
-                                    <span className={`seed-badge s${i+1}`}> {team.overall_rank} </span>
-                                    <span>{team.name}</span>
+                                    <span className={`seed-badge s${i+1}`}>{team.overall_rank}</span>
+                                    <span className="team-name">{team.name}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
-                    {lastPicked && <div className="last-picked-section">
-
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: "0.8rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Last Picked</div>
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <span className="team-btn" >
-                            <span >{lastPicked.team_name}</span>
-                            <span className="team-owner">{lastPicked.user_name}</span>
-                        </span>
+                    {lastPicked && (
+                        <div className="draft-meta">
+                            <span className="label">Last picked</span>
+                            <div className="draft-meta-row">
+                                <span className="team-btn inline">
+                                    <span className="team-name">{lastPicked.team_name}</span>
+                                    <span className="team-owner">{lastPicked.user_name}</span>
+                                </span>
+                            </div>
                         </div>
-                    </div>}
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20 }}>
-                        <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{(users.length * 8) - draftIndex} remaining</span>
-                        {isAdmin && (picks.length > 0 ? (
-                        <>
-                            <button className="btn-cancel" onClick={handleResetLastPick}>Undo Last Pick</button>
-                            <button className="btn-danger" onClick={handleResetDraft}>Reset Draft</button>
-                        </>
-                        ) : (
-                            <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set Draft Order</button>
-                        ))}
-                    </div>
+                    )}
+                    {isAdmin && (
+                        <div className="draft-actions">
+                            {picks.length > 0 ? (
+                                <>
+                                    <button className="btn-cancel" onClick={handleResetLastPick}>Undo last pick</button>
+                                    <button className="btn-danger" onClick={handleResetDraft}>Reset draft</button>
+                                </>
+                            ) : (
+                                <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
             {!isDraftDone && (
@@ -210,22 +207,18 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                         <div className="roster-card" key={entry.user_id}>
                             <div className="roster-card-header">
                                 <div className="roster-name">{user?.display_name ?? entry.user_name}</div>
-                                <div className="roster-pts">{userPoints.total_points} pts</div>
+                                <div className="roster-total">{userPoints.total_points}</div>
                             </div>
-                            <div className="roster-teams">
-
-                                {userPicks.map(pick => {
-                                    const cls = pick.eliminated ? "eliminated" : "active";
-                                    return (
-                                    <div key={pick.team_id} className={`roster-team ${cls}`}>
-                                        <span style={{ fontSize: "0.72rem", color: "var(--muted)", minWidth: 18 }}>{pick.seed}</span>
-                                        <span>{pick.team_name}</span>
-                                        <span className="team-out">{pick.eliminated ? "OUT" : ""}</span>
-                                        <span className="team-pts">+{pick.points_earned}</span>
-                                    </div>
-                                    );
-                                })}
-                            </div>
+                            {userPicks.map(pick => (
+                                <RosterLine
+                                    key={pick.team_id}
+                                    seed={pick.seed}
+                                    teamName={pick.team_name}
+                                    points={pick.points_earned}
+                                    eliminated={!!pick.eliminated}
+                                    eliminatedRound={pick.eliminated_round}
+                                />
+                            ))}
                         </div>
                     );
                 })}
@@ -250,11 +243,11 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                                     <button
                                     key={team.id}
                                     className={`team-btn${isDrafted ? " drafted" : ""}`}
-                                    disabled={isDrafted || saving}
+                                    disabled={isDrafted || saving || !isAdmin}
                                     onClick={() => handlePick(team.id)}
                                     >
                                         <span className={`seed-badge${team.seed <= 4 ? ` s${team.seed}` : ""}`}>{team.seed}</span>
-                                        <span>{team.name}</span>
+                                        <span className="team-name">{team.name}</span>
                                         {owner && <span className="team-owner">{owner}</span>}
                                     </button>
                                 );
@@ -264,7 +257,6 @@ export default function Draft({ teams, users, isAdmin = false }: { teams: Team[]
                 ))}
             </div>
             )}
-            
         </div>
         )}
     </>

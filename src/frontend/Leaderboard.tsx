@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { LeaderboardEntry } from "../types";
+import { Game, LeaderboardEntry } from "../types";
 import { api } from "./api";
+import LiveLine from "./LiveLine";
+import RosterLine from "./RosterLine";
+import { Chevron } from "./Icons";
 
 export default function Leaderboard() {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+    const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
     const load = useCallback(async ()=> {
-        setLoading(true);
         setError(null);
         try {
-            const [l] = await Promise.all([api.getLeaderboard()]);
+            const [l, g] = await Promise.all([api.getLeaderboard(), api.getGames()]);
             setLeaderboard(l);
+            setGames(g);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         } finally {
@@ -36,13 +40,21 @@ export default function Leaderboard() {
         });
     }
 
+    if (loading) return <div className="spinner">Loading…</div>;
+
     return (
-        <div>
+        <div className="standings">
             {error && <div className="error-banner">{error}</div>}
-            {loading ? (
-                <div className="spinner">Loading…</div>
-            ) : leaderboard.length > 0 ? (
+            <LiveLine games={games} />
+            <h2 className="section-head">Standings</h2>
+            {leaderboard.length > 0 ? (
                 <div className="leaderboard">
+                    <div className="lb-head label">
+                        <span />
+                        <span>Player</span>
+                        <span className="r">Alive</span>
+                        <span className="r">Pts</span>
+                    </div>
                     {leaderboard.map(({ user_id, user_name, total_points, picks, teams_alive }, idx) => {
                         const isExpanded = expandedIds.has(user_id);
                         const sortedPicks = [...picks].sort((a, b) => {
@@ -51,41 +63,40 @@ export default function Leaderboard() {
                         });
                         return (
                             <div key={user_id}>
-                                <div
+                                <button
                                     className={`lb-row${idx === 0 ? " rank-1" : ""}`}
                                     onClick={() => toggleExpand(user_id)}
+                                    aria-expanded={isExpanded}
                                 >
-                                    <div className={`lb-rank${idx === 0 ? " gold" : ""}`}>{idx + 1}</div>
-                                    <div>
-                                        <div className="lb-name">
+                                    <span className="lb-rank">{idx + 1}</span>
+                                    <span>
+                                        <span className="lb-name">
                                             {user_name}
-                                            <span className="lb-chevron">{isExpanded ? " ▲" : " ▼"}</span>
-                                        </div>
-                                        <div className="lb-teams-text">
+                                            <span className="lb-chevron"><Chevron dir={isExpanded ? "up" : "down"} size={10} /></span>
+                                        </span>
+                                        <span className="lb-teams-text">
                                             {sortedPicks.map(({ team_name, eliminated, points_earned }, i) => (
-                                                <span key={team_name} className={`lb-teams-text-${eliminated ? "eliminated" : ""}`}>
-                                                    <span>{team_name}</span>
-                                                    <span> ({points_earned}) </span>
-                                                    <span>{i !== picks.length - 1 ? " · " : ""}</span>
+                                                <span key={team_name}>
+                                                    <span className={eliminated ? "lb-team-out" : undefined}>{team_name}</span> ({points_earned})
+                                                    {i !== sortedPicks.length - 1 ? " · " : ""}
                                                 </span>
                                             ))}
-                                        </div>
-                                    </div>
-                                    <div className="lb-alive">
-                                        <div><span className="alive-dot" />{teams_alive} alive</div>
-                                        <div style={{ marginTop: 3 }}><span className="dead-dot" />{picks.length - teams_alive} out</div>
-                                    </div>
-                                    <div className="lb-score">{total_points}</div>
-                                </div>
+                                        </span>
+                                    </span>
+                                    <span className="lb-alive">{teams_alive}/{picks.length}</span>
+                                    <span className="lb-score">{total_points}</span>
+                                </button>
                                 {isExpanded && (
                                     <div className="lb-expand">
                                         {sortedPicks.map(pick => (
-                                            <div key={pick.team_name} className={`lb-expand-team${pick.eliminated ? " eliminated" : ""}`}>
-                                                <span className="lb-expand-seed">{pick.seed}</span>
-                                                <span className="lb-expand-name">{pick.team_name}</span>
-                                                <span className="lb-expand-out">{pick.eliminated ? "OUT" : ""}</span>
-                                                <span className="lb-expand-pts">+{pick.points_earned}</span>
-                                            </div>
+                                            <RosterLine
+                                                key={pick.team_id}
+                                                seed={pick.seed}
+                                                teamName={pick.team_name}
+                                                points={pick.points_earned}
+                                                eliminated={!!pick.eliminated}
+                                                eliminatedRound={pick.eliminated_round}
+                                            />
                                         ))}
                                     </div>
                                 )}
@@ -94,7 +105,7 @@ export default function Leaderboard() {
                     })}
                 </div>
             ) : (
-                <div>Please finish draft</div>
+                <div className="empty-note">Standings start once the draft is finished.</div>
             )}
         </div>
     );

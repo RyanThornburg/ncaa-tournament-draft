@@ -119,19 +119,19 @@ export default function Admin() {
     if (loading) return <div className="spinner">Loading…</div>;
 
     return (
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 16px" }}>
+        <div className="admin">
             {error && <div className="error-banner">{error}</div>}
 
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                <h3 style={{ margin: 0 }}>Users</h3>
+            <div className="admin-bar">
+                <h3>Users</h3>
                 <div style={{ display: "flex", gap: 8 }}>
-                    <button className="btn-confirm" onClick={() => setShowCreate(true)}>+ Add User</button>
+                    <button className="btn-confirm" onClick={() => setShowCreate(true)}>Add user</button>
                     <button className="btn-cancel" onClick={() => { window.location.href = "/cdn-cgi/access/logout"; }}>Logout</button>
                 </div>
             </div>
 
             {showCreate && (
-                <div className="admin-card" style={{ marginBottom: 16 }}>
+                <div className="admin-card">
                     <div className="admin-field-row">
                         <input
                             className="admin-input"
@@ -161,33 +161,33 @@ export default function Admin() {
                 </div>
             )}
 
-            <div className="admin-card" style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div className="admin-card">
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                     <div>
-                        <div style={{ fontWeight: 600 }}>Archive Season {SEASON_YEAR}</div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--muted)" }}>Seal the current season so it appears in historical results</div>
+                        <div className="admin-card-name">Archive season {SEASON_YEAR}</div>
+                        <div className="admin-card-meta">Seal the current season so it appears in historical results</div>
                     </div>
                     {archiveConfirm ? (
                         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <span style={{ fontSize: "0.85rem", color: "var(--muted)" }}>Are you sure?</span>
+                            <span className="admin-card-meta">Are you sure?</span>
                             <button className="btn-cancel" onClick={() => setArchiveConfirm(false)}>Cancel</button>
                             <button className="btn-danger" onClick={archiveSeason} disabled={archiving}>
                                 {archiving ? "Archiving…" : "Confirm"}
                             </button>
                         </div>
                     ) : (
-                        <button className="btn-cancel" onClick={() => setArchiveConfirm(true)}>Archive Season</button>
+                        <button className="btn-cancel" onClick={() => setArchiveConfirm(true)}>Archive season</button>
                     )}
                 </div>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div>
                 {users.map(user => (
                     <div key={user.id} className={`admin-card${user.active ? "" : " admin-card-inactive"}`}>
                         {editId === user.id ? (
                             <>
                                 <div className="admin-field-row">
-                                    <div className="admin-input" style={{ border: "1px solid var(--navy)", color: "var(--muted)" }}>{user.user_name}</div>
+                                    <div className="admin-input static">{user.user_name}</div>
                                     <input
                                         className="admin-input"
                                         value={editState.displayName}
@@ -211,14 +211,14 @@ export default function Admin() {
                         ) : (
                             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 600 }}>{user.display_name}</div>
-                                    <div style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
+                                    <div className="admin-card-name">{user.display_name}</div>
+                                    <div className="admin-card-meta">
                                         {user.user_name}{user.email ? ` · ${user.email}` : ""}
                                     </div>
                                 </div>
                                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                                     {!user.active && (
-                                        <span style={{ fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase" }}>Inactive</span>
+                                        <span className="label">Inactive</span>
                                     )}
                                     <button className="btn-cancel" onClick={() => startEdit(user)}>Edit</button>
                                     <button

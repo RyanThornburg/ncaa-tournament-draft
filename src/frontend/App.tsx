@@ -3,14 +3,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import Tabs from "./Tabs";
-import { TABS, TOURNAMENT_HEAD, TOURNAMENT_SUBHEAD } from "../config";
-import { Pick, Team, User } from "../types";
+import { ROUND_NAMES, SEASON_YEAR, TABS, TOURNAMENT_HEAD, TOURNAMENT_SUBHEAD } from "../config";
+import { Game, Pick, Team, User } from "../types";
 import Draft from "./Draft";
 import Leaderboard from "./Leaderboard";
 import Bracket from "./Bracket";
 import History from "./History";
 import Admin from "./Admin";
 import { useAdmin } from "./useAdmin";
+
+// Masthead edition line: the round being played (first round with an unfinished game) and its day
+function editionLine(games: Game[]): string {
+	const open = games.filter(g => g.team_1_id && g.team_2_id && g.game_status !== "final" && g.game_status !== "forfeit");
+	if (games.length === 0) return `${SEASON_YEAR}`;
+	if (open.length === 0) return `${SEASON_YEAR} · Final`;
+	const round = Math.min(...open.map(g => g.round));
+	const live = open.find(g => g.round === round && g.game_status === "live");
+	const next = open.filter(g => g.round === round && g.start_time_epoch).sort((a, b) => a.start_time_epoch! - b.start_time_epoch!)[0];
+	const epoch = live ? Date.now() / 1000 : next?.start_time_epoch;
+	const day = epoch ? new Date(epoch * 1000).toLocaleDateString("en-US", { weekday: "short" }) : "";
+	return [ROUND_NAMES[round - 2] ?? "", day].filter(Boolean).join(" · ");
+}
 
 function App() {
 	const [tab, setTab] = useState<string>(TABS[0][0]);
@@ -19,6 +32,7 @@ function App() {
 	const [users, setUsers] = useState<User[]>([]);
   	const [teams, setTeams] = useState<Team[]>([]);
 	const [picks, setPicks] = useState<Pick[]>([]);
+	const [games, setGames] = useState<Game[]>([]);
 	const [bracketUser, setBracketUser] = useState<string>("");
 
 	const { isAdmin } = useAdmin();
@@ -27,11 +41,13 @@ function App() {
 		setLoading(true);
 		setError(null);
 		try {
-			const [u, t, p] = await Promise.all([
+			const [u, t, p, g] = await Promise.all([
 				api.getUsers(),
 				api.getTeams(),
 				api.getPicks(),
+				api.getGames(),
 			]);
+			setGames(g);
 			setUsers(u);
 			setTeams(t);
 			setPicks(p);
@@ -55,34 +71,35 @@ function App() {
 	const bracketUsers = [...new Set(picks.map(p => p.user_name))].sort();
 
 	return (
-		<>
-			<div className="app">
-				<div className="header">
-					<div>
-						<div className="header-title">{TOURNAMENT_HEAD}</div>
-						<div className="header-subtitle">{TOURNAMENT_SUBHEAD}</div>
-					</div>
-					<div className="header-right">
-						{tab === "bracket" && !loading && bracketUsers.length > 0 && (
-							<div className="bk-user-select-wrap">
-								<select
-									className="bk-user-select"
-									value={bracketUser}
-									onChange={e => setBracketUser(e.target.value)}
-								>
-									<option value="">Highlight player…</option>
-									{bracketUsers.map(u => <option key={u} value={u}>{u}</option>)}
-								</select>
-								{bracketUser && (
-									<button className="bk-user-clear" onClick={() => setBracketUser("")}>✕</button>
-								)}
-							</div>
-						)}
-						<Tabs tab={tab} setTab={setTab} tabs={allTabs} />
-					</div>
+		<div className="app">
+			<header className="header">
+				<h1 className="header-title">{TOURNAMENT_HEAD}</h1>
+				<div className="header-sub">
+					<span>{TOURNAMENT_SUBHEAD}</span>
+					<span>{editionLine(games)}</span>
 				</div>
+			</header>
+			<Tabs tab={tab} setTab={setTab} tabs={allTabs} />
 
+			<main className="page">
 				{error && <div className="error-banner">{error}</div>}
+				{tab === "bracket" && !loading && bracketUsers.length > 0 && (
+					<div className="bk-toolbar">
+						<span className="label">Highlight</span>
+						<select
+							className="bk-user-select"
+							aria-label="Highlight a player's teams"
+							value={bracketUser}
+							onChange={e => setBracketUser(e.target.value)}
+						>
+							<option value="">Nobody</option>
+							{bracketUsers.map(u => <option key={u} value={u}>{u}</option>)}
+						</select>
+						{bracketUser && (
+							<button className="bk-user-clear" onClick={() => setBracketUser("")}>Clear</button>
+						)}
+					</div>
+				)}
 				{loading ? (
 					<div className="spinner">Loading…</div>
 				) : (
@@ -93,12 +110,9 @@ function App() {
 						{tab === "history" && <History />}
 						{tab === "admin" && isAdmin && <Admin />}
 					</>
-				)
-				}
-
-			</div>
-
-		</>
+				)}
+			</main>
+		</div>
 	);
 }
 

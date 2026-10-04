@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { User } from "../types";
 import { api } from "./api";
+import { Chevron, Grip } from "./Icons";
 
 interface Props {
     users: User[];
@@ -62,10 +63,10 @@ export default function DraftOrderEditor({ users, onSave, onCancel }: Props) {
 
     return (
         <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
-            <div className="modal" style={{ maxWidth: 420 }}>
-                <h2>Set Draft Order</h2>
+            <div className="modal" role="dialog" aria-modal="true" aria-labelledby="deo-title">
+                <h2 id="deo-title">Set draft order</h2>
                 {error && <div className="error-banner" style={{ marginBottom: 16 }}>{error}</div>}
-                <p style={{ fontSize: "0.82rem", color: "var(--muted)", marginBottom: 16 }}>
+                <p className="admin-card-meta" style={{ marginBottom: 12 }}>
                     Drag to reorder, or use the arrows. Pick 1 goes first.
                 </p>
                 <div className="deo-list">
@@ -79,7 +80,7 @@ export default function DraftOrderEditor({ users, onSave, onCancel }: Props) {
                             onDrop={() => handleDrop(i)}
                             onDragEnd={() => { setDragIndex(null); setDragOverIndex(null); }}
                         >
-                            <span className="deo-handle">⠿</span>
+                            <span className="deo-handle"><Grip /></span>
                             <span className="deo-num">{i + 1}</span>
                             <span className="deo-name">{user.display_name}</span>
                             <div className="deo-arrows">
@@ -88,25 +89,27 @@ export default function DraftOrderEditor({ users, onSave, onCancel }: Props) {
                                     disabled={i === 0}
                                     onClick={() => move(i, i - 1)}
                                     title="Move up"
-                                >▲</button>
+                                    aria-label={`Move ${user.display_name} up`}
+                                ><Chevron dir="up" /></button>
                                 <button
                                     className="deo-arrow"
                                     disabled={i === order.length - 1}
                                     onClick={() => move(i, i + 1)}
                                     title="Move down"
-                                >▼</button>
+                                    aria-label={`Move ${user.display_name} down`}
+                                ><Chevron dir="down" /></button>
                             </div>
                         </div>
                     ))}
                 </div>
-                <div className="modal-btns" style={{ marginTop: 20 }}>
+                <div className="modal-btns">
                     <button className="btn-cancel" onClick={() => setOrder(shuffle(users))}>
                         Randomize
                     </button>
                     <div style={{ flex: 1 }} />
                     <button className="btn-cancel" onClick={onCancel}>Cancel</button>
                     <button className="btn-confirm" onClick={handleSave} disabled={saving}>
-                        {saving ? "Saving…" : "Save Order"}
+                        {saving ? "Saving…" : "Save order"}
                     </button>
                 </div>
             </div>
