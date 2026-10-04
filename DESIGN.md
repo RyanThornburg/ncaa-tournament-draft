@@ -16,65 +16,81 @@ colors:
   white: "#ffffff"
 typography:
   display:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "clamp(2.6rem, 9vw, 4.25rem)"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "clamp(2rem, 11.5vw, 4.25rem)"
     fontWeight: 800
     lineHeight: 0.88
     letterSpacing: "-0.01em"
   headline:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
     fontSize: "clamp(2rem, 6vw, 3.25rem)"
     fontWeight: 800
     lineHeight: 0.95
+  deck:
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "clamp(1.375rem, 3.5vw, 2rem)"
+    fontWeight: 800
+    lineHeight: 1.05
   section:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
     fontSize: "1.75rem"
     fontWeight: 800
     lineHeight: 1
   title:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.35rem"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "1.375rem"
     fontWeight: 800
     lineHeight: 1.05
   name:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.4rem"
-    fontWeight: 700
-    lineHeight: 1.05
-  team:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.2rem"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "1.25rem"
     fontWeight: 700
     lineHeight: 1.1
+  name-s:
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "1.1rem"
+    fontWeight: 700
   nav:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "0.98rem"
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "1rem"
     fontWeight: 700
     letterSpacing: "0.02em"
+  slot:
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "0.92rem"
+    fontWeight: 700
+    lineHeight: 1
+  slot-score:
+    fontFamily: "Barlow Condensed, Head Narrow Fallback, Head Fallback, Avenir Next Condensed, sans-serif-condensed, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 800
+    lineHeight: 1
   body:
-    fontFamily: "Roboto Condensed, Arial Narrow, sans-serif"
-    fontSize: "15px"
+    fontFamily: "Roboto Condensed, sans-serif-condensed, Agate Fallback, Avenir Next Condensed, sans-serif"
+    fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.35
     fontFeature: "tnum"
-  score-phone:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.2rem"
-    fontWeight: 800
+  data:
+    fontFamily: "Roboto Condensed, sans-serif-condensed, Agate Fallback, Avenir Next Condensed, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    fontFeature: "tnum"
+  caps:
+    fontFamily: "Roboto Condensed, sans-serif-condensed, Agate Fallback, Avenir Next Condensed, sans-serif"
+    fontSize: "0.85rem"
+    fontWeight: 700
+    letterSpacing: "0.04em"
   small:
-    fontFamily: "Roboto Condensed, Arial Narrow, sans-serif"
+    fontFamily: "Roboto Condensed, sans-serif-condensed, Agate Fallback, Avenir Next Condensed, sans-serif"
     fontSize: "0.8rem"
     fontWeight: 400
     lineHeight: 1.4
-  micro:
-    fontFamily: "Roboto Condensed, Arial Narrow, sans-serif"
-    fontSize: "0.72rem"
-    fontWeight: 400
   label:
-    fontFamily: "Roboto Condensed, Arial Narrow, sans-serif"
-    fontSize: "0.7rem"
+    fontFamily: "Roboto Condensed, sans-serif-condensed, Agate Fallback, Avenir Next Condensed, sans-serif"
+    fontSize: "0.72rem"
     fontWeight: 700
-    letterSpacing: "0.08em"
+    letterSpacing: "0.06em"
 rounded:
   none: "0px"
 spacing:
@@ -92,7 +108,7 @@ components:
     textColor: "{colors.paper}"
     rounded: "{rounded.none}"
     padding: "8px 16px"
-    typography: "{typography.label}"
+    typography: "{typography.caps}"
   button-confirm-hover:
     backgroundColor: "{colors.ink-soft}"
   button-cancel:
@@ -135,6 +151,7 @@ components:
     rounded: "{rounded.none}"
     padding: "4px 12px"
     height: "36px"
+    typography: "{typography.name-s}"
   who-name-hover:
     backgroundColor: "{colors.paper-deep}"
   updated-stamp:
@@ -151,6 +168,7 @@ components:
     typography: "{typography.headline}"
   standings-max:
     textColor: "{colors.muted}"
+    typography: "{typography.data}"
   draft-last-num:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.paper}"
@@ -161,10 +179,11 @@ components:
     rounded: "{rounded.none}"
     padding: "8px 10px"
     height: "{spacing.touch}"
+    typography: "{typography.name-s}"
   team-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    typography: "{typography.team}"
+    typography: "{typography.name}"
     padding: "5px 4px"
   draft-pill-current:
     backgroundColor: "{colors.ink}"
@@ -220,7 +239,7 @@ The world rejects the dark navy-and-gold sports dashboard: no cards, no pills, n
 
 **Key Characteristics:**
 - Newsprint ground, black ink, gray hairlines, heavy black rules under every head.
-- Barlow Condensed caps for heads, names and big numerals; Roboto Condensed agate for everything tabular.
+- Barlow Condensed caps for heads, names and big numerals; Roboto Condensed agate for everything tabular; both self-hosted, with size-adjusted local fallbacks.
 - One highlighter (yellow, "look here") and one press red (live, frame, danger); nothing else carries hue.
 - Square corners everywhere; depth is only rule weight and the highlighter band.
 - The reader is known: a one-time "Who are you?" strip, then a You tag and their roster opened by default.
@@ -243,7 +262,7 @@ A monochrome newsprint page marked by one highlighter and one press red.
 - **Field Paper** (field-paper): the one lighter surface, used only inside text inputs.
 - **Ink** (ink): body text, heavy rules, masthead ground, the pool champion banner and bracket champion banner, the confirm button, focus outlines, the active tab underline, the phone section bar ground, the current draft pill fill, the last-pick number block, the You tag, the 3px underline under the current drafter and the first search match, and the 3px drag insertion rule.
 - **Soft Ink** (ink-soft): secondary text (roster lines, nav at rest, owner names), confirm-button hover.
-- **Muted** (muted): column labels, seeds, meta lines, chevrons, the Scores synced stamp, and the standings Max numerals.
+- **Muted** (muted): column labels, seeds, meta lines, chevrons, the Scores synced stamp, the standings Max numerals, and History's low finisher.
 - **Faded** (faded): eliminated and drafted items, placeholders, dimmed bracket games. Always paired with a strike-through when it means "out".
 - **Hairline** (rule): 1px row dividers, dotted roster dividers, empty-game borders, the "/" between live games, scrollbar thumb.
 - **Masthead Gray** (masthead-gray): secondary text on ink grounds: the masthead subhead, the bracket champion label, the pool champion's points line, and the resting labels of the phone section bar. Defined as the `--masthead-gray` custom property.
@@ -256,31 +275,46 @@ A monochrome newsprint page marked by one highlighter and one press red.
 
 ## Typography
 
-**Display Font:** Barlow Condensed (with Arial Narrow, sans-serif), weights 500 to 800
-**Body Font:** Roboto Condensed (with Arial Narrow, sans-serif), weights 400 to 700
+**Display Font:** Barlow Condensed, self-hosted (latin subset, weights 500, 700 and 800 only), falling back to size-adjusted local faces: Head Narrow Fallback (Arial Narrow at 92%), then Head Fallback (Arial or Helvetica at 74%), then Avenir Next Condensed and the platform condensed sans.
+**Body Font:** Roboto Condensed, self-hosted (latin subset, weights 400 and 700 only), falling back to the platform condensed sans, then Agate Fallback (Arial or Helvetica at 88%), then Avenir Next Condensed.
 
-**Character:** A tall, tight headline condensed for masthead, heads, names and scores, over a narrow agate for the tables, exactly as a sports page pairs its headline face with its box-score type. Tabular numerals are on globally.
+**Character:** A tall, tight headline condensed for masthead, heads, names and scores, over a narrow agate for the tables, exactly as a sports page pairs its headline face with its box-score type. Tabular numerals are on globally. Every size is a role token on `:root` (`--fs-*`); components reference the token, never a literal size.
 
 ### Hierarchy
-- **Display** (800, clamp(2.6rem, 9vw, 4.25rem), 0.88, uppercase): the masthead title only.
-- **Headline** (800, clamp(2rem, 6vw, 3.25rem), 0.95, uppercase): the Draft tab "on the clock" and "X takes Y?" line, and the pool champion's name line ("Dana wins the 2026 pool"). The draft's last-pick line steps down in the same voice (800, clamp(1.4rem, 3.5vw, 2rem), 1.05).
-- **Section** (800, 1.75rem, 1, uppercase): section heads (Standings, Admin bar), leaderboard points; modal and draft-complete heads run 1.8 to 2rem in the same voice.
-- **Title** (800, 1.35rem, uppercase): region heads, roster names and totals, bracket region labels.
-- **Name** (700, 1.4rem, 1.05, uppercase): player names in standings; team names in the bracket drop to 0.92rem in the same face.
-- **Team** (700, 1.2rem, 1.1, uppercase): pickable team rows on the Draft tab, admin user names, History winners. The search field (700, 1.1rem caps) and the pick order strip and drafter names (700 to 800, 1.05rem) sit just below in the same face; the standings Max column is 600 1.05rem muted.
-- **Nav** (700, 0.98rem, 0.02em, uppercase): primary tabs and bracket region tabs.
-- **Body** (400, 15px, 1.35, tabular numerals): agate default for rows, rosters, meta.
-- **Score, phone** (800, 1.2rem): bracket scores in the phone region view; the phone round-pair label runs 800 1.15rem.
-- **Small** (400, 0.8rem, 1.4): meta lines, the Scores synced stamp and its Refresh link (700), the roster live-stakes line (700 caps, with the stake in 500 sentence case), drafter strip team lists, the scoring key, roster seeds, admin meta, inline team lists in standings.
-- **Micro** (400 to 700, 0.72rem): bracket seeds, owners and round labels; roster out-round labels.
-- **Label** (700, 0.7rem, 0.08em to 0.06em, uppercase): column heads and toolbar labels in muted; LIVE and You tags in their fills; bracket TBD.
+- **Display** (800, clamp(2rem, 11.5vw, 4.25rem), 0.88, -0.01em, uppercase): the masthead title only. Its subhead is Small in the headline face at 500, tracked 0.14em, in masthead gray.
+- **Headline** (800, clamp(2rem, 6vw, 3.25rem), 0.95, uppercase): the Draft tab "on the clock" and "X takes Y?" line, and the pool champion's name line ("Dana wins the 2026 pool").
+- **Deck** (800, clamp(1.375rem, 3.5vw, 2rem), 1.05, uppercase): the draft's last-pick line, one step under Headline in the same voice.
+- **Section** (800, 1.75rem, 1, uppercase): section heads, modal, admin and draft-complete heads, leaderboard points, the bracket champion's name.
+- **Title** (800, 1.375rem, 1.05, uppercase): region heads, roster names and totals, bracket region labels, the "Who are you?" question; player names in standings set Title at 700.
+- **Name** (700, 1.25rem, 1.1, uppercase): pickable team rows on the Draft tab, admin user names, History year, winner, scores and low finisher, draft-order numbers, phone bracket scores (800).
+- **Name-S** (700, 1.1rem, uppercase): who-are-you name buttons, the pick order strip, drafter names (800), the draft search field, draft-order names, Final Four and champion labels, the phone round-pair label (800), empty-state notes in muted.
+- **Nav** (700, 1rem, 0.02em, uppercase): primary tabs, bracket region tabs, the bracket Showing select, inline team buttons. On phones the bottom-bar labels scale down as clamp(0.8rem, 3.8vw, 1rem) so five tabs fit at 200% zoom.
+- **Slot** (700, 0.92rem, 1, uppercase) and **slot score** (800, 1rem): bracket team names and scores in the 164px desktop game; winners step names up to 800. Phone region view raises names to Data size in the headline face.
+- **Body** (400, 0.9375rem, 1.35, tabular numerals): agate default for rows, rosters, History cells, inputs, the pool champion's points line.
+- **Data** (400 to 700, 1rem, tabular numerals): standings rank (700), alive count and the Max column (400, muted).
+- **Caps** (700, 0.85rem, 0.04em, uppercase): buttons, the live line, the loading line.
+- **Small** (400, 0.8rem, 1.4): meta lines, the Scores synced stamp and its Refresh link (700), the roster live-stakes line (700 caps at 0.04em, with the stake in 400 sentence case), drafter strip team lists, the scoring key, seeds, admin meta, inline team lists in standings, historical-season notes, phone round arrows (headline face 700).
+- **Label** (700, 0.72rem, 0.06em, uppercase): column heads and toolbar labels in muted; LIVE and You tags in their fills; owners on draft team rows, the draft count and hint, roster out-round labels, bracket seeds, owners, round labels, badges and TBD. The bracket champion label tracks wider at 0.14em in masthead gray.
+
+### Tracking
+One step per size band, applied wherever agate or headline type is set in caps: -0.01em for Display; 0.02em for Nav; 0.04em for caps at 0.8rem and up (Caps, the caps Small lines, buttons); 0.06em for caps at 0.75rem and below (Label and everything sized with it); 0.14em only for the masthead subhead and the bracket champion label. Sentence-case text is never tracked.
+
+### Measure
+Prose runs at most 72ch: the scoring key, historical-season labels and notes, error banners, admin meta lines and the pool champion's points line. Tables and rows take their container's width; prose does not.
+
+### Draft Night Scale
+At 1100px and up, where the board is usually shown over a compressed screen share, draft team rows rise to Title, owners and the pick count to Caps, and seeds and drafter-strip team lists to Body. Below 1100px they keep Name, Label and Small.
 
 ### Named Rules
-**The Headline Face Rule.** Anything a reader scans for (names, scores, heads) is Barlow Condensed caps. Anything a reader reads across (rosters, meta, seeds) is Roboto Condensed agate.
+**The Headline Face Rule.** Anything a reader scans for (names, scores, heads) is Barlow Condensed caps. Anything a reader reads across (rosters, meta, seeds, the Max column) is Roboto Condensed agate. History's low finisher is a name, so it sets in the headline face caps at 500 in muted, beside the winner rather than below it.
 
-**The Agate Floor Rule.** Functional text never sets below 11px (0.7rem at the 16px root). Micro and Label are the floor, not a step toward smaller.
+**The Agate Floor Rule.** Functional text never sets below Label (0.72rem, about 11.5px at the 16px root). Label is the floor, not a step toward smaller.
 
 **The Numerals Rule.** Points are the largest thing in their row, right-aligned, set in the headline face at 800.
+
+**The Loaded Weights Rule.** Only five faces ship: Barlow Condensed 500, 700, 800 and Roboto Condensed 400, 700. Never call for a weight outside that set (no Barlow 600, no Roboto 500); a quieter agate is 400 in muted or soft ink, not a mid weight.
+
+**The Self-Hosted Rule.** Fonts are bundled latin subsets, not fetched from a font CDN; each stack falls to a size-adjusted local face so the swap barely reflows.
 
 ## Layout
 
@@ -313,7 +347,7 @@ Square everywhere (0px radius on buttons, inputs, selects, modals, tags). No con
 ### Buttons
 Blunt, uppercase, square.
 - **Shape:** square corners (0px), 2px border.
-- **Confirm:** ink fill, newsprint text, agate 700 0.85rem uppercase at 0.04em tracking, 8px 16px padding. Hover lifts to soft ink.
+- **Confirm:** ink fill, newsprint text, Caps type, 8px 16px padding. Hover lifts to soft ink.
 - **Cancel:** transparent with 2px ink border; hover fills deep newsprint.
 - **Danger:** transparent with 2px red border and red text; hover fills red with white text. Destructive actions confirm in place: the cancel-style trigger (Reset draft, Archive season) swaps to a muted question, a cancel button and a danger button; no modal.
 - **Disabled:** 50% opacity, not-allowed cursor.
@@ -321,56 +355,56 @@ Blunt, uppercase, square.
 - **Transitions:** background and color over 0.12s.
 
 ### Inputs / Fields
-- **Style:** 1px ink border, field-paper fill, square, 8px 10px padding, agate 400 0.92rem.
+- **Style:** 1px ink border, field-paper fill, square, 8px 10px padding, Body agate.
 - **Focus:** 2px ink outline flush (0 offset).
 - **Static/read-only:** transparent fill, hairline border, muted text.
-- **Search (draft):** the input style at 44px min height, headline face 700 1.1rem caps (placeholder sentence case 500). Typing filters the region lists; the first match is underlined with a 3px ink rule and Enter chooses it, Esc clears.
-- **Select (bracket Showing):** a muted Label "Showing" before it; borderless except a 2px ink underline, headline face caps, gradient-triangle caret.
+- **Search (draft):** the input style at 44px min height, Name-S caps (placeholder sentence case 500). Typing filters the region lists; the first match is underlined with a 3px ink rule and Enter chooses it, Esc clears.
+- **Select (bracket Showing):** a muted Label "Showing" before it; borderless except a 2px ink underline, Nav caps, gradient-triangle caret.
 
 ### Navigation
 - **Masthead:** ink band, display title, tracked masthead-gray subhead split left/right, closed by a 6px red rule.
 - **Section nav:** Standings · Bracket · Draft · History, plus Admin for the commissioner, in that order on every screen size. Switching tabs scrolls the page to the top. Arrow keys, Home and End move between tabs.
-- **Tabs (desktop, 761px and up):** headline face 700 caps in soft ink, 22px apart, horizontally scrollable without a scrollbar, sitting on a 2px ink rule under the masthead. Active tab turns ink with a 4px ink underline; hover turns ink. The phone bracket's region tabs repeat this pattern at 44px on a 1px ink rule.
-- **Section bar (phones, 760px and below):** the same tabs as a fixed bar along the bottom edge, always visible: ink ground, tabs sharing the width equally, each 56px tall, labels in masthead gray, hover and active in newsprint, the active tab marked by a 4px newsprint rule on its top edge. The bar pads by the safe-area inset; focus outlines turn newsprint, inset 4px.
+- **Tabs (desktop, 761px and up):** Nav type in soft ink, 22px apart, horizontally scrollable without a scrollbar, sitting on a 2px ink rule under the masthead. Active tab turns ink with a 4px ink underline; hover turns ink. The phone bracket's region tabs repeat this pattern at 44px on a 1px ink rule.
+- **Section bar (phones, 760px and below):** the same tabs as a fixed bar along the bottom edge, always visible: ink ground, tabs sharing the width equally, each 56px tall, labels in masthead gray at the phone Nav clamp, hover and active in newsprint, the active tab marked by a 4px newsprint rule on its top edge. The bar pads by the safe-area inset; focus outlines turn newsprint, inset 4px.
 - **Live marker:** while one of the reader's teams is playing (any live game when no reader is chosen), an 8px press-red square sits before the Standings label, with a screen-reader-only "(live)" after it. It says live, not selected; it appears in both the top tabs and the phone bar.
-- **Phone round stepper:** one centered round-pair label ("R32 → Sweet 16", headline 800 1.15rem caps) between two 44px square 1px-ink-bordered arrow buttons carrying 2px stroke chevrons; an arrow at the end of the range fades to 25%.
+- **Phone round stepper:** one centered round-pair label ("R32 → Sweet 16", Name-S at 800) between two 44px square 1px-ink-bordered arrow buttons carrying 2px stroke chevrons; an arrow at the end of the range fades to 25%.
 
 ### Who Are You? Strip
-A one-time identity question shown on Standings and Bracket until answered: a 2px ink rule above, 1px below, "Who are you?" in the title voice, then each player as a square 1px ink-bordered name button (headline 700 1.05rem caps, 36px min height, deep-newsprint hover) and a "Just looking" underlined text link. The answer is remembered on the device (localStorage); a "Not you? Change" link in the scoring key reopens it. The chosen name follows the reader: You tag in standings, own roster opened, own team in the live line set heavier, own teams highlighted in the bracket by default.
+A one-time identity question shown on Standings and Bracket until answered: a 2px ink rule above, 1px below, "Who are you?" in Title, then each player as a square 1px ink-bordered name button (Name-S caps, 36px min height, deep-newsprint hover) and a "Just looking" underlined text link. The answer is remembered on the device (localStorage); a "Not you? Change" link in the scoring key reopens it. The chosen name follows the reader: You tag in standings, own roster opened, own team in the live line set heavier, own teams highlighted in the bracket by default.
 
 ### Tags
-- **LIVE:** press-red fill, white Label type (0.7rem, 700, 0.06em, caps), 2px 6px. Appears in the live line, after a standings name with a team in play, and in a roster row's out column.
+- **LIVE:** press-red fill, white Label type, 2px 6px. Appears in the live line, after a standings name with a team in play, and in a roster row's out column.
 - **You:** the inverse of ink: ink fill, newsprint Label type, 2px 5px, after the reader's own name.
 
 ### Scores Synced Stamp
 "Scores synced n min ago" (from the server's last feed sync; "just now" under a minute, a weekday and time past 90 minutes) in Small muted agate, followed by an underlined Refresh text button in ink 700 that reads "Refreshing…" while disabled. On Standings it sits right-aligned on the section head's 3px rule (wrapping beneath the head on phones); on the Bracket it shares a status row with the live line, right-aligned when nothing is live. Ticks every 30 seconds.
 
 ### Pool Champion Banner
-Shown on Standings only once the championship game is decided, above the section head: an ink block (16px 18px 14px) closed by a 6px red rule, the masthead's frame repeated. The name line is in the Headline voice in newsprint ("Dana wins the 2026 pool"; tied leaders "share" it), followed by a masthead-gray agate line (0.95rem) giving points and the margin over second. The section head then reads "Final standings" and the Max column drops out.
+Shown on Standings only once the championship game is decided, above the section head: an ink block (16px 18px 14px) closed by a 6px red rule, the masthead's frame repeated. The name line is in the Headline voice in newsprint ("Dana wins the 2026 pool"; tied leaders "share" it), followed by a masthead-gray Body line (72ch max) giving points and the margin over second. The section head then reads "Final standings" and the Max column drops out.
 
 ### Standings Table (signature)
-Grid rows of rank, condensed-caps name, alive x/8, Max and big right-aligned points, divided by hairlines. Max is points banked plus every win the player's surviving teams could still collect, counting each future bracket game once where two of their own teams would meet; it sets in muted headline-face numerals (600, 1.05rem), quieter than points, and is hidden once the pool is final. Tied ranks read T2, T6. Every row whose score equals a positive top score is banded highlighter yellow and closed by a 2px ink rule; nobody is banded at 0. On phones a row is a button: a chevron follows the name and tapping opens a roster beneath it, indented and closed by a 2px ink rule. A scoring key line in Small muted agate closes the table.
+Grid rows of rank, condensed-caps name, alive x/8, Max and big right-aligned points, divided by hairlines. Max is points banked plus every win the player's surviving teams could still collect, counting each future bracket game once where two of their own teams would meet; it sets in muted agate Data numerals (400), quieter than points, and is hidden once the pool is final. Tied ranks read T2, T6. Every row whose score equals a positive top score is banded highlighter yellow and closed by a 2px ink rule; nobody is banded at 0. On phones a row is a button: a chevron follows the name and tapping opens a roster beneath it, indented and closed by a 2px ink rule. A scoring key line in Small muted agate closes the table.
 
 ### Roster Line
-Seed (Small), team, out column, points (+n) on a dotted hairline. Zero points render as an em dash, never "+0". Alive teams are plain ink; out teams are faded and struck through with the round they fell in (Micro caps). A team playing now carries a live-stakes line under its name: a LIVE tag, its score against the opponent ("61–58 vs Arizona", agate 700 caps), then the stake in soft-ink 500 sentence case ("+4 if they win").
+Seed (Small), team, out column, points (+n) on a dotted hairline. Zero points render as an em dash, never "+0". Alive teams are plain ink; out teams are faded and struck through with the round they fell in (Label caps). A team playing now carries a live-stakes line under its name: a LIVE tag, its score against the opponent ("61–58 vs Arizona", Small agate 700 caps), then the stake in soft-ink 400 sentence case ("+4 if they win").
 
 ### Live Line
-A red LIVE tag followed by in-progress scores in agate caps, each team followed by its owner in parentheses (500, sentence case, soft ink; the reader's own owner name in 700 ink), separated by hairline-gray slashes. Renders nothing when nothing is live.
+A red LIVE tag followed by in-progress scores in agate caps, in Caps, each team followed by its owner in parentheses (400, sentence case, soft ink; the reader's own owner name in 700 ink), separated by hairline-gray slashes. Renders nothing when nothing is live.
 
 ### Draft Night
-- **Clock:** the Headline line "On the clock: Name" with the name on the yellow band, a muted Micro count beneath ("Pick 24 of 64 · 41 remaining").
-- **Two-step pick:** choosing a team does not commit it. The row turns yellow and the headline becomes "Name takes Team?" (team on the yellow band) with Confirm pick / Cancel buttons and a muted "Enter to confirm · Esc to cancel" hint.
-- **Last pick:** a big line in the step-down Headline voice, the pick number set in an ink block with newsprint numerals ("[23] Jules takes Illinois").
-- **Team rows:** Team type (1.2rem 700 caps), seed at left in Small (top-four seeds in ink 700), owner at right in Micro caps; hairline-divided, deep-newsprint hover; drafted rows faded and struck, sorted below the available ones.
-- **Pick order strip:** headline face 700 1.05rem caps, "24. Pete" entries; done entries faded and struck, the current one an ink-filled pill with newsprint text.
-- **Drafter strip:** a grid of every drafter's roster so far, between a 1px ink rule above and a 3px ink rule below; name and count in headline 800 1.05rem on a hairline, teams in Small soft ink joined by " · " (an em dash when empty). The current drafter's name takes a 3px ink underline.
+- **Clock:** the Headline line "On the clock: Name" with the name on the yellow band, a muted Label count beneath ("Pick 24 of 64 · 41 remaining").
+- **Two-step pick:** choosing a team does not commit it. The row turns yellow and the headline becomes "Name takes Team?" (team on the yellow band) with Confirm pick / Cancel buttons and a muted "Enter to confirm · Esc to cancel" hint in Label.
+- **Last pick:** a big line in Deck, the pick number set in an ink block with newsprint numerals ("[23] Jules takes Illinois").
+- **Team rows:** Name type, seed at left in Small (top-four seeds in ink 700), owner at right in Label caps (all three rise a step at 1100px, see Draft Night Scale); hairline-divided, deep-newsprint hover; drafted rows faded and struck, sorted below the available ones.
+- **Pick order strip:** Name-S caps, "24. Pete" entries; done entries faded and struck, the current one an ink-filled pill with newsprint text.
+- **Drafter strip:** a grid of every drafter's roster so far, between a 1px ink rule above and a 3px ink rule below; name and count in Name-S at 800 on a hairline, teams in Small soft ink joined by " · " (an em dash when empty). The current drafter's name takes a 3px ink underline.
 - **Reset draft** lives on Admin, not here; the Draft tab keeps only Undo last pick and Set draft order.
 
 ### History
-A sortable ruled table of seasons (year, champion on the yellow band, scores). An archived season expands to its top three rosters with a cancel-style "Show all N rosters" button; seasons from before the site are static rows with no chevron and no hover.
+A sortable ruled table of seasons in Name type (year, champion on the yellow band, the low finisher in the same face at 500 muted, scores). An archived season expands to its top three rosters with a cancel-style "Show all N rosters" button; seasons from before the site are static rows with no chevron and no hover.
 
 ### Bracket Game
-164px wide, two 34px team slots between 1px ink rules, split by a hairline. Winner name steps up to 800 weight; loser slot faded and struck. A live game takes a doubled red top rule and a red LIVE badge; an upcoming game's badge carries its tip time in muted on newsprint. Clickable games hover to deep newsprint. Under the bracket's Showing select, that player's team slots band yellow with their owner in ink 700, and every other slot fades to 500 weight.
+164px wide, two 34px team slots between 1px ink rules, split by a hairline. Winner name steps up to 800 weight; loser slot faded and struck. A live game takes a doubled red top rule and a red LIVE badge; an upcoming game's badge carries its tip time in muted on newsprint. Clickable games hover to deep newsprint. Under the bracket's Showing select, that player's team slots band yellow with their owner in ink 700, and every other slot fades to faded ink, names and scores dropping to 500.
 
 ### Modal
 Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% ink scrim.
@@ -384,7 +418,7 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 - **Do** say winning, alive, current and hovered in ink: heavier weight, ink fill, deep-newsprint hover, ink rule.
 - **Do** show eliminated or used items faded and struck through, in place.
 - **Do** keep red for live state, the masthead rule, and errors or destructive actions.
-- **Do** keep functional text at 11px (0.7rem) or larger.
+- **Do** keep functional text at Label (0.72rem) or larger, take every size from an `--fs-*` role token, and keep prose to 72ch.
 - **Do** keep every corner square.
 - **Do** give phone controls a 44px minimum target.
 - **Do** confirm destructive or committing actions in place (two-step pick, Reset draft, Archive season) rather than in a modal.
@@ -396,3 +430,4 @@ Newsprint panel, max 440px, 22px padding, 6px ink top rule, square, over a 60% i
 - **Don't** use yellow for hover, drag-over, search matches, winners, alive status or the current drafter's pill; don't use red for navigation state (the Standings live marker reports live play, not selection).
 - **Don't** remove eliminated teams or past picks from view.
 - **Don't** use icon fonts or glyph icons; use small 2px square-capped SVG strokes.
+- **Don't** call for a font weight that is not loaded (Barlow 600, Roboto 500) or load fonts from a CDN.

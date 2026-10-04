@@ -58,9 +58,9 @@ function TeamSlot({ teamId, teamName, seed, score, isWinner, isLoser, pickerName
   const scoreEl = score !== null && score !== undefined
     ? <span className={`bk-score ${isWinner ? "bk-score-win" : ""}`}>{score}</span>
     : null;
-  const nameEl = <span className={`bk-team-name${mirrored ? " bk-team-name-r" : ""}`}>{teamName ?? <span className="bk-tbd">TBD</span>}</span>;
+  const nameEl = <span className={`bk-team-name${mirrored ? " bk-team-name-r" : ""}`} title={teamName ?? undefined}>{teamName ?? <span className="bk-tbd">TBD</span>}</span>;
   const seedEl = <span className="bk-seed">{seed ?? ""}</span>;
-  const pickerEl = pickerName ? <span className="bk-picker">{pickerName}</span> : null;
+  const pickerEl = pickerName ? <span className="bk-picker" title={pickerName}>{pickerName}</span> : null;
 
   return (
     <div className={cls}>
