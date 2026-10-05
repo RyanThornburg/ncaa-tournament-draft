@@ -200,3 +200,10 @@ dist
 local_backup.sql
 picks_export.json
 .notes
+
+# impeccable working files (mockups, critiques, decision pages); design.json and surfaces stay tracked
+.impeccable/critique/
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/review/
+.impeccable/live/
