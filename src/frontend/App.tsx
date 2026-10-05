@@ -14,7 +14,7 @@ import LoadError from "./LoadError";
 import { setUrlParams, urlParam } from "./url";
 import { useAdmin } from "./useAdmin";
 import { isPlayer, useMe } from "./useMe";
-import { regionOrder, roundLabel } from "./tournament";
+import { championshipDecided, currentRound, regionOrder, roundLabel } from "./tournament";
 
 // Masthead edition line: the round being played (first round with an unfinished game) and its day
 function editionLine(games: Game[]): string {
@@ -56,13 +56,14 @@ function App() {
 		setLoading(true);
 		setError(null);
 		try {
-			const [u, t, p, g] = await Promise.all([
+			// games only feed the masthead, the live marker and region order; the tabs load their own,
+			// so a games hiccup never blanks the draft board
+			api.getGames().then(setGames).catch(() => {});
+			const [u, t, p] = await Promise.all([
 				api.getUsers(),
 				api.getTeams(),
 				api.getPicks(),
-				api.getGames(),
 			]);
-			setGames(g);
 			setUsers(u);
 			setTeams(t);
 			setPicks(p);
@@ -88,7 +89,7 @@ function App() {
 	];
 
 	const bracketUsers = [...new Set(picks.map(p => p.user_name))].sort();
-	const bracketUser = bracketChoice ?? (isPlayer(me) ? me : "");
+	const bracketUser = bracketChoice ?? (isPlayer(me) && !championshipDecided(games) ? me : "");
 	const askWho = me === "" && bracketUsers.length > 0 && tab === "leaderboard";
 
 	// Standings tab shows LIVE while one of the reader's teams is playing (any game, if no reader chosen)
@@ -130,10 +131,10 @@ function App() {
 					<div className="spinner">Loading…</div>
 				) : (
 					<>
-						{tab === "leaderboard" && <Leaderboard me={me} onChangeMe={() => setMe("")} onOpenGames={() => { changeTab("bracket"); setUrlParams({ view: "games" }); }} />}
-						{tab === "draft" && !error && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} />}
+						{tab === "leaderboard" && <Leaderboard me={me} fallbackOwners={Object.fromEntries(picks.map(p => [p.team_id, p.user_name]))} onChangeMe={() => setMe("")} onOpenGames={() => { changeTab("bracket"); setUrlParams({ view: "games" }); }} />}
+						{tab === "draft" && !error && <Draft teams={teams} users={users} isAdmin={isAdmin} regionOrder={rs => regionOrder(games, rs)} tournamentRound={currentRound(games)} />}
 						{tab === "bracket" && !error && <Bracket selectedUser={bracketUser} onSelectUser={setBracketUser} players={bracketUsers} me={me} />}
-						{tab === "history" && <History />}
+						{tab === "history" && <History me={isPlayer(me) ? me : ""} />}
 						{tab === "admin" && isAdmin && <Admin />}
 					</>
 				)}

@@ -45,7 +45,7 @@ interface DisplayRow {
     expandable: boolean;
 }
 
-export default function History() {
+export default function History({ me = "" }: { me?: string }) {
     const [yearData, setYearData] = useState<Record<number, YearData>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -145,7 +145,7 @@ export default function History() {
             onClick={() => handleSort(col)}
             aria-label={`${label}${score ? (col === "winner_score" ? " (winner)" : " (low)") : ""}${sortCol === col ? `, sorted ${sortDir === "asc" ? "ascending" : "descending"}` : ", sort"}`}
         >
-            {score && <SortIndicator col={col} />}{label}{!score && <SortIndicator col={col} />}
+            {label}<SortIndicator col={col} />
         </button>
     );
 
@@ -157,9 +157,9 @@ export default function History() {
                     <div className="hist-thead">
                         {header("year", "Year")}
                         {header("winner", "Winner")}
-                        {header("winner_score", "Score", true)}
+                        {header("winner_score", "Pts", true)}
                         {header("loser", "Low")}
-                        {header("loser_score", "Score", true)}
+                        {header("loser_score", "Pts", true)}
                         <span />
                     </div>
 
@@ -172,12 +172,14 @@ export default function History() {
                                 <RowTag
                                     className={`hist-tr${isExpanded ? " expanded" : ""}${row.expandable ? "" : " static"}`}
                                     {...(row.expandable ? { onClick: () => toggleYear(row.year), "aria-expanded": isExpanded } : {})}
+                                    // rows are buttons, so say the whole row at once instead of leaning on grid columns
+                                    aria-label={`${row.year}: ${row.winner} won with ${row.winnerScore}; low ${row.loser}${row.loser !== "???" ? ` with ${row.loserScore}` : ", unknown"}${row.expandable ? (isExpanded ? ". Hide rosters" : ". Show rosters") : ""}`}
                                 >
                                     <span className="hist-td year">{row.year}</span>
-                                    <span className="hist-td winner"><span>{row.winner}</span></span>
+                                    <span className="hist-td winner"><span className={row.winner.replace(/\*$/, "") === me ? "mine" : undefined}>{row.winner}</span></span>
                                     <span className="hist-td score">{row.winnerScore}</span>
                                     <span className="hist-td muted">{row.loser}</span>
-                                    <span className="hist-td score muted">{row.loser !== "-" ? row.loserScore : "-"}</span>
+                                    <span className="hist-td score muted">{row.loser !== "???" ? row.loserScore : "???"}</span>
                                     <span className="hist-row-chevron">{row.expandable && <Chevron dir={isExpanded ? "up" : "down"} size={10} />}</span>
                                 </RowTag>
 

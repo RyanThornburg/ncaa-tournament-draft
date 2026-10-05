@@ -13,13 +13,15 @@ export default function Updated({ at, onRefresh, refreshing }: { at: number | nu
         : mins < 90 ? `${mins} min ago`
         : new Date(at!).toLocaleString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit" });
     return (
-        <span className="updated" aria-live="polite">
+        <span className="updated">
             {age && <>Scores synced {age}</>}
             {onRefresh && (
                 <button className="refresh-btn" onClick={onRefresh} disabled={refreshing}>
                     {refreshing ? "Refreshing…" : "Refresh"}
                 </button>
             )}
+            {/* announce the refresh itself, not the minute-by-minute clock */}
+            <span className="sr-only" role="status">{refreshing ? "Refreshing scores" : ""}</span>
         </span>
     );
 }

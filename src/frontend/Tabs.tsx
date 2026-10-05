@@ -43,7 +43,7 @@ export default function Tabs({ tab, setTab, tabs, live = [] }: TabsProps) {
                         id={`tab-${key}`}
                         role="tab"
                         aria-selected={tab === key}
-                        aria-controls={`panel-${key}`}
+                        aria-controls={tab === key ? `panel-${key}` : undefined}
                         tabIndex={tab === key ? 0 : -1}
                         className={`tab${tab === key ? " active" : ""}`}
                         onClick={() => setTab(key)}

@@ -398,7 +398,9 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
       </div>
       <div className="seg" role="group" aria-label="Bracket view">
         {VIEWS.map(([key, label]) => (
-          <button key={key} className={view === key ? "on" : ""} aria-pressed={view === key} onClick={() => chooseView(key)}>{label}</button>
+          <button key={key} className={view === key ? "on" : ""} aria-pressed={view === key} onClick={() => chooseView(key)}>
+            {key === "path" && player && player !== me ? `${player}'s path` : label}
+          </button>
         ))}
       </div>
       {view === "games" && <GamesView games={games} owners={teamPickMap} names={names} seeds={seeds} me={me} />}
@@ -413,10 +415,16 @@ export default function Bracket({ selectedUser, onSelectUser, players, me }: Bra
           {players.map(u => <option key={u} value={u}>{u}</option>)}
         </select>
         {selectedUser && <button className="bk-user-clear" onClick={() => showUser("")}>Clear</button>}
+        {/* phones: one region picker here instead of a second row of tabs */}
+        <label className="label bk-phone-only" htmlFor="bk-region">Region</label>
+        <select id="bk-region" className="bk-user-select bk-phone-only" value={mobileSel} onChange={e => setMobileSel(e.target.value)}>
+          {allRegions.map(r => <option key={r} value={r}>{r}</option>)}
+          <option value="__ff__">Final Four</option>
+        </select>
       </div>
     )}
     <div className={`bk-root${highlightedTeams ? " bk-user-filter" : ""}`}>
-      <div className="bk-mobile-nav">
+      <div className={`bk-mobile-nav${players.length > 0 ? " has-picker" : ""}`}>
         {allRegions.map(r => (
           <button key={r} className={`bk-mobile-tab${mobileSel === r ? " active" : ""}`} aria-pressed={mobileSel === r} onClick={() => setMobileSel(r)}>
             {r}

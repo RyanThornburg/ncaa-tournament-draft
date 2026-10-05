@@ -6,7 +6,7 @@ export default function LoadError({ what, detail, stale, polls, onRetry }: { wha
             {stale
                 ? `Couldn't refresh ${what}. Showing what loaded last${polls ? "; it will try again in 2 minutes" : ""}.`
                 : `Couldn't load ${what}.${polls ? " It will try again in 2 minutes." : ""}`}
-            {onRetry && <> <button className="link-btn error-retry" onClick={onRetry}>Try again</button></>}
+            {onRetry && <button className="link-btn error-retry" onClick={onRetry}>Try again</button>}
         </div>
     );
 }

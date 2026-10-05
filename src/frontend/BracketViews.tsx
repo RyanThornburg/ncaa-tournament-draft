@@ -67,10 +67,14 @@ function BoxScore({ g, ctx, me }: { g: NamedGame; ctx: Ctx; me: string }) {
 
 // ── Road ─────────────────────────────────────────────────────────────────
 
-function opponentText(ctx: Ctx, stop: RoadStop): { main: string; sub: string } {
+function opponentText(ctx: Ctx, stop: RoadStop, teamId: string): { main: string; sub: string } {
   const opps = stop.opponents;
   if (opps.length === 0) return { main: "TBD", sub: "" };
-  if (opps.length === 1) return { main: ctx.names[opps[0]] ?? "TBD", sub: ctx.owners[opps[0]] ? `${ctx.owners[opps[0]]}'s` : "" };
+  if (opps.length === 1) {
+    const owner = ctx.owners[opps[0]];
+    const same = !!owner && owner === ctx.owners[teamId];
+    return { main: ctx.names[opps[0]] ?? "TBD", sub: same ? `also ${owner}'s · banks a win either way` : owner ? `${owner}'s` : "" };
+  }
   if (opps.length === 2) {
     return {
       main: opps.map(o => ctx.names[o] ?? "TBD").join(" / "),
@@ -87,7 +91,7 @@ function Road({ stops, ctx, teamId }: { stops: RoadStop[]; ctx: Ctx; teamId: str
   return (
     <ol className="road">
       {stops.map(stop => {
-        const { main, sub } = opponentText(ctx, stop);
+        const { main, sub } = opponentText(ctx, stop, teamId);
         const live = stop.status === "live";
         const g = stop.game;
         const score = live && g ? (g.team_1_id === teamId ? `${g.team_1_score ?? 0}–${g.team_2_score ?? 0}` : `${g.team_2_score ?? 0}–${g.team_1_score ?? 0}`) : "";
@@ -123,7 +127,9 @@ export function GamesView({ games, owners, names, seeds, me }: Ctx & { me: strin
 
   // reader's surviving teams with their road (for the strip above the columns)
   const myTeams = Object.keys(owners).filter(id => owners[id] === me);
-  const myRoads = myTeams.map(id => ({ id, stops: teamRoad(games, id) })).filter(r => r.stops.length);
+  // the strip only carries your games that aren't already on screen (banded) in this round's columns
+  const myRoads = myTeams.map(id => ({ id, stops: teamRoad(games, id) }))
+    .filter(r => r.stops.length && r.stops[0].game?.round !== round);
 
   const column = (key: string, title: string, list: NamedGame[], empty: string) => (
     <section className={`gm-col gm-col-${key}`}>

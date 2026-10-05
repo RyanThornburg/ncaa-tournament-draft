@@ -4,10 +4,11 @@ import { ROUND_POINTS, SEASON_YEAR } from "../config";
 import { api } from "./api";
 import LiveLine from "./LiveLine";
 import RosterLine, { LiveScore } from "./RosterLine";
-import { championshipDecided, lastSync, maxRemaining, winValue } from "./tournament";
+import { championshipDecided, lastSync, maxRemaining, tipTime, winValue } from "./tournament";
 import Updated from "./Updated";
 import LoadError from "./LoadError";
 import YourGames, { yourGameRows } from "./YourGames";
+import YourTeams, { waitingNote } from "./YourTeams";
 import { isPlayer } from "./useMe";
 import { Chevron } from "./Icons";
 
@@ -16,13 +17,15 @@ function rankOf(entries: LeaderboardEntry[], total: number) {
     return 1 + entries.filter(e => e.total_points > total).length;
 }
 
-export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: string; onChangeMe: () => void; onOpenGames: () => void }) {
+export default function Leaderboard({ me, onChangeMe, onOpenGames, fallbackOwners = {} }: { me: string; onChangeMe: () => void; onOpenGames: () => void; fallbackOwners?: Record<string, string> }) {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [gamesError, setGamesError] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+    const [maxHelp, setMaxHelp] = useState(false);
 
     const load = useCallback(async ()=> {
         setError(null);
@@ -30,7 +33,9 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
         const [l, g] = await Promise.allSettled([api.getLeaderboard(), api.getGames()]);
         if (l.status === "fulfilled") setLeaderboard(l.value);
         if (g.status === "fulfilled") setGames(g.value);
-        if (l.status === "rejected") setError(String(l.reason instanceof Error ? l.reason.message : l.reason));
+        const why = (r: unknown) => String(r instanceof Error ? r.message : r);
+        if (l.status === "rejected") setError(why(l.reason));
+        setGamesError(g.status === "rejected" ? why(g.reason) : null);
         setLoading(false);
         setRefreshing(false);
     }, []);
@@ -41,11 +46,14 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
         return () => clearInterval(interval);
     }, [load]);
 
-    // open the reader's own roster by default
+    // after the final, open the reader's own roster; during the tournament the note on their row and
+    // Your games below the table already say it, so the race stays in one screen
+    const final = championshipDecided(games);
     useEffect(() => {
+        if (!final) return;
         const mine = leaderboard.find(e => e.user_name === me);
         if (mine) setExpandedIds(prev => prev.size ? prev : new Set([mine.user_id]));
-    }, [leaderboard, me]);
+    }, [leaderboard, me, final]);
 
     function toggleExpand(id: string) {
         setExpandedIds(prev => {
@@ -58,7 +66,8 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
 
     if (loading) return <div className="spinner">Loading…</div>;
 
-    const owners: Record<string, string> = {};
+    // owners come from the standings; if those failed, from the picks the app already loaded
+    const owners: Record<string, string> = leaderboard.length ? {} : { ...fallbackOwners };
     for (const e of leaderboard) for (const p of e.picks) owners[p.team_id] = e.user_name;
     // live score per team, from that team's point of view
     const liveByTeam = new Map<string, LiveScore>();
@@ -71,6 +80,9 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
         liveByTeam.set(g.team_2_id, { mine: g.team_2_score ?? 0, theirs: g.team_1_score ?? 0, opponent: gn.team_1_name ?? names[g.team_1_id] ?? "", winValue: winValue(g, g.team_2_id) });
     }
     const decided = championshipDecided(games);
+    const myEntry = leaderboard.find(e => e.user_name === me);
+    const myRows = isPlayer(me) ? yourGameRows(games, owners, me) : [];
+    const myWait = isPlayer(me) && !decided && myEntry && myRows.length === 0 ? waitingNote(myEntry, games) : null;
     const champs = leaderboard.filter(e => rankOf(leaderboard, e.total_points) === 1 && e.total_points > 0);
     const runnerUp = leaderboard.find(e => !champs.includes(e));
     // the History tab keeps a Low column, so the final night names it too
@@ -79,18 +91,17 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
 
     return (
         <div className="standings">
+            {!error && gamesError && <LoadError what="live scores" detail={gamesError} stale={games.length > 0} polls onRetry={() => { setRefreshing(true); load(); }} />}
             {error && <LoadError what="standings" detail={error} stale={leaderboard.length > 0} polls onRetry={() => { setRefreshing(true); load(); }} />}
-            {/* your games replace the live line once you're picked; rivals' live games still show as LIVE tags below */}
-            {isPlayer(me) && yourGameRows(games, owners, me).length > 0
-                ? <YourGames games={games} owners={owners} me={me} onOpenGames={onOpenGames} />
-                : <LiveLine games={games} owners={owners} me={me} />}
+            {/* the race leads; your news rides on your own row, with the detail below the table */}
+            {myRows.length === 0 && <LiveLine games={games} owners={owners} me={me} />}
             {decided && champs.length > 0 && (
                 <div className="pool-champion">
                     <h2 className="pool-champion-name">
                         {champs.map(c => c.user_name).join(" & ")} {champs.length > 1 ? "share" : "wins"} the {SEASON_YEAR} pool
                     </h2>
                     <p className="pool-champion-line">
-                        {champs[0].total_points} points{runnerUp ? `, ${champs[0].total_points - runnerUp.total_points} ahead of ${runnerUp.user_name}` : ""}. The Ledgesheet could never.
+                        {champs[0].total_points} points{runnerUp ? `, ${champs[0].total_points - runnerUp.total_points} ahead of ${runnerUp.user_name}` : ""}.
                     </p>
                     {lows.length > 0 && (
                         <p className="pool-low">
@@ -99,19 +110,27 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
                     )}
                 </div>
             )}
-            <div className="section-row">
+            {/* no table to head when the standings never loaded: the banner says so */}
+            {(leaderboard.length > 0 || !error) && <div className="section-row">
                 <h2 className="section-head">{decided ? "Final standings" : "Standings"}</h2>
                 <Updated at={lastSync(games)} refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />
-            </div>
+            </div>}
             {leaderboard.length > 0 ? (
                 <div className={`leaderboard${decided ? " final" : ""}`}>
                     <div className="lb-head label">
                         <span />
                         <span>Player</span>
                         {!decided && <span className="r">Alive</span>}
-                        {!decided && <span className="r" title="Most points still possible">Max</span>}
+                        {!decided && (
+                            <button className="r lb-max-help" aria-expanded={maxHelp} aria-controls="max-help" onClick={() => setMaxHelp(v => !v)}>
+                                Max<span className="sr-only">: what it means</span>
+                            </button>
+                        )}
                         <span className="r">Pts</span>
                     </div>
+                    {!decided && maxHelp && (
+                        <p className="lb-max-note" id="max-help">Max is the most a player can still finish with: points banked plus every round their live teams could still win.</p>
+                    )}
                     {leaderboard.map(({ user_id, user_name, total_points, picks, teams_alive }) => {
                         const isExpanded = expandedIds.has(user_id);
                         const rank = rankOf(leaderboard, total_points);
@@ -130,15 +149,26 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
                                     className={`lb-row${isLeader ? " leader" : ""}`}
                                     onClick={() => toggleExpand(user_id)}
                                     aria-expanded={isExpanded}
+                                    aria-controls={isExpanded ? `roster-${user_id}` : undefined}
                                 >
                                     <span className="lb-rank"><span className="sr-only">{tied ? "tied for " : "rank "}</span><span aria-hidden={tied || undefined}>{tied ? "T" : ""}</span>{rank}</span>
                                     <span>
                                         <span className="lb-name">
                                             {user_name}
                                             {isMe && <span className="you-tag">You</span>}
-                                            {playing > 0 && <span className="live-tag">Live</span>}
+                                            {playing > 0 && !(isMe && myRows.length > 0) && <span className="live-tag">Live</span>}
                                             <span className="lb-chevron"><Chevron dir={isExpanded ? "up" : "down"} size={10} /></span>
                                         </span>
+                                        {isMe && myRows.length > 0 && (
+                                            <span className="lb-note">
+                                                {myRows.filter(g => g.live).map((g, i) => (
+                                                    <span key={g.id}>{i > 0 && " · "}<span className="live-tag">Live</span> <strong>{g.name} {g.mine}–{g.theirs}</strong> · +{g.value}</span>
+                                                ))}
+                                                {myRows.some(g => g.live) && myRows.some(g => !g.live) && " / "}
+                                                {myRows.filter(g => !g.live).map(g => `${g.name} ${tipTime(g.g.start_time_epoch) || "TBD"}`).join(" · ")}
+                                            </span>
+                                        )}
+                                        {isMe && myWait && <span className="lb-note">{myWait}</span>}
                                         <span className="lb-teams-text" aria-hidden="true">
                                             {sortedPicks.map(({ team_name, eliminated, points_earned }, i) => (
                                                 <span key={team_name}>
@@ -149,11 +179,11 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
                                         </span>
                                     </span>
                                     {!decided && <span className="lb-alive"><span className="sr-only">teams alive </span>{teams_alive}/{picks.length}</span>}
-                                    {!decided && <span className="lb-max"><span className="sr-only">most possible </span>{max}</span>}
+                                    {!decided && <span className="lb-max"><span className="sr-only">most possible </span>{games.length ? max : <span title="Needs live scores">—</span>}</span>}
                                     <span className="lb-score"><span className="sr-only">points </span>{total_points}</span>
                                 </button>
                                 {isExpanded && (
-                                    <div className="lb-expand">
+                                    <div className="lb-expand" id={`roster-${user_id}`}>
                                         {sortedPicks.map(pick => (
                                             <RosterLine
                                                 key={pick.team_id}
@@ -177,6 +207,11 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames }: { me: strin
                 </div>
             ) : !error && (
                 <div className="empty-note">Standings start once the draft is finished.</div>
+            )}
+            {myRows.length > 0 && <YourGames games={games} owners={owners} me={me} onOpenGames={onOpenGames} />}
+            {/* nothing of yours on the schedule: your survivors and who they wait on, or the obituary */}
+            {isPlayer(me) && !decided && games.length > 0 && myEntry && myRows.length === 0 && (
+                <YourTeams entry={myEntry} games={games} owners={owners} max={myEntry.total_points + maxRemaining(games, owners, me)} />
             )}
         </div>
     );
