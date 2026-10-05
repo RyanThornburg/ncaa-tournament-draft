@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { User } from "../types";
 import { api } from "./api";
 import { Chevron, Grip } from "./Icons";
 
 interface Props {
     users: User[];
+    current?: string[]; // user ids in the saved order, if there is one
     onSave: () => void;
     onCancel: () => void;
 }
@@ -18,8 +19,36 @@ function shuffle<T>(arr: T[]): T[] {
     return a;
 }
 
-export default function DraftOrderEditor({ users, onSave, onCancel }: Props) {
-    const [order, setOrder] = useState<User[]>(() => shuffle(users));
+// Opens on the saved order (a swap on draft night is two arrow taps, not a rebuild); only Randomize shuffles.
+function startingOrder(users: User[], current: string[] = []): User[] {
+    const placed = current.map(id => users.find(u => u.id === id)).filter((u): u is User => !!u);
+    return [...placed, ...users.filter(u => !current.includes(u.id))];
+}
+
+export default function DraftOrderEditor({ users, current, onSave, onCancel }: Props) {
+    const [order, setOrder] = useState<User[]>(() => startingOrder(users, current));
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const headRef = useRef<HTMLHeadingElement>(null);
+
+    // a real dialog: focus moves in, Esc closes, Tab stays inside, focus goes back to the opener
+    useEffect(() => {
+        const opener = document.activeElement as HTMLElement | null;
+        headRef.current?.focus();
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") { e.preventDefault(); onCancel(); return; }
+            if (e.key !== "Tab" || !dialogRef.current) return;
+            const items = [...dialogRef.current.querySelectorAll<HTMLElement>("button:not(:disabled), [tabindex='-1']")];
+            const first = items[0], last = items[items.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        };
+        document.addEventListener("keydown", onKey);
+        return () => {
+            document.removeEventListener("keydown", onKey);
+            if (opener?.isConnected) opener.focus();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -63,9 +92,9 @@ export default function DraftOrderEditor({ users, onSave, onCancel }: Props) {
 
     return (
         <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
-            <div className="modal" role="dialog" aria-modal="true" aria-labelledby="deo-title">
-                <h2 id="deo-title">Set draft order</h2>
-                {error && <div className="error-banner" style={{ marginBottom: 16 }}>{error}</div>}
+            <div ref={dialogRef} className="modal" role="dialog" aria-modal="true" aria-labelledby="deo-title">
+                <h2 id="deo-title" ref={headRef} tabIndex={-1}>Set draft order</h2>
+                {error && <div className="error-banner" role="alert" title={error} style={{ marginBottom: 16 }}>Couldn't save the order. Try again.</div>}
                 <p className="admin-card-meta" style={{ marginBottom: 12 }}>
                     Drag to reorder, or use the arrows. Pick 1 goes first.
                 </p>

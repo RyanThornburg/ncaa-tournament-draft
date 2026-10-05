@@ -15,7 +15,7 @@ interface Season {
     subheader?: string;
 }
 
-export default function Admin() {
+export default function Admin({ started = false, decided = false }: { started?: boolean; decided?: boolean }) {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setErrorState] = useState<{ msg: string; detail?: string } | null>(null);
@@ -41,6 +41,7 @@ export default function Admin() {
             await api.deletePicks();
             setResetConfirm(false);
             setError(null);
+            setNotice(`All ${SEASON_YEAR} picks deleted. The draft order is kept.`);
         } catch (e) {
             setError("Couldn't reset the draft. Try again.", e);
         } finally {
@@ -155,9 +156,13 @@ export default function Admin() {
                 <div className="admin-card admin-row">
                     <div>
                         <div className="admin-card-name">Reset draft</div>
-                        <div className="admin-card-meta">Delete every pick for {SEASON_YEAR}. The draft order is kept. This can't be undone.</div>
+                        <div className="admin-card-meta">
+                            {started ? "Games have started, so the draft is locked." : `Delete every pick for ${SEASON_YEAR}. The draft order is kept. This can't be undone.`}
+                        </div>
                     </div>
-                    {resetConfirm ? (
+                    {started ? (
+                        <button className="btn-cancel" disabled>Reset draft</button>
+                    ) : resetConfirm ? (
                         <ConfirmInline question="Delete all picks?" confirmLabel="Delete all picks" keepLabel="Keep picks" busyLabel="Deleting…" busy={resetting}
                             onConfirm={resetDraft} onKeep={() => setResetConfirm(false)} />
                     ) : (
@@ -167,9 +172,13 @@ export default function Admin() {
                 <div className="admin-card admin-row">
                     <div>
                         <div className="admin-card-name">Archive {SEASON_YEAR}</div>
-                        <div className="admin-card-meta">Freeze this season's standings into History. Do this after the final.</div>
+                        <div className="admin-card-meta">
+                            {decided ? "Freeze this season's standings into History." : "Available once the title game is final."}
+                        </div>
                     </div>
-                    {archiveConfirm ? (
+                    {!decided ? (
+                        <button className="btn-cancel" disabled>Archive season</button>
+                    ) : archiveConfirm ? (
                         <ConfirmInline question={`Archive ${SEASON_YEAR}? Standings freeze into History.`} confirmLabel={`Archive ${SEASON_YEAR}`} busyLabel="Archiving…" busy={archiving}
                             onConfirm={archiveSeason} onKeep={() => setArchiveConfirm(false)} />
                     ) : (
@@ -234,7 +243,7 @@ export default function Admin() {
                                     {!user.active && <span className="label">Inactive</span>}
                                     {deactivateId === user.id ? (
                                         <ConfirmInline question={`Deactivate ${user.display_name}?`} confirmLabel="Deactivate" busy={saving === user.id}
-                                            onConfirm={() => { setDeactivateId(null); toggleActive(user); }} onKeep={() => setDeactivateId(null)} />
+                                            onConfirm={async () => { await toggleActive(user); setDeactivateId(null); }} onKeep={() => setDeactivateId(null)} />
                                     ) : (
                                         <>
                                             <button className="btn-cancel" onClick={() => startEdit(user)}>Edit</button>

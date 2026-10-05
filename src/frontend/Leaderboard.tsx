@@ -9,6 +9,7 @@ import Updated from "./Updated";
 import LoadError from "./LoadError";
 import YourGames, { yourGameRows } from "./YourGames";
 import YourTeams, { waitingNote } from "./YourTeams";
+import Scoreboard from "./Scoreboard";
 import { isPlayer } from "./useMe";
 import { Chevron } from "./Icons";
 
@@ -82,6 +83,8 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames, fallbackOwner
     const decided = championshipDecided(games);
     const myEntry = leaderboard.find(e => e.user_name === me);
     const myRows = isPlayer(me) ? yourGameRows(games, owners, me) : [];
+    const showYourTeams = isPlayer(me) && !decided && games.length > 0 && !!myEntry && myRows.length === 0;
+    const railOn = !decided && (myRows.length > 0 || showYourTeams || games.some(g => g.game_status === "live" || (!g.winner_team_id && g.team_1_id && g.team_2_id)));
     const myWait = isPlayer(me) && !decided && myEntry && myRows.length === 0 ? waitingNote(myEntry, games) : null;
     const champs = leaderboard.filter(e => rankOf(leaderboard, e.total_points) === 1 && e.total_points > 0);
     const runnerUp = leaderboard.find(e => !champs.includes(e));
@@ -90,7 +93,8 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames, fallbackOwner
     const lows = leaderboard.filter(e => e.total_points === lowScore && !champs.includes(e));
 
     return (
-        <div className="standings">
+        <div className={`standings${railOn ? " has-rail" : ""}`}>
+            <div className="standings-main">
             {!error && gamesError && <LoadError what="live scores" detail={gamesError} stale={games.length > 0} polls onRetry={() => { setRefreshing(true); load(); }} />}
             {error && <LoadError what="standings" detail={error} stale={leaderboard.length > 0} polls onRetry={() => { setRefreshing(true); load(); }} />}
             {/* the race leads; your news rides on your own row, with the detail below the table */}
@@ -208,10 +212,17 @@ export default function Leaderboard({ me, onChangeMe, onOpenGames, fallbackOwner
             ) : !error && (
                 <div className="empty-note">Standings start once the draft is finished.</div>
             )}
-            {myRows.length > 0 && <YourGames games={games} owners={owners} me={me} onOpenGames={onOpenGames} />}
-            {/* nothing of yours on the schedule: your survivors and who they wait on, or the obituary */}
-            {isPlayer(me) && !decided && games.length > 0 && myEntry && myRows.length === 0 && (
-                <YourTeams entry={myEntry} games={games} owners={owners} max={myEntry.total_points + maxRemaining(games, owners, me)} />
+            </div>
+            {/* below the table on phones; a sticky rail beside it on wide screens */}
+            {railOn && (
+                <aside className="standings-rail" aria-label="Tonight">
+                    {myRows.length > 0 && <YourGames games={games} owners={owners} me={me} onOpenGames={onOpenGames} />}
+                    {/* nothing of yours on the schedule: your survivors and who they wait on, or the obituary */}
+                    {showYourTeams && myEntry && (
+                        <YourTeams entry={myEntry} games={games} owners={owners} max={myEntry.total_points + maxRemaining(games, owners, me)} />
+                    )}
+                    {!decided && <Scoreboard games={games} owners={owners} me={isPlayer(me) ? me : ""} />}
+                </aside>
             )}
         </div>
     );

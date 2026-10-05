@@ -4,6 +4,7 @@ import LoadError from "./LoadError";
 import { HISTORICAL_DATA, HISTORICAL_NOTES } from "../config";
 import { Chevron, SortArrows } from "./Icons";
 import RosterLine from "./RosterLine";
+import RecordBook, { RecordSeason } from "./RecordBook";
 
 interface HistoryPick {
     team_name: string;
@@ -124,6 +125,22 @@ export default function History({ me = "" }: { me?: string }) {
 
     const allRows = [...rows, ...historicalRows];
 
+    // the record book reads the same seasons by person: full orders from the archive, the ends only
+    // for the pre-site years ("Elliott*" is Elliott, alleged)
+    const recordSeasons: RecordSeason[] = [
+        ...allYears.map(yd => {
+            const last = Math.max(...yd.scores.map(sc => sc.rank));
+            return { year: yd.season.year, complete: true, finishes: yd.scores.map(sc => ({ name: sc.user_name, rank: sc.rank, low: sc.rank === last && yd.scores.length > 1 })) };
+        }),
+        ...Object.entries(HISTORICAL_DATA).map(([year, data]) => {
+            const last = Math.max(...data.scores.map(sc => sc.rank));
+            return {
+                year: Number(year), complete: false,
+                finishes: data.scores.map(sc => ({ name: sc.user_name.replace(/\*$/, ""), alleged: sc.user_name.endsWith("*"), rank: sc.rank, low: sc.rank === last && sc.rank > 1 })),
+            };
+        }),
+    ];
+
     const sorted = [...allRows].sort((a, b) => {
         let cmp = 0;
         if (sortCol === "year") cmp = a.year - b.year;
@@ -151,7 +168,8 @@ export default function History({ me = "" }: { me?: string }) {
 
     return (
         <div>
-            <h2 className="section-head">Past winners</h2>
+            <RecordBook seasons={recordSeasons} me={me} />
+            <h2 className="section-head hist-seasons-head">Season by season</h2>
             <div className="hist-table-wrap">
                 <div className="hist-table">
                     <div className="hist-thead">

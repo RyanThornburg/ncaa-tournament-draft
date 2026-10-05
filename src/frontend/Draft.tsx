@@ -8,7 +8,7 @@ import ConfirmInline from './ConfirmInline';
 import { teamMatches } from './teamSearch';
 import { SEASON_YEAR } from '../config';
 
-export default function Draft({ teams, users, isAdmin = false, regionOrder, tournamentRound = 2 }: { teams: Team[], users: User[], isAdmin?: boolean, regionOrder?: (regions: string[]) => string[], tournamentRound?: number }){
+export default function Draft({ teams, users, isAdmin = false, regionOrder, tournamentRound = 2, me = "", broadcast = false, onBroadcast }: { teams: Team[], users: User[], isAdmin?: boolean, regionOrder?: (regions: string[]) => string[], tournamentRound?: number, me?: string, broadcast?: boolean, onBroadcast?: (on: boolean) => void }){
     const [draftOrder, setDraftOrder] = useState<DraftOrderEntry[]>([]);
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     
@@ -22,6 +22,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
     const [pendingId, setPendingId] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [confirmUndo, setConfirmUndo] = useState(false);
+    const [shownDrafted, setShownDrafted] = useState<Set<string>>(new Set());
     const searchRef = useRef<HTMLInputElement>(null);
     const confirmRef = useRef<HTMLButtonElement>(null);
     const maxRounds = Math.floor(teams.length / users.length);
@@ -36,13 +37,8 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
                 api.getPicks(),
                 api.getLeaderboard()
             ]);
-            let order = d.order;
-            // only the commissioner can set the order; everyone else waits for it
-            if (order.length === 0 && isAdmin) {
-                const randomized = await api.setDraftOrderRandom();
-                order = randomized.order;
-            }
-            setDraftOrder(order);
+            // no order is saved until the commissioner sets one: opening the tab never writes
+            setDraftOrder(d.order);
             setPicks(p);
             setLeaderboard(l);
         } catch (e) {
@@ -50,7 +46,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
         } finally {
             if (showLoading) setLoading(false);
         }
-    }, [isAdmin]);
+    }, []);
 
     useEffect(() => { load(); }, [load]);
 
@@ -96,6 +92,8 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
     const pendingTeam = pendingId ? teams.find(t => t.id === pendingId) ?? null : null;
     const q = query.trim();
     const matches = (t: Team) => teamMatches(t.name, q);
+    // on the broadcast the board never blanks out while the commissioner types: search only marks the Enter target
+    const listed = (t: Team) => broadcast || matches(t);
     const firstMatch = q ? teams.filter(t => !draftedTeamIds.has(t.id) && matches(t)).sort((a, b) => a.overall_rank - b.overall_rank)[0] : undefined;
 
     // a pick is two steps on a shared screen: choose, then confirm
@@ -169,6 +167,11 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
 
     const lastLine = lastPicked ? `Pick ${lastPicked.pick_order}: ${lastPicked.user_name} takes ${lastPicked.team_name}` : "";
     const noMatch = !!q && !firstMatch;
+
+    // players following on their phones: where is my next pick?
+    const myId = users.find(u => u.user_name === me)?.id;
+    const myNext = myId ? DRAFT_ORDER.findIndex((uid, i) => i >= draftIndex && uid === myId) : -1;
+    const myLine = myNext < 0 ? "" : myNext === draftIndex ? "You're on the clock" : `Your next pick: #${myNext + 1} · ${myNext - draftIndex} away`;
     // the tournament has started once any drafted team has a result
     const results = leaderboard.flatMap(e => e.picks);
     const started = results.some(p => p.points_earned > 0 || p.eliminated);
@@ -195,6 +198,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
         {showOrderEditor && (
             <DraftOrderEditor
                 users={users}
+                current={draftOrder.map(d => d.user_id)}
                 onSave={() => { setShowOrderEditor(false); load(); }}
                 onCancel={() => setShowOrderEditor(false)}
             />
@@ -204,10 +208,17 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
         <div className="sr-only" aria-live="polite">{lastLine}</div>
         {loading ? (
             <div className="spinner">Loading…</div>
-        ) : loadError && draftOrder.length === 0 ? null : draftOrder.length === 0 && picks.length === 0 && !isAdmin ? (
-            <div className="empty-note">The draft order isn't set yet. The commissioner sets it on draft night.</div>
+        ) : loadError && draftOrder.length === 0 ? null : draftOrder.length === 0 && picks.length === 0 ? (
+            isAdmin ? (
+                <div className="draft-empty">
+                    <p className="empty-note">No draft order yet. Set it before the first pick.</p>
+                    <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
+                </div>
+            ) : (
+                <div className="empty-note">The draft order isn't set yet. The commissioner sets it on draft night.</div>
+            )
         ) : (
-        <div>
+        <div className={`draft-board${broadcast ? " bc" : ""}`}>
             {isDraftDone ? (
                 <div className="draft-complete">
                     {/* once games are played the draft is history: say what it became, not what happened last */}
@@ -246,6 +257,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
                                 <span className="draft-count">
                                     Pick {draftIndex + 1} of {teams.length} · {teams.length - draftIndex} remaining
                                     {turnNote && <strong className="draft-turn-note">{currentDraftUser?.display_name} {turnNote}</strong>}
+                                    {myLine && !isAdmin && <span className="draft-you">{myLine}</span>}
                                 </span>
                             </>
                         )}
@@ -295,6 +307,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
                         </div>
                         {isAdmin && (
                             <div className="draft-actions">
+                                {onBroadcast && !broadcast && <button className="btn-cancel" onClick={() => onBroadcast(true)}>Broadcast</button>}
                                 {picks.length > 0 ? undoControl : (
                                     <button className="btn-confirm" onClick={() => setShowOrderEditor(true)}>Set draft order</button>
                                 )}
@@ -322,7 +335,7 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
                             const mine = picks.filter(p => p.user_id === entry.user_id);
                             return (
                                 <div key={entry.user_id} className={`drafter${entry.user_id === currentDrafterId ? " current" : ""}`}>
-                                    <div className="drafter-name">{entry.user_name} <span className="drafter-count">{mine.length}</span></div>
+                                    <div className="drafter-name"><span>{entry.user_name}{entry.user_name === me && <span className="you-tag">You</span>}</span> <span className="drafter-count">{mine.length}</span></div>
                                     <div className="drafter-teams">{mine.map(p => p.team_name).join(" · ") || "—"}</div>
                                 </div>
                             );
@@ -336,12 +349,16 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
             ) : (
             <div className="region-grid">
                 {/* while searching, regions with nothing matching step aside instead of leaving bare heads */}
-                {regions.filter(region => !q || teams.some(t => t.region === region && matches(t))).map(region => (
+                {regions.filter(region => broadcast || !q || teams.some(t => t.region === region && matches(t))).map(region => {
+                    const left = teams.filter(t => t.region === region && !draftedTeamIds.has(t.id)).length;
+                    const gone = teams.filter(t => t.region === region && draftedTeamIds.has(t.id)).length;
+                    const showGone = !broadcast || shownDrafted.has(region);
+                    return (
                     <div className="region-card" key={region}>
-                        <div className="region-title">{region}</div>
+                        <div className="region-title">{region}{broadcast && <span className="region-left">{left} left</span>}</div>
                         <div className="team-list">
                         {teams
-                            .filter(t => t.region === region && matches(t))
+                            .filter(t => t.region === region && listed(t) && (showGone || !draftedTeamIds.has(t.id)))
                             .sort((a, b) => {
                                 const aDrafted = draftedTeamIds.has(a.id) ? 1 : 0;
                                 const bDrafted = draftedTeamIds.has(b.id) ? 1 : 0;
@@ -365,8 +382,19 @@ export default function Draft({ teams, users, isAdmin = false, regionOrder, tour
                                 );
                             })}
                         </div>
+                        {broadcast && gone > 0 && (
+                            <div className="region-gone">
+                                <span>{gone} drafted</span>
+                                <button className="link-btn" aria-expanded={showGone} onClick={() => setShownDrafted(prev => {
+                                    const next = new Set(prev);
+                                    if (next.has(region)) next.delete(region); else next.add(region);
+                                    return next;
+                                })}>{showGone ? "Hide" : "Show"}</button>
+                            </div>
+                        )}
                     </div>
-                ))}
+                    );
+                })}
             </div>
             )}
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T23:59:59Z",
+  "generatedAt": "2026-10-05T12:00:00Z",
   "title": "Design System: TheeeeOPlex",
   "extensions": {
     "colorMeta": {
@@ -191,6 +191,14 @@
         "displayName": "Deck",
         "purpose": "The draft's last-pick line, one step under Headline."
       },
+      "broadcast": {
+        "displayName": "Broadcast",
+        "purpose": "Broadcast mode only: the on-the-clock and pending-pick line at screen-share scale."
+      },
+      "broadcast-deck": {
+        "displayName": "Broadcast Deck",
+        "purpose": "Broadcast mode only: the last-pick line, one step under Broadcast."
+      },
       "section": {
         "displayName": "Section",
         "purpose": "Section, modal and admin heads on a 3px ink rule; leaderboard points; bracket champion name."
@@ -254,7 +262,12 @@
       {
         "name": "underline-rule",
         "value": "inset 0 -3px 0 #111111",
-        "purpose": "Current drafter in the drafter strip. Reads as rule weight."
+        "purpose": "Current drafter in the drafter strip and History's winners. Reads as rule weight."
+      },
+      {
+        "name": "year-mark-rule",
+        "value": "inset 0 -1px 0 #111111",
+        "purpose": "Underlines each record-book year mark (hairline #b9b7b0 for lows). Reads as rule weight."
       }
     ],
     "motion": [
@@ -285,6 +298,10 @@
       {
         "name": "draft-4col",
         "value": "1100px"
+      },
+      {
+        "name": "standings-rail",
+        "value": "1280px"
       }
     ]
   },
@@ -480,6 +497,22 @@
       "description": "My path: a surviving team's remaining stops between ink rules; the current stop banded yellow; four across on desktop, a list on phones.",
       "html": "<ol class=\"ds-road\"><li class=\"ds-stop ds-stop-now\"><span class=\"ds-stop-round\">S16 · Mon 5:22 PM</span><span class=\"ds-stop-opp\">vs Memphis</span><span class=\"ds-stop-sub\">Elliott's</span><span class=\"ds-stop-val\">+5 if they win</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">E8</span><span class=\"ds-stop-opp\">vs Missouri / St. John's</span><span class=\"ds-stop-sub\">Sam's / Jules's</span><span class=\"ds-stop-val\">+7</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">F4</span><span class=\"ds-stop-opp\">vs Midwest winner</span><span class=\"ds-stop-sub\">4 left · top seed Houston (Ryan)</span><span class=\"ds-stop-val\">+9</span></li><li class=\"ds-stop\"><span class=\"ds-stop-round\">Final</span><span class=\"ds-stop-opp\">vs Other half</span><span class=\"ds-stop-sub\">8 left · top seed Auburn (Dana)</span><span class=\"ds-stop-val\">+11</span></li></ol>",
       "css": ".ds-road { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #111111; border-bottom: 2px solid #111111; color: #111111; } .ds-stop { display: flex; flex-direction: column; gap: 2px; padding: 7px 10px 8px 8px; border-right: 1px solid #b9b7b0; } .ds-stop:last-child { border-right: none; } .ds-stop-now { background: #f5d65a; } .ds-stop-round { font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #3a3936; } .ds-stop-opp { font: 700 1.1rem/1.1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-stop-sub { font: 400 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; color: #3a3936; } .ds-stop-val { font: 700 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; }"
+    },
+    {
+      "name": "Broadcast Strip",
+      "kind": "nav",
+      "refersTo": "broadcast-strip",
+      "description": "Draft night on the screen-share: the masthead and tabs fold into one thin ink band closed by a 4px press-red rule, title in Title caps, a masthead-gray Draft night label, Exit broadcast at the right.",
+      "html": "<header class=\"ds-bc\"><span class=\"ds-bc-title\">TheeeeOPlex</span><span class=\"ds-bc-sub\">Draft night</span><button class=\"ds-bc-exit\">Exit broadcast</button></header>",
+      "css": ".ds-bc { display: flex; align-items: baseline; gap: 14px; padding: 8px 20px 7px; background: #111111; color: #e9e8e3; border-bottom: 4px solid #c8202f; } .ds-bc-title { font: 800 1.375rem/1 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; letter-spacing: -0.01em; } .ds-bc-sub { font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #bdbbb4; } .ds-bc-exit { margin-left: auto; background: none; border: none; padding: 0; color: #e9e8e3; font: 700 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-decoration: underline; cursor: pointer; } .ds-bc-exit:hover { text-decoration-thickness: 2px; } .ds-bc-exit:focus-visible { outline: 2px solid #e9e8e3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Record Book",
+      "kind": "custom",
+      "refersTo": "record-year-mark",
+      "description": "History by person: titles and lows as counts with underlined year marks (the reader's own titles on the yellow band, alleged with *), best, average finish and seasons; sorted by titles then average.",
+      "html": "<div class=\"ds-rb\"><div class=\"ds-rb-row ds-rb-label\"><span>Player</span><span>Titles</span><span>Lows</span><span class=\"ds-r\">Avg finish</span></div><div class=\"ds-rb-row\"><span class=\"ds-rb-name\">Dana</span><span class=\"ds-rb-count\">2<span class=\"ds-rb-year ds-mine\">'19</span><span class=\"ds-rb-year ds-mine\">'24</span></span><span class=\"ds-rb-count\">1<span class=\"ds-rb-year ds-low\">'21</span></span><span class=\"ds-r ds-rb-avg\">3.2</span></div><div class=\"ds-rb-row\"><span class=\"ds-rb-name\">Elliott</span><span class=\"ds-rb-count\">1<span class=\"ds-rb-year\">'14*</span></span><span class=\"ds-rb-count\"><span class=\"ds-rb-none\">—</span></span><span class=\"ds-r ds-rb-avg\">3.9</span></div></div>",
+      "css": ".ds-rb { max-width: 920px; color: #111111; } .ds-rb-row { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1.4fr) minmax(0,1.2fr) 5.5rem; gap: 0 12px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #b9b7b0; } .ds-rb-label { padding: 6px 0 4px; border-bottom: 1px solid #111111; font: 700 0.72rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: #55534e; } .ds-r { text-align: right; } .ds-rb-name { font: 700 1.25rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; text-transform: uppercase; } .ds-rb-count { font: 800 1.25rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; } .ds-rb-year { margin-left: 8px; padding: 0 2px; font: 700 0.8rem 'Roboto Condensed', sans-serif-condensed, 'Agate Fallback', 'Avenir Next Condensed', sans-serif; box-shadow: inset 0 -1px 0 #111111; vertical-align: 2px; } .ds-rb-year.ds-mine { background: #f5d65a; } .ds-rb-year.ds-low { color: #3a3936; box-shadow: inset 0 -1px 0 #b9b7b0; } .ds-rb-none { color: #66645e; font-weight: 400; } .ds-rb-avg { font: 800 1.375rem 'Barlow Condensed', 'Head Narrow Fallback', 'Head Fallback', 'Avenir Next Condensed', sans-serif-condensed, sans-serif; }"
     }
   ],
   "narrative": {
@@ -502,7 +535,7 @@
       },
       {
         "name": "The Struck, Not Gone Rule",
-        "body": "Out means faded plus line-through, in place. Never hide or remove an eliminated team, drafted team, or past pick.",
+        "body": "Out means faded plus line-through, in place. Never hide or remove an eliminated team, drafted team, or past pick. One bounded exception: broadcast mode folds each region's drafted teams behind a counted \"N drafted · Show\" row, so the shared screen shows what is left; the count stays and one tap restores them struck in place.",
         "section": "colors"
       },
       {
@@ -555,8 +588,8 @@
       "Don't wrap content in cards, pills or rounded containers; bound it with rules.",
       "Don't add cast or glow shadows; depth is rule weight.",
       "Don't introduce a third accent hue or a dark navy-and-gold dashboard palette.",
-      "Don't use yellow for hover, drag-over, search matches, winners, alive status, the current drafter's pill, active segments or chips, a recap steal or bust, or a strip where every row would carry it; don't use red for navigation state (the Standings live marker reports live play, not selection).",
-      "Don't remove eliminated teams or past picks from view.",
+      "Don't use yellow for hover, drag-over, search matches, winners, alive status, the current drafter's pill, active segments or chips, a recap steal or bust, Around the pool, or a strip where every row would carry it; don't use red for navigation state (the Standings live marker reports live play, not selection).",
+      "Don't remove eliminated teams or past picks from view (broadcast's counted, reversible fold of drafted teams is the one exception).",
       "Don't use icon fonts or glyph icons; use small 2px square-capped SVG strokes.",
       "Don't call for a font weight that is not loaded (Barlow 600, Roboto 500) or load fonts from a CDN."
     ]

@@ -10,7 +10,7 @@ export interface NamedGame extends Game {
 
 const when = (g: Game) => tipTime(g.start_time_epoch);
 
-interface Ctx {
+export interface Ctx {
   games: NamedGame[];
   owners: Record<string, string>;   // team id → player
   names: Record<string, string>;    // team id → team name
@@ -24,7 +24,7 @@ function teamLabel(ctx: Ctx, id: string) {
 
 // ── Box score ────────────────────────────────────────────────────────────
 
-function BoxScore({ g, ctx, me }: { g: NamedGame; ctx: Ctx; me: string }) {
+export function BoxScore({ g, ctx, me }: { g: NamedGame; ctx: Ctx; me: string }) {
   const live = g.game_status === "live";
   const final = !!g.winner_team_id;
   const sides = [
